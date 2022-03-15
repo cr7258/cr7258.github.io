@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Spark 系列教程（2）运行模式介绍 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/21.866e06d2.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link router-link-active">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link router-link-active">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Spark 系列教程（2）运行模式介绍</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/compute/spark/2_deploy.html#spark-运行模式" class="sidebar-link">Spark 运行模式</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bigdata/compute/spark/2_deploy.html#client-和-cluster-提交模式" class="sidebar-link">Client 和 Cluster 提交模式</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bigdata/compute/spark/2_deploy.html#_3-种运行模式部署" class="sidebar-link">3 种运行模式部署</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/compute/spark/2_deploy.html#local-模式" class="sidebar-link">Local 模式</a></li><li class="sidebar-sub-header"><a href="/bigdata/compute/spark/2_deploy.html#standalone-模式" class="sidebar-link">Standalone 模式</a></li><li class="sidebar-sub-header"><a href="/bigdata/compute/spark/2_deploy.html#使用第三方资源调度系统" class="sidebar-link">使用第三方资源调度系统</a></li></ul></li><li><a href="/bigdata/compute/spark/2_deploy.html#构建镜像" class="sidebar-link">构建镜像</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/compute/spark/2_deploy.html#程序代码" class="sidebar-link">程序代码</a></li><li class="sidebar-sub-header"><a href="/bigdata/compute/spark/2_deploy.html#打包" class="sidebar-link">打包</a></li><li class="sidebar-sub-header"><a href="/bigdata/compute/spark/2_deploy.html#构建并上传镜像" class="sidebar-link">构建并上传镜像</a></li></ul></li><li><a href="/bigdata/compute/spark/2_deploy.html#参考资料" class="sidebar-link">参考资料</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="spark-系列教程-2-运行模式介绍"><a href="#spark-系列教程-2-运行模式介绍" class="header-anchor">#</a> Spark 系列教程（2）运行模式介绍</h1> <h2 id="spark-运行模式"><a href="#spark-运行模式" class="header-anchor">#</a> Spark 运行模式</h2> <p>Apache Spark 是用于大规模数据处理的统一分析引擎，它提供了 Java、Scala、Python 和 R 语言的高级 API，以及一个支持通用的执行图计算的优化引擎。</p> <p>Spark Core 是 Spark 的核心模块，负责任务调度、内存管理等功能。Spark Core 的实现依赖于 RDD（Resilient Distributed Datasets，弹性分布式数据集）的程序抽象概念。</p> <p>在 Spark Core 的基础上，Spark 提供了一系列面向不同应用需求的组件，包括使用 SQL 进行结构化数据处理的 Spark SQL、用于实时流处理的 Spark Streaming、用于机器学习的 MLlib 以及用于图处理的 GraphX。</p> <p>Spark 本身并没有提供分布式文件系统，因而 Spark 的数据存储主要依赖于 HDFS，也可以使用 HBase 和 S3 等作为存储层。</p> <p><strong>Spark 有多种运行模式：</strong></p> <ul><li>1.可以运行在一台机器上，称为 Local（本地）运行模式。</li> <li>2.可以使用 Spark 自带的资源调度系统，称为 Standalone 模式。</li> <li>3.可以使用 Yarn、Mesos、Kubernetes 作为底层资源调度系统，称为 Spark On Yarn、Spark On Mesos、Spark On K8S。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007113047.png" alt=""></p> <h2 id="client-和-cluster-提交模式"><a href="#client-和-cluster-提交模式" class="header-anchor">#</a> Client 和 Cluster 提交模式</h2> <p>Driver 是 Spark 中的主控进程，负责执行应用程序的 main() 方法，创建 SparkContext 对象，负责与 Spark 集群进行交互，提交 Spark 作业，并将作业转化为 Task（一个作业由多个 Task 任务组成），然后在各个 Executor 进程间对 Task 进行调度和监控。</p> <p>根据应用程序提交方式的不同，Driver 在集群中的位置也有所不同，应用程序提交方式主要有两种：Client 和 Cluster，默认是 Client，可以在向 Spark 集群提交应用程序时使用 <code>--deploy-mode</code> 参数指定提交方式。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007123356.png" alt=""></p> <h2 id="_3-种运行模式部署"><a href="#_3-种运行模式部署" class="header-anchor">#</a> 3 种运行模式部署</h2> <h3 id="local-模式"><a href="#local-模式" class="header-anchor">#</a> Local 模式</h3> <p>Local 模式的部署方式比较简单，只需下载安装包并解压就可以使用了。具体可以参考上一章的 <a href="https://mp.weixin.qq.com/s/mGbIOYN4HWNDHFkDnwLi4A" target="_blank" rel="noopener noreferrer">Spark 系列教程（1）Word Count<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 的介绍，本文就不再赘述了。</p> <p>在 spark-shell 交互式界面执行一个简单的计算，取出 0~99 之间的值。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ bin/spark-shell
+<span class="token number">21</span>/10/07 <span class="token number">11</span>:50:04 WARN NativeCodeLoader: Unable to load native-hadoop library <span class="token keyword">for</span> your platform<span class="token punctuation">..</span>. using builtin-java classes where applicable
+Using Spark<span class="token string">'s default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to &quot;WARN&quot;.
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://chengzw:4040
+Spark context available as '</span>sc<span class="token string">' (master = local[*], app id = local-1633578611004).
+Spark session available as '</span>spark<span class="token string">'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '</span>_/
+   /___/ .__/<span class="token punctuation">\</span>_,_/_/ /_/<span class="token punctuation">\</span>_<span class="token punctuation">\</span>   version <span class="token number">3.1</span>.2
+      /_/
+
+Using Scala version <span class="token number">2.12</span>.10 <span class="token punctuation">(</span>OpenJDK <span class="token number">64</span>-Bit Server VM, Java <span class="token number">1.8</span>.0_302<span class="token punctuation">)</span>
+Type <span class="token keyword">in</span> expressions to have them evaluated.
+Type :help <span class="token keyword">for</span> <span class="token function">more</span> information.
+
+scala<span class="token operator">&gt;</span> val range <span class="token operator">=</span> spark.range<span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>
+range: org.apache.spark.sql.Dataset<span class="token punctuation">[</span>Long<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>id: bigint<span class="token punctuation">]</span>
+
+scala<span class="token operator">&gt;</span>  range.collect<span class="token punctuation">(</span><span class="token punctuation">)</span>
+res0: Array<span class="token punctuation">[</span>Long<span class="token punctuation">]</span> <span class="token operator">=</span> Array<span class="token punctuation">(</span><span class="token number">0</span>, <span class="token number">1</span>, <span class="token number">2</span>, <span class="token number">3</span>, <span class="token number">4</span>, <span class="token number">5</span>, <span class="token number">6</span>, <span class="token number">7</span>, <span class="token number">8</span>, <span class="token number">9</span>, <span class="token number">10</span>, <span class="token number">11</span>, <span class="token number">12</span>, <span class="token number">13</span>, <span class="token number">14</span>, <span class="token number">15</span>, <span class="token number">16</span>, <span class="token number">17</span>, <span class="token number">18</span>, <span class="token number">19</span>, <span class="token number">20</span>, <span class="token number">21</span>, <span class="token number">22</span>, <span class="token number">23</span>, <span class="token number">24</span>, <span class="token number">25</span>, <span class="token number">26</span>, <span class="token number">27</span>, <span class="token number">28</span>, <span class="token number">29</span>, <span class="token number">30</span>, <span class="token number">31</span>, <span class="token number">32</span>, <span class="token number">33</span>, <span class="token number">34</span>, <span class="token number">35</span>, <span class="token number">36</span>, <span class="token number">37</span>, <span class="token number">38</span>, <span class="token number">39</span>, <span class="token number">40</span>, <span class="token number">41</span>, <span class="token number">42</span>, <span class="token number">43</span>, <span class="token number">44</span>, <span class="token number">45</span>, <span class="token number">46</span>, <span class="token number">47</span>, <span class="token number">48</span>, <span class="token number">49</span>, <span class="token number">50</span>, <span class="token number">51</span>, <span class="token number">52</span>, <span class="token number">53</span>, <span class="token number">54</span>, <span class="token number">55</span>, <span class="token number">56</span>, <span class="token number">57</span>, <span class="token number">58</span>, <span class="token number">59</span>, <span class="token number">60</span>, <span class="token number">61</span>, <span class="token number">62</span>, <span class="token number">63</span>, <span class="token number">64</span>, <span class="token number">65</span>, <span class="token number">66</span>, <span class="token number">67</span>, <span class="token number">68</span>, <span class="token number">69</span>, <span class="token number">70</span>, <span class="token number">71</span>, <span class="token number">72</span>, <span class="token number">73</span>, <span class="token number">74</span>, <span class="token number">75</span>, <span class="token number">76</span>, <span class="token number">77</span>, <span class="token number">78</span>, <span class="token number">79</span>, <span class="token number">80</span>, <span class="token number">81</span>, <span class="token number">82</span>, <span class="token number">83</span>, <span class="token number">84</span>, <span class="token number">85</span>, <span class="token number">86</span>, <span class="token number">87</span>, <span class="token number">88</span>, <span class="token number">89</span>, <span class="token number">90</span>, <span class="token number">91</span>, <span class="token number">92</span>, <span class="token number">93</span>, <span class="token number">94</span>, <span class="token number">95</span>, <span class="token number">96</span>, <span class="token number">97</span>, <span class="token number">98</span>, <span class="token number">99</span><span class="token punctuation">)</span>
+
+</code></pre></div><h3 id="standalone-模式"><a href="#standalone-模式" class="header-anchor">#</a> Standalone 模式</h3> <p><strong>在 Spark Standalone 模式中，资源调度是由 Spark 自己实现的。</strong> Spark Standalone 模式是 Master-Slaves 架构的集群模式，和大部分的 Master-Slaves 结构的集群一样，存在着 Master 单点故障的问题。对于单点故障的问题，Spark 提供了两种方案：</p> <ul><li>基于文件系统的单点恢复（Single-Node Recovery with Local File System），将 Application 和 Worker 的注册信息写入文件中，当 Master 宕机时，可以重新启动 Master 进程恢复工作。该方式只适用于开发或测试环境。</li> <li>基于 Zookeeper 的 Standby Masters（Standby Masters with ZooKeeper）。ZooKeeper 提供了一个 Leader Election 机制，利用这个机制可以保证虽然集群存在多个 Master，但是只有一个是 Active 的，其他的都是 Standby。当 Active 的 Master 出现故障时，另外的一个 Standby Master 会被选举出来，对于恢复期间正在运行的应用程序，由于 Application 在运行前已经向 Master 申请了资源，运行时 Driver 负责与 Executor 进行通信，管理整个 Application，因此 Master 的故障对 Application 的运行不会造成影响，但是会影响新的 Application 的提交。<strong>接下来将介绍 Spark Standalone 模式基于 Zookeeper 的 HA 高可用部署。</strong></li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210822151809.png" alt=""></p> <h4 id="前提条件"><a href="#前提条件" class="header-anchor">#</a> 前提条件</h4> <h5 id="host-设置"><a href="#host-设置" class="header-anchor">#</a> Host 设置</h5> <p>编辑 /etc/hosts 文件：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token number">192.168</span>.1.117 hadoop1
+<span class="token number">192.168</span>.1.118 hadoop2
+<span class="token number">192.168</span>.1.119 hadoop3
+
+</code></pre></div><p>拷贝到其他两台机器上：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token function">scp</span>  /etc/hosts root@hadoop2:/etc/hosts
+<span class="token function">scp</span>  /etc/hosts root@hadoop3:/etc/hosts
+</code></pre></div><h5 id="配置免密登录"><a href="#配置免密登录" class="header-anchor">#</a> 配置免密登录</h5> <p>为了方便后续拷贝文件以及执行脚本，配置 SSH 免密登录。 在 hadoop1 上生成 RSA 非对称密钥对：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 hadoop<span class="token punctuation">]</span><span class="token comment"># ssh-keygen </span>
+Generating public/private rsa key pair.
+Enter <span class="token function">file</span> <span class="token keyword">in</span> <span class="token function">which</span> to save the key <span class="token punctuation">(</span>/root/.ssh/id_rsa<span class="token punctuation">)</span>: 
+Enter passphrase <span class="token punctuation">(</span>empty <span class="token keyword">for</span> no passphrase<span class="token punctuation">)</span>: 
+Enter same passphrase again: 
+Your identification has been saved <span class="token keyword">in</span> /root/.ssh/id_rsa.
+Your public key has been saved <span class="token keyword">in</span> /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:wkMiPVpbBtjoZwBIpyvvluYtfQM9hQeHtgBFVfrwL1I root@hadoop1
+The key's randomart image is:
++---<span class="token punctuation">[</span>RSA <span class="token number">2048</span><span class="token punctuation">]</span>----+
+<span class="token operator">|</span>+o.O+<span class="token punctuation">..</span>o.        <span class="token operator">|</span>
+<span class="token operator">|</span><span class="token builtin class-name">.</span> *.o.+<span class="token punctuation">..</span>        <span class="token operator">|</span>
+<span class="token operator">|</span> o<span class="token punctuation">..</span><span class="token operator">=</span>o*<span class="token operator">=</span>         <span class="token operator">|</span>
+<span class="token operator">|</span>  o+oOo+o        <span class="token operator">|</span>
+<span class="token operator">|</span><span class="token punctuation">..</span>.o<span class="token punctuation">..</span>+oE        <span class="token operator">|</span>
+<span class="token operator">|</span><span class="token punctuation">..</span>  <span class="token builtin class-name">.</span> o+ <span class="token builtin class-name">.</span>       <span class="token operator">|</span>
+<span class="token operator">|</span>  .o <span class="token punctuation">..</span><span class="token punctuation">..</span> <span class="token builtin class-name">.</span>      <span class="token operator">|</span>
+<span class="token operator">|</span> .<span class="token operator">=</span><span class="token punctuation">..</span> o. <span class="token builtin class-name">.</span>       <span class="token operator">|</span>
+<span class="token operator">|</span> +o<span class="token punctuation">..</span>. <span class="token builtin class-name">.</span>         <span class="token operator">|</span>
++----<span class="token punctuation">[</span>SHA256<span class="token punctuation">]</span>-----+
+</code></pre></div><p>将公钥拷贝到集群中的其他机器：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 hadoop<span class="token punctuation">]</span><span class="token comment"># ssh-copy-id root@hadoop1</span>
+<span class="token punctuation">[</span>root@hadoop1 hadoop<span class="token punctuation">]</span><span class="token comment"># ssh-copy-id root@hadoop2</span>
+<span class="token punctuation">[</span>root@hadoop1 hadoop<span class="token punctuation">]</span><span class="token comment"># ssh-copy-id root@hadoop3</span>
+</code></pre></div><h5 id="安装-java"><a href="#安装-java" class="header-anchor">#</a> 安装 Java</h5> <p>进入 <a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html" target="_blank" rel="noopener noreferrer">Oracle 官网<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 下载并解压 JDK 安装包。设置环境变量，编辑 vim /etc/profile：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">JAVA_HOME</span><span class="token operator">=</span>/software/jdk
+<span class="token builtin class-name">export</span> <span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span><span class="token environment constant">$PATH</span><span class="token builtin class-name">:</span><span class="token variable">$JAVA_HOME</span>/bin
+</code></pre></div><h4 id="zookeeper-集群部署"><a href="#zookeeper-集群部署" class="header-anchor">#</a> Zookeeper 集群部署</h4> <h5 id="下载并解压安装包"><a href="#下载并解压安装包" class="header-anchor">#</a> 下载并解压安装包</h5> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token function">wget</span> https://archive.apache.org/dist/zookeeper/zookeeper-3.5.8/apache-zookeeper-3.5.8-bin.tar.gz
+<span class="token function">tar</span> -xzvf apache-zookeeper-3.5.8-bin.tar.gz
+<span class="token function">mv</span> apache-zookeeper-3.5.8 /software/zk
+</code></pre></div><h5 id="编辑配置文件"><a href="#编辑配置文件" class="header-anchor">#</a> 编辑配置文件</h5> <p>编辑 zk/conf/zoo.cfg 文件：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment">#用于配置 Zookeeper 中最小时间单位的长度，单位是毫秒</span>
+<span class="token assign-left variable">tickTime</span><span class="token operator">=</span><span class="token number">2000</span>
+<span class="token comment">#该参数用于配置 Leader 服务器等待 Follower 启动，并完成数据同步的时间</span>
+<span class="token comment">#乘上 tickTime 得到具体时间：10 * 2000 = 20000 毫秒</span>
+<span class="token assign-left variable">initLimit</span><span class="token operator">=</span><span class="token number">10</span>
+
+<span class="token comment">#Leader 与 Follower 心跳检测的超时时间。</span>
+<span class="token comment">#乘上 tickTime 得到具体时间：5 * 2000 = 10000 毫秒</span>
+<span class="token assign-left variable">syncLimit</span><span class="token operator">=</span><span class="token number">5</span>
+
+<span class="token comment">#数据存放目录</span>
+<span class="token assign-left variable">dataDir</span><span class="token operator">=</span>/software/zk/data
+
+<span class="token comment">#客户端连接端口</span>
+<span class="token assign-left variable">clientPort</span><span class="token operator">=</span><span class="token number">2181</span>
+
+<span class="token comment">#Zookeeper集群成员地址</span>
+<span class="token comment">#2888端口用于集群间通信，leader会监听此端口</span>
+<span class="token comment">#3888端口用于leader选举</span>
+server.1<span class="token operator">=</span>hadoop1:2888:3888
+server.2<span class="token operator">=</span>hadoop2:2888:3888
+server.3<span class="token operator">=</span>hadoop3:2888:3888
+
+</code></pre></div><p>同步修改后的配置文件到集群的其他节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token function">scp</span> -r zk root@hadoop2:/software/
+<span class="token function">scp</span> -r zk root@hadoop3:/software/
+</code></pre></div><h5 id="标识-server-id"><a href="#标识-server-id" class="header-anchor">#</a> 标识 Server ID</h5> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment">#在 hadoop1 节点上执行</span>
+<span class="token builtin class-name">echo</span> <span class="token number">1</span> <span class="token operator">&gt;</span> /root/zookeeper-cluster/zk1/myid
+<span class="token comment">#在 hadoop2 节点上执行</span>
+<span class="token builtin class-name">echo</span> <span class="token number">2</span> <span class="token operator">&gt;</span> /root/zookeeper-cluster/zk2/myid
+<span class="token comment">#在 hadoop3 节点上执行</span>
+<span class="token builtin class-name">echo</span> <span class="token number">3</span> <span class="token operator">&gt;</span> /root/zookeeper-cluster/zk3/myid
+</code></pre></div><h5 id="启动-zookeeper-集群"><a href="#启动-zookeeper-集群" class="header-anchor">#</a> 启动 Zookeeper 集群</h5> <p>分别在 3 台节点上执行以下命令启动 Zookeeper：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>zk/bin/zkServer.sh start
+</code></pre></div><h5 id="查看-zookeeper-集群状态"><a href="#查看-zookeeper-集群状态" class="header-anchor">#</a> 查看 Zookeeper 集群状态</h5> <p>分别在 3 台节点上查看 Zookeeper 状态，可以看到此时 hadoop2 节点为 Zookeeper 的 Master 节点。</p> <p>hadoop1 节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 software<span class="token punctuation">]</span><span class="token comment"># zk/bin/zkServer.sh status</span>
+ZooKeeper JMX enabled by default
+Using config: /software/zk/bin/<span class="token punctuation">..</span>/conf/zoo.cfg
+Client port found: <span class="token number">2181</span>. Client address: localhost.
+Mode: follower
+</code></pre></div><p>hadoop2 节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop2 software<span class="token punctuation">]</span><span class="token comment"># zk/bin/zkServer.sh status</span>
+ZooKeeper JMX enabled by default
+Using config: /software/zk/bin/<span class="token punctuation">..</span>/conf/zoo.cfg
+Client port found: <span class="token number">2181</span>. Client address: localhost.
+Mode: leader
+
+</code></pre></div><p>hadoop3 节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop3 software<span class="token punctuation">]</span><span class="token comment"># zk/bin/zkServer.sh status</span>
+ZooKeeper JMX enabled by default
+Using config: /software/zk/bin/<span class="token punctuation">..</span>/conf/zoo.cfg
+Client port found: <span class="token number">2181</span>. Client address: localhost.
+Mode: follower
+</code></pre></div><h4 id="spark-standalone-模式-ha-集群部署"><a href="#spark-standalone-模式-ha-集群部署" class="header-anchor">#</a> Spark Standalone 模式 HA 集群部署</h4> <h5 id="下载并解压安装包-2"><a href="#下载并解压安装包-2" class="header-anchor">#</a> 下载并解压安装包</h5> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token function">wget</span> https://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
+<span class="token function">tar</span> -xzvf spark-3.1.2-bin-hadoop2.7.tgz 
+<span class="token function">mv</span> spark-3.1.2-bin-hadoop2.7 /software/spark
+</code></pre></div><h5 id="修改配置文件"><a href="#修改配置文件" class="header-anchor">#</a> 修改配置文件</h5> <p>编辑 spark/conf/spark-env.sh 文件，由于 Spark HA 使用 Zookeeper 来协调主从，因此需要指定 Zookeeper 的地址和 Spark 在 Zookeeper 中使用的目录。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">JAVA_HOME</span><span class="token operator">=</span>/software/jdk
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">SPARK_DAEMON_JAVA_OPTS</span><span class="token operator">=</span><span class="token string">&quot;-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=hadoop1:2181,hadoop2:2181,hadoop3:2181 -Dspark.deploy.zookeeper.dir=/spark&quot;</span>
+</code></pre></div><p>编辑 spark/conf/slaves 文件：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>hadoop1
+hadoop2
+hadoop3
+</code></pre></div><p>同步修改后的配置文件到集群的其他节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token function">scp</span> -r spark root@hadoop2:/software/
+<span class="token function">scp</span> -r spark root@hadoop3:/software/
+</code></pre></div><h5 id="启动-spark-集群"><a href="#启动-spark-集群" class="header-anchor">#</a> 启动 Spark 集群</h5> <p>在 hadoop1 节点上启动 Spark 集群，执行 <a href="http://start-all.sh" target="_blank" rel="noopener noreferrer">start-all.sh<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 脚本会在 hadoop1 节点上启动 Master 进程，并且在 spark/conf/slaves 文件中配置的所有节点上启动 Worker 进程。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 software<span class="token punctuation">]</span><span class="token comment"># spark/sbin/start-all.sh</span>
+starting org.apache.spark.deploy.master.Master, logging to /software/spark/logs/spark-root-org.apache.spark.deploy.master.Master-1-hadoop1.out
+hadoop2: starting org.apache.spark.deploy.worker.Worker, logging to /software/spark/logs/spark-root-org.apache.spark.deploy.worker.Worker-1-hadoop2.out
+hadoop1: starting org.apache.spark.deploy.worker.Worker, logging to /software/spark/logs/spark-root-org.apache.spark.deploy.worker.Worker-1-hadoop1.out
+hadoop3: starting org.apache.spark.deploy.worker.Worker, logging to /software/spark/logs/spark-root-org.apache.spark.deploy.worker.Worker-1-hadoop3.out
+</code></pre></div><p>登录 hadoop2 节点，启动第二个 Master（Standby Master）。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop2 software<span class="token punctuation">]</span><span class="token comment"># spark/sbin/start-master.sh</span>
+starting org.apache.spark.deploy.master.Master, logging to /software/spark/logs/spark-root-org.apache.spark.deploy.master.Master-1-hadoop2.out
+</code></pre></div><h5 id="查看各节点的进程"><a href="#查看各节点的进程" class="header-anchor">#</a> 查看各节点的进程</h5> <p>在各节点执行 jps 命令查看启动的 Java 进程。可以看到 Spark 的 Master 进程分别在 hadoop1 和 hadoop2 节点上运行，Worker 进程在所有节点上运行。QuorumPeerMain 是 Zookeeper 的进程。</p> <p>hadoop1 节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 software<span class="token punctuation">]</span><span class="token comment"># jps</span>
+<span class="token number">18528</span> Worker
+<span class="token number">18427</span> Master
+<span class="token number">23468</span> QuorumPeerMain
+<span class="token number">18940</span> Jps
+</code></pre></div><p>hadoop2 节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop2 software<span class="token punctuation">]</span><span class="token comment"># jps</span>
+<span class="token number">27824</span> Worker
+<span class="token number">29954</span> Jps
+<span class="token number">23751</span> QuorumPeerMain
+<span class="token number">28135</span> Master
+</code></pre></div><p>hadoop3 节点：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop3 software<span class="token punctuation">]</span><span class="token comment"># jps</span>
+<span class="token number">11696</span> Worker
+<span class="token number">12939</span> QuorumPeerMain
+<span class="token number">13021</span> Jps
+</code></pre></div><h5 id="zookeeper-查看节点注册状态"><a href="#zookeeper-查看节点注册状态" class="header-anchor">#</a> Zookeeper 查看节点注册状态</h5> <p>可以看到此时 3 个 Spark 节点都注册到 Zookeeper 上了，并且此时 192.168.1.117 hadoop1 这个节点是 Master。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>zk: localhost:2181<span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token number">33</span><span class="token punctuation">]</span> <span class="token function">ls</span> /spark/master_status
+<span class="token punctuation">[</span>worker_worker-20210821150002-192.168.1.117-42360, worker_worker-20210821150002-192.168.1.118-39584, worker_worker-20210821150002-192.168.1.119-42991<span class="token punctuation">]</span>
+<span class="token punctuation">[</span>zk: localhost:2181<span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token number">34</span><span class="token punctuation">]</span> get /spark/master_status
+<span class="token number">192.168</span>.1.117
+</code></pre></div><h5 id="spark-ha-测试"><a href="#spark-ha-测试" class="header-anchor">#</a> Spark HA 测试</h5> <p>浏览器访问 <a href="http://hadoop1:8081" target="_blank" rel="noopener noreferrer">http://hadoop1:8081<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 进入 Spark WebUI 界面，此时 hadoop1 节点 Master 的状态为 ALIVE。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210821175103.png" alt=""></p> <p>浏览器访问 <a href="http://hadoop1:8082" target="_blank" rel="noopener noreferrer">http://hadoop1:8082<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> ，可以看到 hadoop2 节点 Master 的状态为 STANDBY。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210821175151.png" alt=""></p> <p>停止 hadoop1 节点上的 Master 进程。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 software<span class="token punctuation">]</span><span class="token comment"># spark/sbin/stop-master.sh </span>
+stopping org.apache.spark.deploy.master.Master
+</code></pre></div><p>等待几秒以后 hadoop2 节点的状态从 STANDBY 切换为 ALIVE。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210821175403.png" alt=""></p> <p>Spark HA 测试完成，重新启动 hadoop1 节点的 Master 进程。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 software<span class="token punctuation">]</span><span class="token comment"># spark/sbin/start-master.sh </span>
+starting org.apache.spark.deploy.master.Master, logging to /software/spark/logs/spark-root-org.apache.spark.deploy.master.Master-1-hadoop1.out
+</code></pre></div><h5 id="spark-shell-连接集群"><a href="#spark-shell-连接集群" class="header-anchor">#</a> Spark Shell 连接集群</h5> <p>--master 参数的连接地址后可以指定多个 Master 的地址，当第一个 Master 无法连接时，会依次往后尝试连接其他的 Master。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@hadoop1 software<span class="token punctuation">]</span><span class="token comment"># spark/bin/spark-shell --master spark://hadoop1:7077,hadoop2:7077</span>
+<span class="token number">21</span>/08/21 <span class="token number">18</span>:00:52 WARN NativeCodeLoader: Unable to load native-hadoop library <span class="token keyword">for</span> your platform<span class="token punctuation">..</span>. using builtin-java classes where applicable
+Using Spark<span class="token string">'s default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to &quot;WARN&quot;.
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://hadoop1:4040
+Spark context available as '</span>sc<span class="token string">' (master = spark://hadoop1:7077,hadoop2:7077, app id = app-20210821180100-0000).
+Spark session available as '</span>spark<span class="token string">'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '</span>_/
+   /___/ .__/<span class="token punctuation">\</span>_,_/_/ /_/<span class="token punctuation">\</span>_<span class="token punctuation">\</span>   version <span class="token number">3.1</span>.2
+      /_/
+         
+Using Scala version <span class="token number">2.12</span>.10 <span class="token punctuation">(</span>Java HotSpot<span class="token punctuation">(</span>TM<span class="token punctuation">)</span> <span class="token number">64</span>-Bit Server VM, Java <span class="token number">1.8</span>.0_181<span class="token punctuation">)</span>
+Type <span class="token keyword">in</span> expressions to have them evaluated.
+Type :help <span class="token keyword">for</span> <span class="token function">more</span> information.
+</code></pre></div><h3 id="使用第三方资源调度系统"><a href="#使用第三方资源调度系统" class="header-anchor">#</a> 使用第三方资源调度系统</h3> <p>Spark 可以使用 Yarn、Mesos、Kubernetes 作为底层资源调度系统，目前 Mesos 使用的已经比较少了，本文将介绍 Spark 使用 Yarn 和 Kubernetes 作为调度系统的应用。</p> <h4 id="spark-on-yarn"><a href="#spark-on-yarn" class="header-anchor">#</a> Spark On Yarn</h4> <p>Spark On Yarn 模式的搭建比较简单，仅需要在 Yarn 集群的一个节点上安装 Spark 客户端即可，该节点可以作为提交 Spark 应用程序到 Yarn 集群的客户端。Spark 本身的 Master 节点和 Worker 节点不需要启动。前提是我们需要准备好 Yarn 集群，关于 Yarn 集群的安装可以参考 <a href="https://mp.weixin.qq.com/s/r2ezCyT0zA_p6PMhSju7nw" target="_blank" rel="noopener noreferrer">Hadoop 分布式集群安装<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <p>使用此模式需要修改 Spark 的配置文件 conf/spark-env.sh，添加 Hadoop 相关属性，指定 Hadoop 配置文件所在的目录：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">HADOOP_CONF_DIR</span><span class="token operator">=</span><span class="token variable">$HADOOP_HOME</span>/etc/hadoop
+</code></pre></div><p>修改完毕后，即可运行 Spark 应用程序，例如运行 Spark 自带的求圆周率的例子，并以 Spark On Yarn 的 Cluster 模式运行。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>bin/spark-submit <span class="token punctuation">\</span>
+--class org.apache.spark.examples.SparkPi <span class="token punctuation">\</span>
+--master <span class="token function">yarn</span> <span class="token punctuation">\</span>
+--deploy-mode cluster <span class="token punctuation">\</span>
+/software/spark/examples/jars/spark-examples_2.12-3.1.2.jar
+</code></pre></div><p>在 Yarn 的 ResourceManager 对应的 WebUI 界面中可以查看应用程序执行的详细信息。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210927231045.png" alt=""></p> <p>在 Application 详情页中可以查看输出日志的详细信息。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210927231104.png" alt=""></p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210927231131.png" alt=""></p> <p>可以看到最后计算 Pi 的输出结果。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210927231150.png" alt=""></p> <h4 id="spark-on-k8s"><a href="#spark-on-k8s" class="header-anchor">#</a> Spark On K8S</h4> <p>目前基于 Kubernetes 的 Spark 的应用主要采用两种方式运行：</p> <ul><li>1.基于 Kubernetes 的 Operator 的 <a href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator" target="_blank" rel="noopener noreferrer">Spark on K8S Operator<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，是 Google Cloud Platform 为了支持 Spark 而开发的一种 Operator。个人比较推荐使用 Spark on K8S Operator 的方式提交作业。</li> <li>2.Spark 原生支持的 <a href="http://spark.apache.org/docs/3.0.0/running-on-kubernetes.html" target="_blank" rel="noopener noreferrer">Spark On K8S<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，是 Spark 社区为支持 Kubernetes 这种资源管理框架而引入的 Kubernetes Client 的实现。</li></ul> <p><strong>Spark Operator 定义了两个 CRD（Custom Resource Definitions，自定义资源定义）对象，SparkApplication 和 ScheduledSparkApplication。</strong> 这些 CRD 是 Spark 作业的抽象，使得在 Kubernetes 集群中可以使用 YAML 来定义这些作业。另外还提供了 <a href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/sparkctl/README.md" target="_blank" rel="noopener noreferrer">sparkctl<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 命令行工具方便我们操控 SparkApplication 和 ScheduledSparkApplication CRD 资源对象。</p> <p>使用 Spark On K8S Operator 模式时，需要预先在 Kubernetes 集群中部署 Spark Operator 容器，用于将 SparkApplication 和 ScheduledSparkApplication 这些 CRD 资源对象转换为 Kubernetes 原生的资源对象，例如 Pod，Service 等等。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007124308.png" alt=""></p> <p><strong>在 Spark On K8S 模式中，Spark 客户端需要与 Kubernetes API Server 直接通信来创建相关的 Kubernetes 资源。</strong></p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007124259.png" alt=""></p> <p>Spark On K8S 和 Spark On K8S Operator 提交作业的方式如下图所示。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007125828.png" alt=""></p> <h5 id="spark-on-k8s-operator-推荐"><a href="#spark-on-k8s-operator-推荐" class="header-anchor">#</a> Spark On K8S Operator（推荐）</h5> <p>使用 Spark On K8S Operator 模式时，需要预先在 Kubernetes 集群中部署 Spark Operator。</p> <h6 id="部署-spark-operator"><a href="#部署-spark-operator" class="header-anchor">#</a> 部署 Spark Operator</h6> <p>添加 Spark On K8S Operator Helm 仓库并下载 Helm 资源文件。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>helm repo <span class="token function">add</span> spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+helm pull spark-operator/spark-operator --untar
+
+</code></pre></div><p>修改 values.yaml 文件中有以下两个地方需要修改：</p> <ul><li>1.repository 镜像仓库地址，由于国内拉取 Spark 相关镜像速度较慢，我已经提前下载好镜像并且上传至阿里云镜像仓库中了，大家可以直接使用我的镜像。</li> <li>2.sparkJobNamespace：设置 Spark 提交作业的命名空间，会为该命名空间创建一个 ServiceAccount 并赋予相应的权限，ServiceAccount 的名字为 <code>helm 项目名-spark</code>。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007133051.png" alt=""></p> <p>使用 <code>helm install</code> 命令安装 Spark Operator，spark-job 命名空间是之后提交 Spark 作业时使用的。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kubectl create namespace spark-job
+helm <span class="token function">install</span> my-spark spark-operator <span class="token punctuation">\</span>
+--namespace spark-operator --create-namespace
+</code></pre></div><p>确认 Spark Operator Pod 已经正常运行。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ kubectl get pod -n spark-operator
+NAME                                       READY   STATUS    RESTARTS   AGE
+my-spark-spark-operator-674cbc9d9c-8x22x   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          5m24s
+
+</code></pre></div><p>查看在 spark-job 命名空间创建的 ServiceAccount。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ kubectl get serviceaccounts -n spark-job
+NAME             SECRETS   AGE
+<span class="token punctuation">..</span><span class="token punctuation">..</span>.
+my-spark-spark   <span class="token number">1</span>         2m33s
+
+</code></pre></div><h6 id="运行-sparkapplications"><a href="#运行-sparkapplications" class="header-anchor">#</a> 运行 SparkApplications</h6> <p>SparkApplications 资源对象中通常使用的 Cluster 模式来提交作业。在 YAML 文件中指定运行应由程序的 jar 包以及 main() 方法所在的类。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;sparkoperator.k8s.io/v1beta2&quot;</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> SparkApplication
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>pi
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">type</span><span class="token punctuation">:</span> Scala
+  <span class="token key atrule">mode</span><span class="token punctuation">:</span> cluster
+  <span class="token key atrule">image</span><span class="token punctuation">:</span> <span class="token string">&quot;registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1&quot;</span>
+  <span class="token key atrule">imagePullPolicy</span><span class="token punctuation">:</span> Always
+  <span class="token key atrule">mainClass</span><span class="token punctuation">:</span> org.apache.spark.examples.SparkPi
+  <span class="token key atrule">mainApplicationFile</span><span class="token punctuation">:</span> <span class="token string">&quot;local:///opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar&quot;</span>
+  <span class="token key atrule">sparkVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;3.1.1&quot;</span>
+  <span class="token key atrule">restartPolicy</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> Never
+  <span class="token key atrule">driver</span><span class="token punctuation">:</span>
+    <span class="token key atrule">cores</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">coreLimit</span><span class="token punctuation">:</span> <span class="token string">&quot;1200m&quot;</span>
+    <span class="token key atrule">memory</span><span class="token punctuation">:</span> <span class="token string">&quot;512m&quot;</span>
+    <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">version</span><span class="token punctuation">:</span> 3.1.1
+    <span class="token key atrule">serviceAccount</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark<span class="token punctuation">-</span>spark
+  <span class="token key atrule">executor</span><span class="token punctuation">:</span>
+    <span class="token key atrule">cores</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">instances</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">memory</span><span class="token punctuation">:</span> <span class="token string">&quot;512m&quot;</span>
+    <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">version</span><span class="token punctuation">:</span> 3.1.1
+
+</code></pre></div><p>等待一会，查看 SparkApplications 状态，COMPLETED 表示已经执行完成该作业。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ kubectl get sparkapplications -n spark-job  spark-piNAME       STATUS      ATTEMPTS   START                  FINISH                 AGEspark-pi   COMPLETED   <span class="token number">1</span>          <span class="token number">2021</span>-10-04T13:13:27Z   <span class="token number">2021</span>-10-04T13:13:48Z   8h
+
+</code></pre></div><p>查看在 spark-job 命名空间创建的 Pod 的日志，可以看到本次作业执行的详情。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kubectl logs -n spark-job spark-pi-driver spark-kubernetes-driver
+
+</code></pre></div><p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211004211819.png" alt=""></p> <h5 id="spark-on-k8s-2"><a href="#spark-on-k8s-2" class="header-anchor">#</a> Spark On K8S</h5> <p>使用 Spark On K8S 模式提交作业时我们通常可以使用 spark-submit 或者 spark-shell 两种命令行工具，其中 spark-submit 支持 Cluster 和 Client 两种提交方式，而 spark-shell 只支持 Client 一种提交方式。</p> <h6 id="spark-submit"><a href="#spark-submit" class="header-anchor">#</a> Spark-Submit</h6> <p><strong>Cluster 模式</strong></p> <p>使用 spark-submit 的 Cluster 模式提交作业时，由于我们的 Kubernetes 集群的 API Server 是使用自签名的证书进行 HTTPS 加密的，因此需要使用 <code>spark.kubernetes.authenticate.submission.caCertFile</code> 参数指定 Kubernetes 集群的 CA 证书，让 Spark 客户端信任自签名证书。注意这里的 ServiceAccount 需要自行创建并且赋予以下权限，如果你是按照顺序完成实验的，那么在前面 Spark On K8S Operator 中已经创建了该 ServiceAccount，可以跳过这一步。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>❯ kubectl get rolebindings <span class="token punctuation">-</span>n spark<span class="token punctuation">-</span>job spark <span class="token punctuation">-</span>o yaml
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> rbac.authorization.k8s.io/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> RoleBinding
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">annotations</span><span class="token punctuation">:</span>
+    <span class="token key atrule">meta.helm.sh/release-name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark
+    <span class="token key atrule">meta.helm.sh/release-namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>operator
+  <span class="token key atrule">creationTimestamp</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-09-29T16:10:51Z&quot;</span>
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">app.kubernetes.io/instance</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark
+    <span class="token key atrule">app.kubernetes.io/managed-by</span><span class="token punctuation">:</span> Helm
+    <span class="token key atrule">app.kubernetes.io/name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>operator
+    <span class="token key atrule">app.kubernetes.io/version</span><span class="token punctuation">:</span> v1beta2<span class="token punctuation">-</span>1.2.3<span class="token punctuation">-</span>3.1.1
+    <span class="token key atrule">helm.sh/chart</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>operator<span class="token punctuation">-</span>1.1.6
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+  <span class="token key atrule">resourceVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;204712527&quot;</span>
+  <span class="token key atrule">selfLink</span><span class="token punctuation">:</span> /apis/rbac.authorization.k8s.io/v1/namespaces/spark<span class="token punctuation">-</span>job/rolebindings/spark
+  <span class="token key atrule">uid</span><span class="token punctuation">:</span> 225970e8<span class="token punctuation">-</span>472d<span class="token punctuation">-</span>4ea5<span class="token punctuation">-</span>acb5<span class="token punctuation">-</span>08630852f76c
+<span class="token key atrule">roleRef</span><span class="token punctuation">:</span>
+  <span class="token key atrule">apiGroup</span><span class="token punctuation">:</span> rbac.authorization.k8s.io
+  <span class="token key atrule">kind</span><span class="token punctuation">:</span> Role
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>role
+<span class="token key atrule">subjects</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">kind</span><span class="token punctuation">:</span> ServiceAccount
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark<span class="token punctuation">-</span>spark
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+❯ kubectl get role <span class="token punctuation">-</span>n spark<span class="token punctuation">-</span>job  spark<span class="token punctuation">-</span>role <span class="token punctuation">-</span>o yaml
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> rbac.authorization.k8s.io/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Role
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">annotations</span><span class="token punctuation">:</span>
+    <span class="token key atrule">meta.helm.sh/release-name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark
+    <span class="token key atrule">meta.helm.sh/release-namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>operator
+  <span class="token key atrule">creationTimestamp</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-09-29T16:10:51Z&quot;</span>
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">app.kubernetes.io/instance</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark
+    <span class="token key atrule">app.kubernetes.io/managed-by</span><span class="token punctuation">:</span> Helm
+    <span class="token key atrule">app.kubernetes.io/name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>operator
+    <span class="token key atrule">app.kubernetes.io/version</span><span class="token punctuation">:</span> v1beta2<span class="token punctuation">-</span>1.2.3<span class="token punctuation">-</span>3.1.1
+    <span class="token key atrule">helm.sh/chart</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>operator<span class="token punctuation">-</span>1.1.6
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>role
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+  <span class="token key atrule">resourceVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;204712525&quot;</span>
+  <span class="token key atrule">selfLink</span><span class="token punctuation">:</span> /apis/rbac.authorization.k8s.io/v1/namespaces/spark<span class="token punctuation">-</span>job/roles/spark<span class="token punctuation">-</span>role
+  <span class="token key atrule">uid</span><span class="token punctuation">:</span> 436afb3f<span class="token punctuation">-</span>a304<span class="token punctuation">-</span>4756<span class="token punctuation">-</span>b64a<span class="token punctuation">-</span>978d5836c3a2
+<span class="token key atrule">rules</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> pods
+  <span class="token key atrule">verbs</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">'*'</span>
+<span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> services
+  <span class="token key atrule">verbs</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">'*'</span>
+<span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> configmaps
+  <span class="token key atrule">verbs</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token string">'*'</span>
+
+</code></pre></div><p>执行 spark-submit 命令向 Kubernetes 集群提交作业。</p> <div class="language-sh extra-class"><pre class="language-sh"><code> bin/spark-submit <span class="token punctuation">\</span>
+--master  k8s://https://11.16.0.153:6443 <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.submission.caCertFile<span class="token operator">=</span>/Users/chengzhiwei/software/spark/spark-3.1.2-bin-hadoop3.2/certs/ca.crt <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.driver.serviceAccountName<span class="token operator">=</span>my-spark-spark <span class="token punctuation">\</span>
+--deploy-mode cluster <span class="token punctuation">\</span>
+--name spark-pi-submit <span class="token punctuation">\</span>
+--class org.apache.spark.examples.SparkPi <span class="token punctuation">\</span>
+--conf spark.kubernetes.namespace<span class="token operator">=</span>spark-job <span class="token punctuation">\</span>
+--conf spark.executor.instances<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image.pullPolicy<span class="token operator">=</span>Always <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image<span class="token operator">=</span>registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1 <span class="token punctuation">\</span>
+ local:///opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar
+
+</code></pre></div><p>关于证书不受信任这里也有个讨巧的方式，就是使用 <code>kubectl proxy</code> 命令将 API Server 的 HTTPS 转化为 HTTP。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ kubectl proxy
+Starting to serve on <span class="token number">127.0</span>.0.1:8001
+
+</code></pre></div><p>然后通过 <a href="http://localhost:8001" target="_blank" rel="noopener noreferrer">http://localhost:8001<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 和 API Server 进行交互，此时就无需指定 CA 证书了。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>bin/spark-submit <span class="token punctuation">\</span>
+--master  k8s://http://localhost:8001 <span class="token punctuation">\</span>
+--deploy-mode cluster <span class="token punctuation">\</span>
+--name spark-pi-submit <span class="token punctuation">\</span>
+--class org.apache.spark.examples.SparkPi <span class="token punctuation">\</span>
+--conf spark.kubernetes.namespace<span class="token operator">=</span>spark-job <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.driver.serviceAccountName<span class="token operator">=</span>my-spark-spark <span class="token punctuation">\</span>
+--conf spark.executor.instances<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image.pullPolicy<span class="token operator">=</span>Always <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image<span class="token operator">=</span>registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1 <span class="token punctuation">\</span>
+ local:///opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar
+
+</code></pre></div><p>通过查看 Kubernetes 为本次 Spark 作业创建的 Pod 的日志，可以看到运行结果。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ kubectl logs -n spark-job  spark-pi-submit-fc7b507c4be84351-driver
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+Pi is roughly <span class="token number">3.140075700378502</span>
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+
+</code></pre></div><p><strong>Client 模式</strong></p> <p>Client 模式无需指定 CA 证书，但是需要使用 <code>spark.driver.host</code> 和 <code>spark.driver.port</code> 指定提交作业的 Spark 客户端所在机器的地址，端口号默认就是 7078。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>bin/spark-submit <span class="token punctuation">\</span>
+--master k8s://https://11.16.0.153:6443 <span class="token punctuation">\</span>
+--deploy-mode client <span class="token punctuation">\</span>
+--name spark-pi-submit-client <span class="token punctuation">\</span>
+--class org.apache.spark.examples.SparkPi <span class="token punctuation">\</span>
+--conf spark.kubernetes.namespace<span class="token operator">=</span>spark-job <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.driver.serviceAccountName<span class="token operator">=</span>my-spark-spark <span class="token punctuation">\</span>
+--conf spark.executor.instances<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image<span class="token operator">=</span>registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1 <span class="token punctuation">\</span>
+--conf spark.driver.host<span class="token operator">=</span><span class="token number">11.8</span>.38.43 <span class="token punctuation">\</span>
+--conf spark.driver.port<span class="token operator">=</span><span class="token number">7078</span> <span class="token punctuation">\</span>
+/home/chengzw/spark-3.1.2-bin-hadoop3.2/examples/jars/spark-examples_2.12-3.1.2.jar
+
+</code></pre></div><p>使用 Client 模式提交作业在终端就可以直接看到输出结果了。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211005120049.png" alt=""></p> <h6 id="spark-shell"><a href="#spark-shell" class="header-anchor">#</a> Spark-Shell</h6> <p>spark-shell 只支持 Client 方式，使用以下命令连接 Kubernetes API Server 并打开 spark-shell 交互式界面。</p> <div class="language-sh extra-class"><pre class="language-sh"><code> bin/spark-shell <span class="token punctuation">\</span>
+--master  k8s://https://11.16.0.153:6443 <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.driver.serviceAccountName<span class="token operator">=</span>my-spark-spark <span class="token punctuation">\</span>
+--deploy-mode client <span class="token punctuation">\</span>
+--name spark-shell <span class="token punctuation">\</span>
+--conf spark.kubernetes.namespace<span class="token operator">=</span>spark-job <span class="token punctuation">\</span>
+--conf spark.executor.instances<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image.pullPolicy<span class="token operator">=</span>Always <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image<span class="token operator">=</span>registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1 <span class="token punctuation">\</span>
+--conf spark.driver.host<span class="token operator">=</span><span class="token number">11.8</span>.38.43 <span class="token punctuation">\</span>
+--conf spark.driver.port<span class="token operator">=</span><span class="token number">7078</span>
+
+</code></pre></div><p>在 spark-shell 交互式界面执行一个简单的计算，取出 0~99 之间的值。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token number">21</span>/10/05 <span class="token number">10</span>:44:28 WARN NativeCodeLoader: Unable to load native-hadoop library <span class="token keyword">for</span> your platform<span class="token punctuation">..</span>. using builtin-java classes where applicable
+Using Spark<span class="token string">'s default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to &quot;WARN&quot;.
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://11.8.38.43:4040
+Spark context available as '</span>sc<span class="token string">' (master = k8s://https://11.16.0.153:6443, app id = spark-application-1633401878962).
+Spark session available as '</span>spark<span class="token string">'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '</span>_/
+   /___/ .__/<span class="token punctuation">\</span>_,_/_/ /_/<span class="token punctuation">\</span>_<span class="token punctuation">\</span>   version <span class="token number">3.1</span>.2
+      /_/
+         
+Using Scala version <span class="token number">2.12</span>.10 <span class="token punctuation">(</span>Java HotSpot<span class="token punctuation">(</span>TM<span class="token punctuation">)</span> <span class="token number">64</span>-Bit Server VM, Java <span class="token number">1.8</span>.0_101<span class="token punctuation">)</span>
+Type <span class="token keyword">in</span> expressions to have them evaluated.
+Type :help <span class="token keyword">for</span> <span class="token function">more</span> information.
+
+scala<span class="token operator">&gt;</span> val range <span class="token operator">=</span> spark.range<span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>
+range: org.apache.spark.sql.Dataset<span class="token punctuation">[</span>Long<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>id: bigint<span class="token punctuation">]</span>
+
+scala<span class="token operator">&gt;</span> range.collect<span class="token punctuation">(</span><span class="token punctuation">)</span>
+res1: Array<span class="token punctuation">[</span>Long<span class="token punctuation">]</span> <span class="token operator">=</span> Array<span class="token punctuation">(</span><span class="token number">0</span>, <span class="token number">1</span>, <span class="token number">2</span>, <span class="token number">3</span>, <span class="token number">4</span>, <span class="token number">5</span>, <span class="token number">6</span>, <span class="token number">7</span>, <span class="token number">8</span>, <span class="token number">9</span>, <span class="token number">10</span>, <span class="token number">11</span>, <span class="token number">12</span>, <span class="token number">13</span>, <span class="token number">14</span>, <span class="token number">15</span>, <span class="token number">16</span>, <span class="token number">17</span>, <span class="token number">18</span>, <span class="token number">19</span>, <span class="token number">20</span>, <span class="token number">21</span>, <span class="token number">22</span>, <span class="token number">23</span>, <span class="token number">24</span>, <span class="token number">25</span>, <span class="token number">26</span>, <span class="token number">27</span>, <span class="token number">28</span>, <span class="token number">29</span>, <span class="token number">30</span>, <span class="token number">31</span>, <span class="token number">32</span>, <span class="token number">33</span>, <span class="token number">34</span>, <span class="token number">35</span>, <span class="token number">36</span>, <span class="token number">37</span>, <span class="token number">38</span>, <span class="token number">39</span>, <span class="token number">40</span>, <span class="token number">41</span>, <span class="token number">42</span>, <span class="token number">43</span>, <span class="token number">44</span>, <span class="token number">45</span>, <span class="token number">46</span>, <span class="token number">47</span>, <span class="token number">48</span>, <span class="token number">49</span>, <span class="token number">50</span>, <span class="token number">51</span>, <span class="token number">52</span>, <span class="token number">53</span>, <span class="token number">54</span>, <span class="token number">55</span>, <span class="token number">56</span>, <span class="token number">57</span>, <span class="token number">58</span>, <span class="token number">59</span>, <span class="token number">60</span>, <span class="token number">61</span>, <span class="token number">62</span>, <span class="token number">63</span>, <span class="token number">64</span>, <span class="token number">65</span>, <span class="token number">66</span>, <span class="token number">67</span>, <span class="token number">68</span>, <span class="token number">69</span>, <span class="token number">70</span>, <span class="token number">71</span>, <span class="token number">72</span>, <span class="token number">73</span>, <span class="token number">74</span>, <span class="token number">75</span>, <span class="token number">76</span>, <span class="token number">77</span>, <span class="token number">78</span>, <span class="token number">79</span>, <span class="token number">80</span>, <span class="token number">81</span>, <span class="token number">82</span>, <span class="token number">83</span>, <span class="token number">84</span>, <span class="token number">85</span>, <span class="token number">86</span>, <span class="token number">87</span>, <span class="token number">88</span>, <span class="token number">89</span>, <span class="token number">90</span>, <span class="token number">91</span>, <span class="token number">92</span>, <span class="token number">93</span>, <span class="token number">94</span>, <span class="token number">95</span>, <span class="token number">96</span>, <span class="token number">97</span>, <span class="token number">98</span>, <span class="token number">99</span><span class="token punctuation">)</span>
+
+</code></pre></div><h5 id="spark-history-server-可选"><a href="#spark-history-server-可选" class="header-anchor">#</a> Spark History Server（可选）</h5> <h6 id="部署-spark-history-server"><a href="#部署-spark-history-server" class="header-anchor">#</a> 部署 Spark History Server</h6> <p>在运行 Spark Application 的时候，Spark 会提供一个 WebUI 列出应用程序的运行时信息，但是一旦该应用程序执行完毕后，将无法查看应用程序执行的历史记录。Spark History Server 就是为了处理这种情况而诞生的，我们可以将 Spark 作业的日志提交到一个统一的地方，例如 HDFS，然后 Spark History Server 就可以通过读取 HDFS 目录中的文件来重新渲染生成 WebUI 界面来展示应用程序执行的历史信息。</p> <p>使用以下资源文件部署一个 Spark History Server，并且通过 NodePort Service 的方式将服务暴露到集群外部，集群外部可以通过节点地址:NodePort 来访问 Spark History Server。前提是我们需要准备好 HDFS 集群，关于 HDFS 集群的安装可以参考 <a href="https://mp.weixin.qq.com/s/r2ezCyT0zA_p6PMhSju7nw" target="_blank" rel="noopener noreferrer">Hadoop 分布式集群安装<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>history<span class="token punctuation">-</span>server
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">run</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>history<span class="token punctuation">-</span>server
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token key atrule">template</span><span class="token punctuation">:</span>
+    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">run</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>history<span class="token punctuation">-</span>server
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">image</span><span class="token punctuation">:</span>  <span class="token string">&quot;registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1&quot;</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>history<span class="token punctuation">-</span>server
+          <span class="token key atrule">args</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;/opt/spark/bin/spark-class&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;org.apache.spark.deploy.history.HistoryServer&quot;</span><span class="token punctuation">]</span>
+          <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">18080</span>
+              <span class="token key atrule">name</span><span class="token punctuation">:</span> http
+          <span class="token key atrule">env</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> SPARK_HISTORY_OPTS
+            <span class="token key atrule">value</span><span class="token punctuation">:</span> <span class="token string">&quot;-Dspark.history.fs.logDirectory=hdfs://11.8.36.125:8020/spark-k8s&quot;</span>
+<span class="token punctuation">---</span>
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Service
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>history<span class="token punctuation">-</span>server
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> http
+    <span class="token key atrule">nodePort</span><span class="token punctuation">:</span> <span class="token number">30080</span>
+    <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">18080</span>
+    <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
+    <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">18080</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+     <span class="token key atrule">run</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>history<span class="token punctuation">-</span>server
+  <span class="token key atrule">type</span><span class="token punctuation">:</span> NodePort
+
+</code></pre></div><h6 id="spark-on-k8s-operator-使用-history-server"><a href="#spark-on-k8s-operator-使用-history-server" class="header-anchor">#</a> Spark On K8S Operator 使用 History Server</h6> <p>设置 <code>spark.eventLog.enabled</code> 参数值为 true 启用记录 Spark 日志，<code>spark.eventLog.dir</code> 指定输出日志的目录为 HDFS 目录。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;sparkoperator.k8s.io/v1beta2&quot;</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> SparkApplication
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>pi
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> spark<span class="token punctuation">-</span>job
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">type</span><span class="token punctuation">:</span> Scala
+  <span class="token key atrule">mode</span><span class="token punctuation">:</span> cluster
+  <span class="token key atrule">image</span><span class="token punctuation">:</span> <span class="token string">&quot;registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1&quot;</span>
+  <span class="token key atrule">imagePullPolicy</span><span class="token punctuation">:</span> Always
+  <span class="token key atrule">mainClass</span><span class="token punctuation">:</span> org.apache.spark.examples.SparkPi
+  <span class="token key atrule">mainApplicationFile</span><span class="token punctuation">:</span> <span class="token string">&quot;local:///opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar&quot;</span>
+  <span class="token key atrule">sparkVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;3.1.1&quot;</span>
+  <span class="token key atrule">sparkConf</span><span class="token punctuation">:</span>
+    <span class="token key atrule">&quot;spark.eventLog.enabled&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;true&quot;</span>
+    <span class="token key atrule">&quot;spark.eventLog.dir&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;hdfs://11.8.36.125:8020/spark-k8s&quot;</span>
+  <span class="token key atrule">restartPolicy</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> Never
+  <span class="token key atrule">driver</span><span class="token punctuation">:</span>
+    <span class="token key atrule">cores</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">coreLimit</span><span class="token punctuation">:</span> <span class="token string">&quot;1200m&quot;</span>
+    <span class="token key atrule">memory</span><span class="token punctuation">:</span> <span class="token string">&quot;512m&quot;</span>
+    <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">version</span><span class="token punctuation">:</span> 3.1.1
+    <span class="token key atrule">serviceAccount</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>spark<span class="token punctuation">-</span>spark
+  <span class="token key atrule">executor</span><span class="token punctuation">:</span>
+    <span class="token key atrule">cores</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">instances</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">memory</span><span class="token punctuation">:</span> <span class="token string">&quot;512m&quot;</span>
+    <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">version</span><span class="token punctuation">:</span> 3.1.1
+
+</code></pre></div><p>在集群外通过节点地址:30080 访问 Spark History Server，可以在应用程序执行完毕后看到详细的信息。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007002256.png" alt=""></p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007002316.png" alt=""></p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211007002028.png" alt=""></p> <h6 id="spark-on-k8s-使用-history-server"><a href="#spark-on-k8s-使用-history-server" class="header-anchor">#</a> Spark On K8S 使用 History Server</h6> <div class="language-sh extra-class"><pre class="language-sh"><code> bin/spark-submit <span class="token punctuation">\</span>
+--master  k8s://https://11.16.0.153:6443 <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.submission.caCertFile<span class="token operator">=</span>/Users/chengzhiwei/software/spark/spark-3.1.2-bin-hadoop3.2/certs/ca.crt <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.driver.serviceAccountName<span class="token operator">=</span>my-spark-spark <span class="token punctuation">\</span>
+--deploy-mode cluster <span class="token punctuation">\</span>
+--name spark-pi-submit <span class="token punctuation">\</span>
+--class org.apache.spark.examples.SparkPi <span class="token punctuation">\</span>
+--conf spark.kubernetes.namespace<span class="token operator">=</span>spark-job <span class="token punctuation">\</span>
+--conf spark.executor.instances<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image.pullPolicy<span class="token operator">=</span>Always <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image<span class="token operator">=</span>registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v3.1.1 <span class="token punctuation">\</span>
+--conf spark.eventLog.enabled<span class="token operator">=</span>true <span class="token punctuation">\</span>
+--conf spark.eventLog.dir<span class="token operator">=</span>hdfs://11.8.36.125:8020/spark-k8s <span class="token punctuation">\</span>
+ local:///opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar
+
+</code></pre></div><h2 id="构建镜像"><a href="#构建镜像" class="header-anchor">#</a> 构建镜像</h2> <p>上面的例子都是使用 Spark 官方自带的程序来提交作业，如果我们想要自定义一个程序可以使用 Spark 官网提供的脚本来构建镜像。</p> <h3 id="程序代码"><a href="#程序代码" class="header-anchor">#</a> 程序代码</h3> <p>该项目使用 Maven 来管理依赖。</p> <div class="language-xml extra-class"><pre class="language-xml"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.apache.spark<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>spark-core_2.11<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.1.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.scala-lang<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>scala-library<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.11.12<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>compile<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">&gt;</span></span>
+
+</code></pre></div><p>程序代码如下，使用 Java 编写了一个 Word Count 程序。</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">package</span> <span class="token namespace">com<span class="token punctuation">.</span>chengzw<span class="token punctuation">.</span>wordcount</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>log4j<span class="token punctuation">.</span></span><span class="token class-name">Level</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>log4j<span class="token punctuation">.</span></span><span class="token class-name">Logger</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span></span><span class="token class-name">SparkConf</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>api<span class="token punctuation">.</span>java<span class="token punctuation">.</span></span><span class="token class-name">JavaPairRDD</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>api<span class="token punctuation">.</span>java<span class="token punctuation">.</span></span><span class="token class-name">JavaRDD</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>api<span class="token punctuation">.</span>java<span class="token punctuation">.</span></span><span class="token class-name">JavaSparkContext</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>api<span class="token punctuation">.</span>java<span class="token punctuation">.</span>function<span class="token punctuation">.</span></span><span class="token class-name">FlatMapFunction</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>api<span class="token punctuation">.</span>java<span class="token punctuation">.</span>function<span class="token punctuation">.</span></span><span class="token class-name">Function2</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>api<span class="token punctuation">.</span>java<span class="token punctuation">.</span>function<span class="token punctuation">.</span></span><span class="token class-name">PairFunction</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">scala<span class="token punctuation">.</span></span><span class="token class-name">Tuple2</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Arrays</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Iterator</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">List</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @description WordCount 示例
+ * @author chengzw
+ * @since 2021/7/25 8:39 下午
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyJavaWordCount</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Logger</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token string">&quot;org&quot;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setLevel</span><span class="token punctuation">(</span><span class="token class-name">Level</span><span class="token punctuation">.</span>OFF<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">setProperty</span><span class="token punctuation">(</span><span class="token string">&quot;spark.ui.showConsoleProgress&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;false&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建配置对象</span>
+        <span class="token comment">//本地运行</span>
+        <span class="token comment">//SparkConf conf = new SparkConf().setAppName(&quot;MyJavaWordCount&quot;).setMaster(&quot;local&quot;);</span>
+        <span class="token comment">//在Spark上运行</span>
+        <span class="token class-name">SparkConf</span> conf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SparkConf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAppName</span><span class="token punctuation">(</span><span class="token string">&quot;MyJavaWordCount&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//创建SparkContext对象</span>
+        <span class="token class-name">JavaSparkContext</span> sc <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">JavaSparkContext</span><span class="token punctuation">(</span>conf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//读取hdfs数据</span>
+        <span class="token comment">//在本地运行</span>
+        <span class="token comment">//JavaRDD&lt;String&gt; rdd1= sc.textFile(&quot;/tmp/data.txt&quot;);</span>
+        <span class="token comment">//在Spark上运行</span>
+        <span class="token class-name">JavaRDD</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> rdd1<span class="token operator">=</span> sc<span class="token punctuation">.</span><span class="token function">textFile</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//分词</span>
+        <span class="token class-name">JavaRDD</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> rdd2 <span class="token operator">=</span> rdd1<span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FlatMapFunction</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token class-name">Iterator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">call</span><span class="token punctuation">(</span><span class="token class-name">String</span> input<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">&quot; &quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//单词计数 word,1</span>
+        <span class="token class-name">JavaPairRDD</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> rdd3 <span class="token operator">=</span> rdd2<span class="token punctuation">.</span><span class="token function">mapToPair</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PairFunction</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> <span class="token function">call</span><span class="token punctuation">(</span><span class="token class-name">String</span> word<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>word<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//相同Key的值累加</span>
+        <span class="token class-name">JavaPairRDD</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> rdd4 <span class="token operator">=</span> rdd3<span class="token punctuation">.</span><span class="token function">reduceByKey</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Function2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token class-name">Integer</span> <span class="token function">call</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> a<span class="token punctuation">,</span> <span class="token class-name">Integer</span> b<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//触发计算</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> result <span class="token operator">=</span> rdd4<span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//打印</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> r <span class="token operator">:</span> result<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>_1 <span class="token operator">+</span> <span class="token string">&quot;\t&quot;</span> <span class="token operator">+</span> r<span class="token punctuation">.</span>_2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">//释放资源</span>
+        sc<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><h3 id="打包"><a href="#打包" class="header-anchor">#</a> 打包</h3> <p>点击 mvn package 将程序打成 jar 包。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210821181915.png" alt=""></p> <h3 id="构建并上传镜像"><a href="#构建并上传镜像" class="header-anchor">#</a> 构建并上传镜像</h3> <p>将 jar 包放到 Spark 安装包的 examples/jars 目录中，进入 Spark 目录然后执行以下命令构建镜像。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>bin/docker-image-tool.sh -r registry.cn-hangzhou.aliyuncs.com/public-namespace -t my-spark:1.0.0 build
+
+</code></pre></div><p>查看构建好的镜像。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ docker images <span class="token operator">|</span> <span class="token function">grep</span> spark
+registry.cn-hangzhou.aliyuncs.com/public-namespace/spark                v1.0.0       372341ae930d   <span class="token number">12</span> minutes ago   529MB
+
+</code></pre></div><p>上传镜像。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>./docker-image-tool.sh -r registry.cn-hangzhou.aliyuncs.com/public-namespace -t v1.0.0 push
+
+</code></pre></div><p>使用自己构建的镜像执行 Word Count 程序。</p> <div class="language-sh extra-class"><pre class="language-sh"><code> bin/spark-submit <span class="token punctuation">\</span>
+--master  k8s://https://11.16.0.153:6443 <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.submission.caCertFile<span class="token operator">=</span>/Users/chengzhiwei/software/spark/spark-3.1.2-bin-hadoop3.2/certs/ca.crt <span class="token punctuation">\</span>
+--conf spark.kubernetes.authenticate.driver.serviceAccountName<span class="token operator">=</span>my-spark-spark <span class="token punctuation">\</span>
+--deploy-mode cluster <span class="token punctuation">\</span>
+--name spark-pi-submit <span class="token punctuation">\</span>
+--class com.chengzw.wordcount.MyJavaWordCount <span class="token punctuation">\</span>
+--conf spark.kubernetes.namespace<span class="token operator">=</span>spark-job <span class="token punctuation">\</span>
+--conf spark.executor.instances<span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image.pullPolicy<span class="token operator">=</span>Always <span class="token punctuation">\</span>
+--conf spark.kubernetes.container.image<span class="token operator">=</span>registry.cn-hangzhou.aliyuncs.com/public-namespace/spark:v1.0.0 <span class="token punctuation">\</span>
+ local:///opt/spark/examples/jars/spark-lab-1.0-SNAPSHOT.jar /etc/security/limits.conf
+
+</code></pre></div><p>查看执行结果：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kubectl logs -n spark-job spark-pi-submit-37945f7c4f24e729-driver
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+rss	<span class="token number">2</span>
+space	<span class="token number">2</span>
+priority	<span class="token number">4</span>
+<span class="token number">4</span>	<span class="token number">1</span>
+this	<span class="token number">1</span>
+<span class="token string">&quot;soft&quot;</span>	<span class="token number">1</span>
+max	<span class="token number">14</span>
+cpu	<span class="token number">1</span>
+memlock	<span class="token number">1</span>
+apply	<span class="token number">1</span>
+<span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+
+</code></pre></div><h2 id="参考资料"><a href="#参考资料" class="header-anchor">#</a> 参考资料</h2> <ul><li>Spark 大数据分析实战</li> <li><a href="https://spark.apache.org/docs/0.9.0/spark-standalone.html#standby-masters-with-zookeeper" target="_blank" rel="noopener noreferrer">Spark Standalone Mode<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.cnblogs.com/byrhuangqiang/p/3937654.html" target="_blank" rel="noopener noreferrer">Spark:Master High Availability（HA）高可用配置的2种实现<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://segmentfault.com/a/1190000037503030" target="_blank" rel="noopener noreferrer">【k8s系列1】spark on k8s 与 spark on k8s operator的对比<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="http://spark.apache.org/docs/3.0.0/running-on-kubernetes.html" target="_blank" rel="noopener noreferrer">Running Spark on Kubernetes<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md" target="_blank" rel="noopener noreferrer">spark-on-k8s-operator User Guide<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md" target="_blank" rel="noopener noreferrer">spark-on-k8s-operator Quick Start Guide<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/design.md#architecture" target="_blank" rel="noopener noreferrer">Kubernetes Operator for Apache Spark Design<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.datamechanics.co/blog-post/setting-up-managing-monitoring-spark-on-kubernetes" target="_blank" rel="noopener noreferrer">Setting up, Managing &amp; Monitoring Spark on Kubernetes<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://stackoverflow.com/questions/51798927/spark-ui-history-server-on-kubernetes" target="_blank" rel="noopener noreferrer">Spark UI History server on Kubernetes?<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.lightbend.com/blog/how-to-manage-monitor-spark-on-kubernetes-introduction-spark-submit-kubernetes-operator" target="_blank" rel="noopener noreferrer">How To Manage And Monitor Apache Spark On Kubernetes - Part 1: Spark-Submit VS Kubernetes Operator<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.lightbend.com/blog/how-to-manage-monitor-spark-on-kubernetes-deep-dive-kubernetes-operator-for-spark" target="_blank" rel="noopener noreferrer">How To Manage And Monitor Apache Spark On Kubernetes - Part 2: Deep Dive On Kubernetes Operator For Spark<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.cnblogs.com/moonlight-lin/p/13296909.html" target="_blank" rel="noopener noreferrer">Spark on K8S （Kubernetes Native）<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="http://blog.brainlounge.de/memoryleaks/getting-started-with-spark-on-kubernetes/" target="_blank" rel="noopener noreferrer">Getting Started with Spark on Kubernetes<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://jimmysong.io/kubernetes-handbook/usecases/running-spark-with-kubernetes-native-scheduler.html" target="_blank" rel="noopener noreferrer">运行支持kubernetes原生调度的Spark程序<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://zhuanlan.zhihu.com/p/99398378" target="_blank" rel="noopener noreferrer">深入浅出理解 Spark 部署与工作原理<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://baixin.ink/2018/04/28/spark-mode/" target="_blank" rel="noopener noreferrer">Spark client mode 和 cluster mode 的区别<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/21.866e06d2.js" defer></script>
+  </body>
+</html>

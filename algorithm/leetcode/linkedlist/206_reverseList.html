@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>206.反转链表 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/12.ab75d995.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link router-link-active">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link router-link-active">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>206.反转链表</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#题目描述" class="sidebar-link">题目描述</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#解题思路" class="sidebar-link">解题思路</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#解法一-非递归" class="sidebar-link">解法一：非递归</a></li><li class="sidebar-sub-header"><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#解法二-递归" class="sidebar-link">解法二：递归</a></li></ul></li><li><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#代码" class="sidebar-link">代码</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#解法一-非递归-2" class="sidebar-link">解法一：非递归</a></li><li class="sidebar-sub-header"><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#解法二-递归-2" class="sidebar-link">解法二：递归</a></li></ul></li><li><a href="/algorithm/leetcode/linkedlist/206_reverseList.html#参考资料" class="sidebar-link">参考资料</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="_206-反转链表"><a href="#_206-反转链表" class="header-anchor">#</a> 206.反转链表</h1> <h2 id="题目描述"><a href="#题目描述" class="header-anchor">#</a> 题目描述</h2> <p>给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+示例 1</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121141535.png" alt=""></p> <div class="language- extra-class"><pre class="language-text"><code>输入：head = [1,2,3,4,5]
+输出：[5,4,3,2,1]
+</code></pre></div><p>示例 2：</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121141557.png" alt=""></p> <div class="language- extra-class"><pre class="language-text"><code>输入：head = [1,2]
+输出：[2,1]
+</code></pre></div><h2 id="解题思路"><a href="#解题思路" class="header-anchor">#</a> 解题思路</h2> <h3 id="解法一-非递归"><a href="#解法一-非递归" class="header-anchor">#</a> 解法一：非递归</h3> <p>使用一个新的链表来记录反转后的结果，虽然是新链表，但是并不会增加空间复杂度，因为我们是改变原链表的指针。</p> <ul><li>1.依次往后遍历原链表，每次用一个临时变量来保存 p.next。</li> <li>2.改变原链表的指针，指向新节点。</li> <li>3.用临时变量恢复原链表的下一个节点。</li></ul> <h3 id="解法二-递归"><a href="#解法二-递归" class="header-anchor">#</a> 解法二：递归</h3> <ul><li>1.通过递归函数，一直递归到链表的最后一个结点为止，此时，<strong>该结点就是反转成功后的头结点</strong>，是最终的返回结果。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121141109.png" alt=""></p> <ul><li>2.在递归函数中，让当前节点的下一个节点的 next 指针指向当前节点。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121141205.png" alt=""></p> <ul><li>3.在递归函数中，让当前节点的 next 指针指向 null。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121141221.png" alt=""></p> <ul><li>4.通过二三步的操作，已经让递归函数中的链表实现了局部反转，将结果（反转后的头结点）返回给上一层递归函数。</li></ul> <h2 id="代码"><a href="#代码" class="header-anchor">#</a> 代码</h2> <h3 id="解法一-非递归-2"><a href="#解法一-非递归-2" class="header-anchor">#</a> 解法一：非递归</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">// 反转链表(LeetCode 206): https://leetcode-cn.com/problems/reverse-linked-list/</span>
+<span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token class-name">ListNode</span> <span class="token function">reverseList</span><span class="token punctuation">(</span><span class="token class-name">ListNode</span> head<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token class-name">ListNode</span> p <span class="token operator">=</span> head<span class="token punctuation">;</span>
+        <span class="token comment">//虚拟头节点</span>
+        <span class="token class-name">ListNode</span> newNode <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">while</span><span class="token punctuation">(</span>p <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 临时节点记录原链表的下一个节点</span>
+            <span class="token class-name">ListNode</span> tmp <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token comment">// 改变节点指针，指向新的节点</span>
+            p<span class="token punctuation">.</span>next <span class="token operator">=</span> newNode<span class="token punctuation">;</span>
+            <span class="token comment">// 新节点后移</span>
+            newNode <span class="token operator">=</span> p<span class="token punctuation">;</span>
+            <span class="token comment">// 通过临时节点恢复</span>
+            p <span class="token operator">=</span> tmp<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> newNode<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="解法二-递归-2"><a href="#解法二-递归-2" class="header-anchor">#</a> 解法二：递归</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token class-name">ListNode</span> <span class="token function">reverseList</span><span class="token punctuation">(</span><span class="token class-name">ListNode</span> head<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment">// 寻找递归终止条件</span>
+        <span class="token comment">// 1、head 指向的结点为 null </span>
+        <span class="token comment">// 2、head 指向的结点的下一个结点为 null </span>
+        <span class="token comment">// 在这两种情况下，反转之后的结果还是它自己本身</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span> head <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> head<span class="token punctuation">.</span>next <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>  <span class="token keyword">return</span> head<span class="token punctuation">;</span>
+
+        <span class="token comment">// 不断的通过递归调用，直到无法递归下去，递归的最小粒度是在最后一个节点</span>
+        <span class="token comment">// 因为到最后一个节点的时候，由于当前节点 head 的 next 节点是空，所以会直接返回 head</span>
+        <span class="token class-name">ListNode</span> cur <span class="token operator">=</span> <span class="token function">reverseList</span><span class="token punctuation">(</span>head<span class="token punctuation">.</span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 比如原链表为 1 --&gt; 2 --&gt; 3 --&gt; 4 --&gt; 5</span>
+        <span class="token comment">// 第一次执行下面代码的时候，head 为 4，那么 head.next = 5</span>
+        <span class="token comment">// 那么 head.next.next 就是 5.next ，意思就是去设置 5 的下一个节点</span>
+        <span class="token comment">// 等号右侧为 head，意思就是设置 5 的下一个节点是 4</span>
+
+        <span class="token comment">// 这里出现了两个 next</span>
+        <span class="token comment">// 第一个 next 是「获取」 head 的下一节点</span>
+        <span class="token comment">// 第二个 next 是「设置」 当前节点的下一节点为等号右侧的值</span>
+        head<span class="token punctuation">.</span>next<span class="token punctuation">.</span>next <span class="token operator">=</span> head<span class="token punctuation">;</span>
+
+
+        <span class="token comment">// head 原来的下一节点指向自己，所以 head 自己本身就不能再指向原来的下一节点了</span>
+        <span class="token comment">// 否则会发生无限循环</span>
+        head<span class="token punctuation">.</span>next <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 我们把每次反转后的结果传递给上一层</span>
+        <span class="token keyword">return</span> cur<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="参考资料"><a href="#参考资料" class="header-anchor">#</a> 参考资料</h2> <ul><li><a href="https://www.algomooc.com/654.html" target="_blank" rel="noopener noreferrer">吴师兄算法训练营<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/12.ab75d995.js" defer></script>
+  </body>
+</html>

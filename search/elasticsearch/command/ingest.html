@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Elasticsearch Ingest Pipline 指令 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/37.fc565b80.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Elasticsearch Ingest Pipline 指令</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/search/elasticsearch/command/ingest.html#网络配置抓取处理" class="sidebar-link">网络配置抓取处理</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/ingest.html#索引自动添加时间戳" class="sidebar-link">索引自动添加时间戳</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/ingest.html#提取字段" class="sidebar-link">提取字段</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/ingest.html#处理-mysql-审计日志" class="sidebar-link">处理 MySQL 审计日志</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/ingest.html#处理网络-syslog-日志" class="sidebar-link">处理网络 Syslog 日志</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="elasticsearch-ingest-pipline-指令"><a href="#elasticsearch-ingest-pipline-指令" class="header-anchor">#</a> Elasticsearch Ingest Pipline 指令</h1> <h2 id="网络配置抓取处理"><a href="#网络配置抓取处理" class="header-anchor">#</a> 网络配置抓取处理</h2> <p>1.将 device_type 属性内容改成小写
+2.去掉属性 command 中的 .txt
+3.将属性 device_type 中为 cisco_switch 的内容改为 catalyst</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT _ingest/pipeline/netconfig<span class="token punctuation">-</span>pipline
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;processors&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;lowercase&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;device_type&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;gsub&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;command&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;pattern&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;\\.txt&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;replacement&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;lang&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;painless&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> &quot;&quot;&quot;
+        if(ctx.device_type.equals(&quot;cisco_switch&quot;))<span class="token punctuation">{</span>
+          ctx.device_type= &quot;catalyst&quot;
+        <span class="token punctuation">}</span>
+        &quot;&quot;&quot;
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="索引自动添加时间戳"><a href="#索引自动添加时间戳" class="header-anchor">#</a> 索引自动添加时间戳</h2> <div class="language-json extra-class"><pre class="language-json"><code>PUT _ingest/pipeline/my_timestamp_pipeline
+<span class="token punctuation">{</span>
+  <span class="token property">&quot;description&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Adds a field to a document with the time of ingestion&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;processors&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;set&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;field&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ingest_timestamp&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;value&quot;</span><span class="token operator">:</span> <span class="token string">&quot;{{_ingest.timestamp}}&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+
+PUT my-index-timestamp
+<span class="token punctuation">{</span>
+  <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;index.default_pipeline&quot;</span><span class="token operator">:</span> <span class="token string">&quot;my_timestamp_pipeline&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> 
+  <span class="token property">&quot;mappings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;properties&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;text&quot;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;ingest_timestamp&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;date&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;format&quot;</span><span class="token operator">:</span> <span class="token string">&quot;yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSX&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+
+POST my-index-timestamp/_doc
+<span class="token punctuation">{</span>
+  <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;it is cool!&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="提取字段"><a href="#提取字段" class="header-anchor">#</a> 提取字段</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST _ingest/pipeline/_simulate
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;pipeline&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;processors&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        //正则表达式匹配出 DataSet<span class="token punctuation">:</span><span class="token punctuation">{</span><span class="token punctuation">}</span> 中的内容
+        <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;.*DataSet:{%{NOTSPACE:DataSet}.*}&gt;&quot;</span>
+          <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        //如果没有匹配到的文档就丢弃
+          <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;drop&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      //根据 key1<span class="token punctuation">:</span>value1<span class="token punctuation">,</span>key2<span class="token punctuation">:</span>value2 来分割字段
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;kv&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;DataSet&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;field_split&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;,&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;value_split&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;:&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;docs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;_source&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;message&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;[ThinkiveWeb] 20210830 14:50:05,358 [INFO] (BaseFunction) [d700ea39b5b84bcc] 接口【2000239】，花费时间：829，输出结果：0|null|&lt;DataSet:{phoneProvCity:北京,biztyp:A001,certseq:110115200808256028,phoneOperator:移动,ptyacct:tencentcloud01,respinfo:认证不一致(不通过),phoneno:13717708251,ptycd:tencentcloud01,resultdata:1,name:荣怡欣,sysseqnb:19103520210830121450040002,respcd:10001,status:00}&gt;&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;docs&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;doc&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_index&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_id&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_source&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;phoneProvCity&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;北京&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;biztyp&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;A001&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;certseq&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;110115200808256028&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;DataSet&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;phoneProvCity:北京,biztyp:A001,certseq:110115200808256028,phoneOperator:移动,ptyacct:tencentcloud01,respinfo:认证不一致(不通过),phoneno:13717708251,ptycd:tencentcloud01,resultdata:1,name:荣怡欣,sysseqnb:19103520210830121450040002,respcd:10001,status:00&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;phoneOperator&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;移动&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;ptyacct&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;tencentcloud01&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;respinfo&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;认证不一致(不通过)&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;message&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;[ThinkiveWeb] 20210830 14:50:05,358 [INFO] (BaseFunction) [d700ea39b5b84bcc] 接口【2000239】，花费时间：829，输出结果：0|null|&lt;DataSet:{phoneProvCity:北京,biztyp:A001,certseq:110115200808256028,phoneOperator:移动,ptyacct:tencentcloud01,respinfo:认证不一致(不通过),phoneno:13717708251,ptycd:tencentcloud01,resultdata:1,name:荣怡欣,sysseqnb:19103520210830121450040002,respcd:10001,status:00}&gt;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;phoneno&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;13717708251&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;ptycd&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;tencentcloud01&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;resultdata&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;name&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;荣怡欣&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;sysseqnb&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;19103520210830121450040002&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;respcd&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;10001&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;status&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;00&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_ingest&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;timestamp&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;2021-08-30T07:55:43.771087Z&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><h2 id="处理-mysql-审计日志"><a href="#处理-mysql-审计日志" class="header-anchor">#</a> 处理 MySQL 审计日志</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST _ingest/pipeline/_simulate
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;pipeline&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;processors&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+      //取最后一个数字
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;.*%{NUMBER:retcode}&quot;</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      //将 message 按照逗号分隔，生成临时字段 tmp_message
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;split&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;target_field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;tmp_message&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;separator&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;,&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      //在临时字段数组中获取值
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.servertime = ctx.tmp_message[0]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.hostname = ctx.tmp_message[1]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.dbuser = ctx.tmp_message[2]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.dbhost = ctx.tmp_message[3]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.connectionid = ctx.tmp_message[4]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.queryid = ctx.tmp_message[5]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.operation = ctx.tmp_message[6]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.database = ctx.tmp_message[7]&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      //修改 servertime 字段日期格式 20210927 13<span class="token punctuation">:</span>09<span class="token punctuation">:</span>18 <span class="token punctuation">-</span><span class="token punctuation">&gt;</span> 2021<span class="token punctuation">-</span>09<span class="token punctuation">-</span>27T13<span class="token punctuation">:</span><span class="token datetime number">09:18</span>
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> &quot;&quot;&quot;
+            String<span class="token punctuation">[</span><span class="token punctuation">]</span> str = ctx.servertime.splitOnToken(&quot; &quot;);
+            String year = str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>.substring(0<span class="token punctuation">,</span>4);
+            String month = str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>.substring(4<span class="token punctuation">,</span>6);
+            String day = str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>.substring(6);
+            ctx.servertime = year + &quot;<span class="token punctuation">-</span>&quot; + month + &quot;<span class="token punctuation">-</span>&quot; + day + &quot;T&quot; + str<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+          &quot;&quot;&quot;
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      //删除临时字段
+      <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;remove&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;tmp_message&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;docs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;_source&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;message&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;20210927 13:09:18,acp_sas_node03,universe_op,127.0.0.1,7571784,0,DISCONNECT,,,0&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;docs&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;doc&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_index&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_id&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_source&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;servertime&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;2021-09-27T13:09:18&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;dbuser&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;universe_op&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;message&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;20210927 13:09:18,acp_sas_node03,universe_op,127.0.0.1,7571784,0,DISCONNECT,,,0&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;queryid&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;hostname&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;acp_sas_node03&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;database&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;connectionid&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;7571784&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;dbhost&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;127.0.0.1&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;operation&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;DISCONNECT&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;retcode&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;0&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;_ingest&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;timestamp&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;2021-09-27T09:36:53.411692257Z&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="处理网络-syslog-日志"><a href="#处理网络-syslog-日志" class="header-anchor">#</a> 处理网络 Syslog 日志</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT _ingest/pipeline/network<span class="token punctuation">-</span>pipeline
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;processors&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    // 根据 ip 地址为网络设备添加 device_name(设备名)<span class="token punctuation">,</span> device_type(设备类型)<span class="token punctuation">,</span> device_model(设备型号)<span class="token punctuation">,</span> device_software(软件版本)<span class="token punctuation">,</span> environment(运行环境) 字段
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;enrich&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;policy_name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;network-enrich-policy&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;host&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;target_field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;enrich-data&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;ignore_failure&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // 移除 logstash grok 匹配异常时产生的字段
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;remove&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;tags&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;ignore_failure&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // 删除 F5 健康检查产生的文档
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;drop&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.message == 'default send string'&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // 处理 enrich 产生的前缀
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;device_model&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;{{enrich-data.device_model}}&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;device_name&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;{{enrich-data.device_name}}&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;device_software&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;{{enrich-data.device_software}}&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;device_type&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;{{enrich-data.device_type}}&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;environment&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;{{enrich-data.environment}}&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;remove&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;enrich-data&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // F5 提取日志等级
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;%{MONTH} %{NUMBER} %{TIME} %{NOTSPACE} %{WORD:level}&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'f5'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // topsec 提取日志等级
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;pri=%{NUMBER:level}&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'topsec'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // huawei 提取日志等级
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;/%{NUMBER:level}/&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type.contains('huawei')&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // nexus 提取日志等级
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;%{DEVICE}|%{FEX}&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;pattern_definitions&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;FEX&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;%%{WORD}-%{WORD}-%{HOUR:level}-%{WORD}&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;DEVICE&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;%%{WORD}-%{HOUR:level}-%{WORD}&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'nexus'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // catalyst 提取日志等级
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;%{MONTH} %{NUMBER} %{TIME}: %%{WORD}-%{HOUR:level}&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'catalyst'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // fortigate 提取日志等级
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;level=\&quot;%{WORD:level}\&quot;&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'fortigate'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // f5 日志告警等级统一处理
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> &quot;&quot;&quot;
+           if(ctx.level == 'emerg')<span class="token punctuation">{</span>
+             ctx.level = 'emergency'
+           <span class="token punctuation">}</span>
+           if(ctx.level == 'crit')<span class="token punctuation">{</span>
+             ctx.level = 'critical'
+           <span class="token punctuation">}</span>
+           if(ctx.level == 'err')<span class="token punctuation">{</span>
+             ctx.level = 'error'
+           <span class="token punctuation">}</span>
+           if(ctx.level == 'info')<span class="token punctuation">{</span>
+             ctx.level = 'information'
+           <span class="token punctuation">}</span>
+        &quot;&quot;&quot;<span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'f5'&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // huawei<span class="token punctuation">,</span> nexus<span class="token punctuation">,</span> catalyst<span class="token punctuation">,</span> topsec 日志等级是 0~7<span class="token punctuation">,</span> 统一处理 debug ~ emergency
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type.contains('huawei') || ctx.device_type == 'nexus' || ctx.device_type == 'catalyst'  || ctx.device_type == 'topsec'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> &quot;&quot;&quot;
+          if(ctx.level == '0')<span class="token punctuation">{</span>
+            ctx.level = 'emergency'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '1')<span class="token punctuation">{</span>
+            ctx.level = 'alert'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '2')<span class="token punctuation">{</span>
+            ctx.level = 'critical'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '3')<span class="token punctuation">{</span>
+            ctx.level = 'error'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '4')<span class="token punctuation">{</span>
+            ctx.level = 'warning'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '5')<span class="token punctuation">{</span>
+            ctx.level = 'notice'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '6')<span class="token punctuation">{</span>
+            ctx.level = 'information'
+          <span class="token punctuation">}</span>
+          if(ctx.level == '7')<span class="token punctuation">{</span>
+            ctx.level = 'debug'
+          <span class="token punctuation">}</span>
+        &quot;&quot;&quot;
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // npm 日志处理
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;grok&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> // 去掉开头的 &lt;29<span class="token punctuation">&gt;</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;patterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;&gt;%{GREEDYDATA:message}&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'npm'&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;on_failure&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;set&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;exception&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;grok&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;csv&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;message&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;target_fields&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;alert_time&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;view_type&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;area_disp_name&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;group_disp_name&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;source&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;type&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;event&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;value&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;thresholds&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;start_time&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;duration&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;status&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;level&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;separator&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;|&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'npm'&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;lowercase&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;level&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'npm'&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    // npm 告警状态处理，开启和关闭
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> &quot;&quot;&quot;
+             if(ctx.status == '已恢复')<span class="token punctuation">{</span>
+               ctx.status = 'close'
+             <span class="token punctuation">}</span>else <span class="token punctuation">{</span>
+               ctx.status = 'open'
+             <span class="token punctuation">}</span>
+              String text = ctx.source + ctx.type + ctx.event + ctx.start_time; 
+              ctx.sn =  text.encodeBase64().substring(0<span class="token punctuation">,</span>11); // 通过组合字段 base64 加密后生成唯一的 sn<span class="token punctuation">,</span> 用于告警中心判断关闭告警
+          &quot;&quot;&quot;<span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;if&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.device_type == 'npm'&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/37.fc565b80.js" defer></script>
+  </body>
+</html>

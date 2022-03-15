@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>160.相交链表 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/11.2df26a38.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link router-link-active">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link router-link-active">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>160.相交链表</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/algorithm/leetcode/linkedlist/160_getIntersectionNode.html#题目描述" class="sidebar-link">题目描述</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/algorithm/leetcode/linkedlist/160_getIntersectionNode.html#解题思路" class="sidebar-link">解题思路</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/algorithm/leetcode/linkedlist/160_getIntersectionNode.html#代码" class="sidebar-link">代码</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/algorithm/leetcode/linkedlist/160_getIntersectionNode.html#参考资料" class="sidebar-link">参考资料</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="_160-相交链表"><a href="#_160-相交链表" class="header-anchor">#</a> 160.相交链表</h1> <h2 id="题目描述"><a href="#题目描述" class="header-anchor">#</a> 题目描述</h2> <p>给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null。
+图示两个链表在节点 c1 开始相交：</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144101.png" alt=""></p> <p>题目数据保证整个链式结构中不存在环。注意，函数返回结果后，链表必须 保持其原始结构。</p> <p>示例 1：</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144151.png" alt=""></p> <div class="language- extra-class"><pre class="language-text"><code>输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+输出：Intersected at '8'
+解释：相交节点的值为 8 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,6,1,8,4,5]。
+在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。
+</code></pre></div><p>示例 2：</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144225.png" alt=""></p> <div class="language- extra-class"><pre class="language-text"><code>输入：intersectVal = 2, listA = [1,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+输出：Intersected at '2'
+解释：相交节点的值为 2 （注意，如果两个链表相交则不能为 0）。
+从各自的表头开始算起，链表 A 为 [1,9,1,2,4]，链表 B 为 [3,2,4]。
+在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。
+</code></pre></div><h2 id="解题思路"><a href="#解题思路" class="header-anchor">#</a> 解题思路</h2> <p>让指针 pointA 和 pointB 分别指向链表 A 和链表 B 的头结点，之后两个指针分别以步幅为 1 的速度向链表的尾部遍历。</p> <ul><li>当指针 pointA 遍历到链表 A 的尾节点时，此时指针 pointA 走了 a 个节点，将指针 pointA 指向链表 B 的头部，继续向后遍历，直至走到 c1，此时指针 pointA 总共走了 a + ( b - c ) 步。</li> <li>当指针 pointB 遍历到链表 B 的尾节点时，此时指针 pointB 走了 b 个节点，将指针 pointB 指向链表 A 的头部，继续向后遍历，直至走到 c1，此时指针 pointB 总共走了 b + ( a - c ) 步。</li> <li>根据数学知识，<strong>a + ( b - c ) = b + ( a - c )</strong> ，如果 c &gt; 0，表明两链表有公共尾部， c1 存在，两两链表同时到达 c1；如果 c = 0，表明两链表没有公共尾部，指针 pointA 和 pointB 都指向 NULL。</li></ul> <p>刚开始 pointA 和 pointB 分别指向链表 A 和链表 B 的头结点。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144524.png" alt=""></p> <p>当 pointA 或者 pointB 遍历到各自链表的尾节点时，分别指向对方节点的头部。</p> <ul><li>当 pointA 遍历到链表 A 的尾节点时。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144802.png" alt=""></p> <ul><li>将 pointA 指向链表 B。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144919.png" alt=""></p> <ul><li>当 pointB 也遍历到链表 B 的尾节点时。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121145051.png" alt=""></p> <ul><li>将 pointB 指向链表 A。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121144934.png" alt=""></p> <ul><li>此时 pointA 和 pointB 距离相交点的距离是一样的，一起走将最终相交。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211121145155.png" alt=""></p> <p>问题：是否有无限循环的问题？
+<strong>不会的，无论 A、B 两个链表是否有相交点，最终都会指向一个相同的节点，要么是它们的公共尾部，要么是 NULL。</strong></p> <h2 id="代码"><a href="#代码" class="header-anchor">#</a> 代码</h2> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">// 相交链表(LeetCode 160): https://leetcode-cn.com/problems/intersection-of-two-linked-lists/</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token class-name">ListNode</span> <span class="token function">getIntersectionNode</span><span class="token punctuation">(</span><span class="token class-name">ListNode</span> headA<span class="token punctuation">,</span> <span class="token class-name">ListNode</span> headB<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 边界判断</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>headA <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> headB <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 设置一个指针 pointA，指向链表 A 的头节点</span>
+        <span class="token class-name">ListNode</span> pointA <span class="token operator">=</span> headA<span class="token punctuation">;</span>
+
+        <span class="token comment">// 设置一个指针 pointB，指向链表 B 的头节点</span>
+        <span class="token class-name">ListNode</span> pointB <span class="token operator">=</span> headB<span class="token punctuation">;</span>
+
+        <span class="token comment">// 指针 pointA 和 指针 pointB 不断向后遍历，直到找到相交点</span>
+        <span class="token comment">// 不用担心会跳不出这个循环，实际上在链表 headA 长度和链表 headB 长度的之和减一</span>
+        <span class="token comment">// pointA 和 pointB 都会同时指向 null</span>
+        <span class="token comment">// 比如 headA 的长度是 7，headB 的长度是 11，这两个链表不相交</span>
+        <span class="token comment">// 那么 pointA 移动了 7 + 11 - 1 次之后，会指向 null</span>
+        <span class="token comment">// pointB 移动了 7 + 11 - 1  次之后，也指向 null</span>
+        <span class="token comment">// 这个时候就跳出了循环</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>pointA <span class="token operator">!=</span> pointB<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// 指针 pointA 一开始在链表 A 上遍历，当走到链表 A 的尾部即 null 时，跳转到链表 B 上 </span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span> pointA <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token comment">// 指针 pointA 跳转到链表 B 上  </span>
+                pointA <span class="token operator">=</span> headB<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+                <span class="token comment">// 否则的话 pointA 不断的向后移动</span>
+                pointA <span class="token operator">=</span> pointA<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+             <span class="token comment">// 指针 pointB 一开始在链表 B 上遍历，当走到链表 B 的尾部即 null 时，跳转到链表 A 上 </span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span> pointB <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token comment">// 指针 pointA 跳转到链表 B 上  </span>
+                pointB <span class="token operator">=</span> headA<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+                <span class="token comment">// 否则的话 pointB 不断的向后移动</span>
+                pointB <span class="token operator">=</span> pointB<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 1、此时，pointA 和 pointB 指向那个相交的节点，返回任意一个均可</span>
+        <span class="token comment">// 2、此时，headA 和 headB 不相交，那么 pointA 和 pointB 均为 null，也返回任意一个均可</span>
+        <span class="token keyword">return</span> pointA<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="参考资料"><a href="#参考资料" class="header-anchor">#</a> 参考资料</h2> <ul><li><a href="https://www.algomooc.com/693.html" target="_blank" rel="noopener noreferrer">吴师兄算法训练营<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/11.2df26a38.js" defer></script>
+  </body>
+</html>

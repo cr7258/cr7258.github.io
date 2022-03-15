@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kubectl 常用命令 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/29.879039d8.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link router-link-active">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link router-link-active">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Kubectl 常用命令</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/cloudnative/kubernetes/kubectl_command.html#自定义输出" class="sidebar-link">自定义输出</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/kubectl_command.html#o-custom-colums-定义输出列" class="sidebar-link">-o custom-colums 定义输出列</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/kubectl_command.html#o-jsonpath" class="sidebar-link">-o jsonpath</a></li></ul></li><li><a href="/cloudnative/kubernetes/kubectl_command.html#强制删除-namespace" class="sidebar-link">强制删除 Namespace</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/kubectl_command.html#taint-污点" class="sidebar-link">taint 污点</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/kubectl_command.html#查看节点污点" class="sidebar-link">查看节点污点</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/kubectl_command.html#去除污点" class="sidebar-link">去除污点</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/kubectl_command.html#添加污点" class="sidebar-link">添加污点</a></li></ul></li><li><a href="/cloudnative/kubernetes/kubectl_command.html#convert-转换配置文件为不同的-api-版本" class="sidebar-link">convert 转换配置文件为不同的 API 版本</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/kubectl_command.html#events-事件" class="sidebar-link">events 事件</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="kubectl-常用命令"><a href="#kubectl-常用命令" class="header-anchor">#</a> Kubectl 常用命令</h1> <h2 id="自定义输出"><a href="#自定义输出" class="header-anchor">#</a> 自定义输出</h2> <h3 id="o-custom-colums-定义输出列"><a href="#o-custom-colums-定义输出列" class="header-anchor">#</a> -o custom-colums 定义输出列</h3> <div class="language-sh extra-class"><pre class="language-sh"><code>root@cks1:~/gvisor<span class="token comment"># kubectl get pod centos-tool -o custom-columns=NANME:metadata.name,STATUS:status.phase,RUNTIME:spec.containers[0].image</span>
+NANME         STATUS    RUNTIME
+centos-tool   Running   registry.cn-shanghai.aliyuncs.com/public-namespace/cr7-centos7-tool:v
+</code></pre></div><h3 id="o-jsonpath"><a href="#o-jsonpath" class="header-anchor">#</a> -o jsonpath</h3> <p><strong>获取证书信息，注意用 <code>\\</code> 转义 ca.crt 的 <code>.</code>。</strong></p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment"># kubectl get secrets  nginxdeploy-token-jfdlf -o jsonpath={.data.ca\\.crt} | base64 -d</span>
+-----BEGIN CERTIFICATE-----
+MIIC5zCCAc+gAwIBAgIBADANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwprdWJl
+cm5ldGVzMB4XDTIwMTIwOTA5Mjc1OVoXDTMwMTIwNzA5Mjc1OVowFTETMBEGA1UE
+AxMKa3ViZXJuZXRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOqg
+gr82shNdUW2GBHKhT6XC58/jiLr4hF+CQte3tWpK7H9TyRtPHN8DgBkeAZNXqixc
+yTGQ4Mg1Fl3QhyVIN3e8hXvaE1i1tyu5wzUuwXdZAZjy8E55WLKkuEm/Dtm0SDWz
+535dDE2d16spbB4jTtMCLapLwraEyfFkODIeHGOnVa1u4gBwMRQwbcdBY44/EESD
+0O8EGeq6UIV90zygy5codejZgT9oafc9mpDu04lgSmXNfjDF4gVEqk5YUwuiZogZ
+PyN1jGMmMcMOQwlPQP5wzyOQmffG7+qc2HcBsu8KK06X3SWRWyq0umh2KyIUSxQs
+PltXxAy6nJsm8P+Uu1sCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB
+/wQFMAMBAf8wHQYDVR0OBBYEFOIyoaPTL4wuXLjAubyozG+m/MSuMA0GCSqGSIb3
+DQEBCwUAA4IBAQDNBEQVPntVYUAP8FbRwmfWO8hpmGtIXuxlFVeWxktG6ATjxFyj
+99aFCYhfHqSOiNiJXXcBYqqi62M1DJMZukY5VVedMNojERogbbkpOl29dCLcGADX
+FKuIhx/sB5sK+93csiB/afHrUX8dCWEY6k2n5khUUrVGMIAdXT0i0DIhlQC6fOqP
+3cJms1gWiRQw7Cnq+ZyVFogr7PHXE5IdtVsQQ+6O2cI8Vuc6Atre+N60oGUoQNDE
+OhI9N/j2J1UsjeUAALYDow3qKgDmysMQnW/oRsKgfdktP4U0lrbXSAFvBIe4se9Y
+5HuZIONrtz5HzFmW7mwv4xoC9inq/thuN0ZC
+-----END CERTIFICATE-----
+</code></pre></div><p><strong>获取 http2 服务的端口：</strong></p> <div class="language-sh extra-class"><pre class="language-sh"><code>kubectl -n istio-system get <span class="token function">service</span> istio-ingressgateway -o <span class="token assign-left variable">jsonpath</span><span class="token operator">=</span><span class="token string">'{.spec.ports[?(@.name==&quot;http2&quot;)].port}'</span>
+
+<span class="token comment">#输出结果：</span>
+<span class="token number">80</span>
+</code></pre></div><p>istio-ingressgateway 服务的 yaml 文件：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token punctuation">...</span><span class="token punctuation">...</span>
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">clusterIP</span><span class="token punctuation">:</span> 192.168.116.83
+  <span class="token key atrule">clusterIPs</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> 192.168.116.83
+  <span class="token key atrule">externalTrafficPolicy</span><span class="token punctuation">:</span> Cluster
+  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> status<span class="token punctuation">-</span>port
+    <span class="token key atrule">nodePort</span><span class="token punctuation">:</span> <span class="token number">32102</span>
+    <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">15021</span>
+    <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
+    <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">15021</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> http2
+    <span class="token key atrule">nodePort</span><span class="token punctuation">:</span> <span class="token number">31596</span>
+    <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">80</span>  <span class="token comment">#获取http2的端口</span>
+    <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
+    <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+</code></pre></div><h2 id="强制删除-namespace"><a href="#强制删除-namespace" class="header-anchor">#</a> 强制删除 Namespace</h2> <p>导出 json 格式到 tmp.json 文件:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>kubectl get namespace <span class="token operator">&lt;</span>terminating-namespace<span class="token operator">&gt;</span> -o json <span class="token operator">&gt;</span> tmp.json
+</code></pre></div><p>编辑 tmp.json 文件，删除 finalizers 字段的值。</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+    <span class="token property">&quot;apiVersion&quot;</span><span class="token operator">:</span> <span class="token string">&quot;v1&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;kind&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Namespace&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;metadata&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;annotations&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;cattle.io/status&quot;</span><span class="token operator">:</span> <span class="token string">&quot;{\&quot;Conditions\&quot;:[{\&quot;Type\&quot;:\&quot;ResourceQuotaInit\&quot;,\&quot;Status\&quot;:\&quot;True\&quot;,\&quot;Message\&quot;:\&quot;\&quot;,\&quot;LastUpdateTime\&quot;:\&quot;2021-10-14T12:57:14Z\&quot;},{\&quot;Type\&quot;:\&quot;InitialRolesPopulated\&quot;,\&quot;Status\&quot;:\&quot;True\&quot;,\&quot;Message\&quot;:\&quot;\&quot;,\&quot;LastUpdateTime\&quot;:\&quot;2021-10-14T12:57:14Z\&quot;}]}&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;lifecycle.cattle.io/create.namespace-auth&quot;</span><span class="token operator">:</span> <span class="token string">&quot;true&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;creationTimestamp&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2021-10-14T12:58:07Z&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;deletionTimestamp&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2021-12-14T07:19:14Z&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;finalizers&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>  # 改为空
+        <span class="token property">&quot;labels&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;kubesphere.io/namespace&quot;</span><span class="token operator">:</span> <span class="token string">&quot;elastalert&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;elastalert&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;resourceVersion&quot;</span><span class="token operator">:</span> <span class="token string">&quot;303039777&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;selfLink&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/api/v1/namespaces/elastalert&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;uid&quot;</span><span class="token operator">:</span> <span class="token string">&quot;47fbaa3b-320d-40ee-a8d3-b133c2d37202&quot;</span>
+    <span class="token punctuation">}</span>
+......
+</code></pre></div><p>开启 proxy。</p> <div class="language-bash extra-class"><pre class="language-bash"><code>kubectl proxy
+</code></pre></div><p>打开新的 terminal 窗口，运行以下命令：</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">curl</span> -k -H <span class="token string">&quot;Content-Type: application/json&quot;</span> <span class="token punctuation">\</span>
+-X PUT --data-binary @tmp.json <span class="token punctuation">\</span>
+http://127.0.0.1:8001/api/v1/namespaces/<span class="token operator">&lt;</span>terminating-namespace<span class="token operator">&gt;</span>/finalize
+</code></pre></div><h2 id="taint-污点"><a href="#taint-污点" class="header-anchor">#</a> taint 污点</h2> <h3 id="查看节点污点"><a href="#查看节点污点" class="header-anchor">#</a> 查看节点污点</h3> <div class="language-bash extra-class"><pre class="language-bash"><code>$ kubectl get nodes <span class="token punctuation">\</span>
+-o custom-columns<span class="token operator">=</span>NAME:.metadata.name,TAINT:<span class="token punctuation">{</span>.spec.taints<span class="token punctuation">[</span>*<span class="token punctuation">]</span>.key<span class="token punctuation">}</span>
+</code></pre></div><p>返回结果如下：</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220208113612.png" alt=""></p> <h3 id="去除污点"><a href="#去除污点" class="header-anchor">#</a> 去除污点</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># kubectl taint nodes  &lt;node-name&gt;  &lt;key:effect&gt;-</span>
+kubectl taint nodes  k8s-master01  node-role.kubernetes.io/master:NoSchedule-
+</code></pre></div><h3 id="添加污点"><a href="#添加污点" class="header-anchor">#</a> 添加污点</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># kubectl taint nodes &lt;node-name&gt;   &lt;key=value:effect&gt;</span>
+kubectl taint nodes k8s-master01  <span class="token assign-left variable">test</span><span class="token operator">=</span>czw:NoExecute
+</code></pre></div><h2 id="convert-转换配置文件为不同的-api-版本"><a href="#convert-转换配置文件为不同的-api-版本" class="header-anchor">#</a> convert 转换配置文件为不同的 API 版本</h2> <p><code>kubectl convert</code> 命令可以转换配置文件为不同的 API 版本，支持 YAML 和 JSON 格式。该命令将配置文件名，目录或 URL 作为输入，并将其转换为指定的版本格式，如果目标版本未指定或不支持，则转换为最新版本。</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># 语法</span>
+kubectl convert -f <span class="token operator">&lt;</span>manifest<span class="token operator">&gt;</span> --output-version <span class="token operator">&lt;</span>group<span class="token operator">&gt;</span>/<span class="token operator">&lt;</span>version<span class="token operator">&gt;</span>
+</code></pre></div><p><code>kubectl convert</code> 是 Kubernetes 官方提供的插件，需要另外安装，使用以下命令进行安装。</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">curl</span> -LO <span class="token string">&quot;https://dl.k8s.io/release/<span class="token variable"><span class="token variable">$(</span><span class="token function">curl</span> -L -s https://dl.k8s.io/release/stable.txt<span class="token variable">)</span></span>/bin/linux/amd64/kubectl-convert&quot;</span>
+<span class="token function">sudo</span> <span class="token function">install</span> -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
+</code></pre></div><p>查看 kubectl convert 插件的使用帮助，如果没有报错，说明安装成功。</p> <div class="language-bash extra-class"><pre class="language-bash"><code>kubectl convert --help
+</code></pre></div><p>例如要将旧版本的 Ingress 资源文件转换为 <code>networking.k8s.io/v1</code> 版本，可以使用以下命令：</p> <ul><li><code>-f</code>：指定旧版本的资源文件。</li> <li><code>--output-version</code>：指定转换的版本。</li> <li><code>-o</code>:  指定输出格式。</li></ul> <div class="language-bash extra-class"><pre class="language-bash"><code>kubectl convert -f ./legacy-ingress.yaml --output-version networking.k8s.io/v1 -o yaml
+</code></pre></div><p>旧版本的 Ingress 资源文件如下：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;networking.k8s.io/v1beta1&quot;</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> <span class="token string">&quot;Ingress&quot;</span>
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> <span class="token string">&quot;example-ingress&quot;</span>
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+    <span class="token key atrule">rules</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">host</span><span class="token punctuation">:</span> www.example.com
+      <span class="token key atrule">http</span><span class="token punctuation">:</span>
+        <span class="token key atrule">paths</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">backend</span><span class="token punctuation">:</span>
+              <span class="token key atrule">serviceName</span><span class="token punctuation">:</span> web
+              <span class="token key atrule">servicePort</span><span class="token punctuation">:</span> <span class="token number">80</span>
+</code></pre></div><p>转换后效果如下，新增了 pathType 字段。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220228204043.png" alt="">
+参考链接：</p> <ul><li><a href="https://www.cnblogs.com/dudu/p/15548461.html" target="_blank" rel="noopener noreferrer">Kubernetes 升级后 ingress api 变化带来的问题<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul> <h2 id="events-事件"><a href="#events-事件" class="header-anchor">#</a> events 事件</h2> <p>默认情况下 <code>kubectl get events</code> 并没有按照 events 发生的顺序进行排列，所以我们往往需要为其增加 <code>--sort-by='{.metadata.creationTimestamp}'</code> 参数来让其输出可以按时间进行排列。这也是为何 Kubernetes v1.23 版本中会新增 <code>kubectl alpha events</code> 命令的原因。</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ kubectl -n moelove get events --sort-by<span class="token operator">=</span><span class="token string">'{.metadata.creationTimestamp}'</span>
+</code></pre></div><p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220228204433.png" alt="">
+参考链接：</p> <ul><li><a href="https://mp.weixin.qq.com/s/bgzZP6ZC0thePY_dltCRAg" target="_blank" rel="noopener noreferrer">彻底搞懂 Kubernetes 中的 Events<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/29.879039d8.js" defer></script>
+  </body>
+</html>

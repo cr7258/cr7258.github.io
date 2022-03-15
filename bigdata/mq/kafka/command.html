@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kafka 常用工具脚本总结 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/24.264ea023.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link router-link-active">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link router-link-active">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Kafka 常用工具脚本总结</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/mq/kafka/command.html#系统" class="sidebar-link">系统</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#启动-kafka" class="sidebar-link">启动 Kafka</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#指定-jmx-端口启动" class="sidebar-link">指定 JMX 端口启动</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#停止-kafka" class="sidebar-link">停止 Kafka</a></li></ul></li><li><a href="/bigdata/mq/kafka/command.html#topic" class="sidebar-link">Topic</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#创建-topic" class="sidebar-link">创建 Topic</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#列出所有-topic" class="sidebar-link">列出所有 Topic</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#查看指定-topic" class="sidebar-link">查看指定 Topic</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#删除指定-topic" class="sidebar-link">删除指定 Topic</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#扩展-topic-的-partition-数量" class="sidebar-link">扩展 Topic 的 Partition 数量</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#扩展-topic-每个-partition-的副本数量" class="sidebar-link">扩展 topic 每个 partition 的副本数量</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#查看-topic-数据大小" class="sidebar-link">查看 Topic 数据大小</a></li></ul></li><li><a href="/bigdata/mq/kafka/command.html#消费者组-consumer-group" class="sidebar-link">消费者组 Consumer Group</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#列出所有的-consumer-group" class="sidebar-link">列出所有的 Consumer Group</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#查看指定-consumer-group-详情" class="sidebar-link">查看指定 Consumer Group 详情</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#删除指定-consumer-group" class="sidebar-link">删除指定 Consumer Group</a></li></ul></li><li><a href="/bigdata/mq/kafka/command.html#消息" class="sidebar-link">消息</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#生产消息" class="sidebar-link">生产消息</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#消费消息" class="sidebar-link">消费消息</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#查看消息具体内容" class="sidebar-link">查看消息具体内容</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#查看-topic-中当前消息总数" class="sidebar-link">查看 Topic 中当前消息总数</a></li></ul></li><li><a href="/bigdata/mq/kafka/command.html#offset" class="sidebar-link">Offset</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#重置消费者-offset" class="sidebar-link">重置消费者 Offset</a></li></ul></li><li><a href="/bigdata/mq/kafka/command.html#性能测试" class="sidebar-link">性能测试</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#生产者性能测试" class="sidebar-link">生产者性能测试</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#消费者性能测试" class="sidebar-link">消费者性能测试</a></li><li class="sidebar-sub-header"><a href="/bigdata/mq/kafka/command.html#修改动态参数" class="sidebar-link">修改动态参数</a></li></ul></li><li><a href="/bigdata/mq/kafka/command.html#kafka-集群一键启动-停止脚本" class="sidebar-link">Kafka 集群一键启动/停止脚本</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bigdata/mq/kafka/command.html#参考资料" class="sidebar-link">参考资料</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="kafka-常用工具脚本总结"><a href="#kafka-常用工具脚本总结" class="header-anchor">#</a> Kafka 常用工具脚本总结</h1> <h2 id="系统"><a href="#系统" class="header-anchor">#</a> 系统</h2> <h3 id="启动-kafka"><a href="#启动-kafka" class="header-anchor">#</a> 启动 Kafka</h3> <p><code>-daemon</code> 参数可以让 Kafka 在后台运行。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-server-start.sh -daemon /usr/local/kafka/config/server.properties
+</code></pre></div><h3 id="指定-jmx-端口启动"><a href="#指定-jmx-端口启动" class="header-anchor">#</a> 指定 JMX 端口启动</h3> <p>JMX 的全称为 Java Management Extensions。 顾名思义，是管理 Java 的一种扩展，通过 JMX 可以方便我们监控 Kafka 的内存，线程，CPU 的使用情况，以及生产和消费消息的指标。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token assign-left variable">JMX_PORT</span><span class="token operator">=</span><span class="token number">9999</span> kafka-server-start.sh -daemon /usr/local/kafka/config/server.properties
+</code></pre></div><h3 id="停止-kafka"><a href="#停止-kafka" class="header-anchor">#</a> 停止 Kafka</h3> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-server-stop.sh 
+</code></pre></div><h2 id="topic"><a href="#topic" class="header-anchor">#</a> Topic</h2> <h3 id="创建-topic"><a href="#创建-topic" class="header-anchor">#</a> 创建 Topic</h3> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-topics.sh --create  --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --replication-factor <span class="token number">3</span> --partitions <span class="token number">3</span> --topic <span class="token operator">&lt;</span>topic-name<span class="token operator">&gt;</span>
+</code></pre></div><h3 id="列出所有-topic"><a href="#列出所有-topic" class="header-anchor">#</a> 列出所有 Topic</h3> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-topics.sh  --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --list
+</code></pre></div><h3 id="查看指定-topic"><a href="#查看指定-topic" class="header-anchor">#</a> 查看指定 Topic</h3> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-topics.sh --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --describe --topic <span class="token operator">&lt;</span>topic-name<span class="token operator">&gt;</span>
+</code></pre></div><h3 id="删除指定-topic"><a href="#删除指定-topic" class="header-anchor">#</a> 删除指定 Topic</h3> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-topics.sh --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --delete --topic <span class="token operator">&lt;</span>topic-name<span class="token operator">&gt;</span>
+</code></pre></div><h3 id="扩展-topic-的-partition-数量"><a href="#扩展-topic-的-partition-数量" class="header-anchor">#</a> 扩展 Topic 的 Partition 数量</h3> <p>artition 数量只能扩大不能缩小。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-topics.sh --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --topic app --alter --partitions <span class="token number">30</span>
+</code></pre></div><h3 id="扩展-topic-每个-partition-的副本数量"><a href="#扩展-topic-每个-partition-的副本数量" class="header-anchor">#</a> 扩展 topic 每个 partition 的副本数量</h3> <p>replication factor 可以扩大也可以缩小，最多不能超过 broker 数量。
+先创建一个文件名为 increace-factor.json，这里要扩展的是 mysql-audit-log 这个 topic 的 partition 到 15 个：
+0，1，2 为 broker id。</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span><span class="token property">&quot;version&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+<span class="token property">&quot;partitions&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">11</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">13</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token property">&quot;topic&quot;</span><span class="token operator">:</span><span class="token string">&quot;mysql-audit-log&quot;</span><span class="token punctuation">,</span><span class="token property">&quot;partition&quot;</span><span class="token operator">:</span><span class="token number">14</span><span class="token punctuation">,</span><span class="token property">&quot;replicas&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">}</span>
+</code></pre></div><div class="language-sh extra-class"><pre class="language-sh"><code>kafka-reassign-partitions.sh --zookeeper <span class="token number">10.37</span>.62.20:2181 --reassignment-json-file  increace-factor.json --execute 
+</code></pre></div><h3 id="查看-topic-数据大小"><a href="#查看-topic-数据大小" class="header-anchor">#</a> 查看 Topic 数据大小</h3> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment">#方法一</span>
+kafka-log-dirs.sh <span class="token punctuation">\</span>
+  --bootstrap-server <span class="token number">192.168</span>.1.87:9092 <span class="token punctuation">\</span>
+  --topic-list mytopic <span class="token punctuation">\</span>
+  --describe <span class="token punctuation">\</span>
+  <span class="token operator">|</span> <span class="token function">grep</span> -oP <span class="token string">'(?&lt;=size&quot;:)\d+'</span>  <span class="token punctuation">\</span>
+  <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{ sum += $1 } END { print sum }'</span>
+  
+<span class="token comment">#返回结果，单位 Byte</span>
+<span class="token number">648</span>
+
+<span class="token comment">#方法二，需要安装 jq</span>
+kafka-log-dirs.sh <span class="token punctuation">\</span>
+    --bootstrap-server <span class="token number">192.168</span>.1.87:9092 <span class="token punctuation">\</span>
+    --topic-list mytopic <span class="token punctuation">\</span>
+    --describe <span class="token punctuation">\</span>
+  <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'^{'</span> <span class="token punctuation">\</span>
+  <span class="token operator">|</span> jq <span class="token string">'[ ..|.size? | numbers ] | add'</span>
+
+<span class="token comment">#返回结果，单位 Byte</span>
+<span class="token number">648</span>
+</code></pre></div><h2 id="消费者组-consumer-group"><a href="#消费者组-consumer-group" class="header-anchor">#</a> 消费者组 Consumer Group</h2> <h3 id="列出所有的-consumer-group"><a href="#列出所有的-consumer-group" class="header-anchor">#</a> 列出所有的 Consumer Group</h3> <div class="language-sh extra-class"><pre class="language-sh"><code> kafka-consumer-groups.sh --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --list
+</code></pre></div><h3 id="查看指定-consumer-group-详情"><a href="#查看指定-consumer-group-详情" class="header-anchor">#</a> 查看指定 Consumer Group 详情</h3> <ul><li><strong>GROUP</strong>:消费者 group</li> <li><strong>TOPIC</strong>:话题 id</li> <li><strong>PARTITION</strong>:分区 id</li> <li><strong>CURRENT-OFFSET</strong>:当前已消费的条数</li> <li><strong>LOG-END-OFFSET</strong>:总条数</li> <li><strong>LAG</strong>:未消费的条数</li> <li><strong>CONSUMER-ID</strong>:消费者 id</li> <li><strong>HOST</strong>:消费者 ip 地址</li> <li><strong>CLIENT-ID</strong>:客户端 id</li></ul> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment">#这里查看的是 logstash_mysql 这个消费者 group 的消费情况</span>
+kafka-consumer-groups.sh --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --describe --group logstash_mysql
+
+<span class="token comment">#返回结果</span>
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                      HOST            CLIENT-ID
+logstash_mysql  mysql-audit-log <span class="token number">11</span>         <span class="token number">1312115</span>         <span class="token number">1312857</span>         <span class="token number">742</span>             logstash-5-0545a8a7-f7bd-430c-b619-7a2b206addd2  /10.37.62.24    logstash-5
+logstash_mysql  mysql-audit-log <span class="token number">1</span>          <span class="token number">1312593</span>         <span class="token number">1313345</span>         <span class="token number">752</span>             logstash-0-d86bd51a-d010-45de-aa6f-f6da8542b779  /10.37.62.23    logstash-0
+logstash_mysql  mysql-audit-log <span class="token number">2</span>          <span class="token number">1309548</span>         <span class="token number">1310317</span>         <span class="token number">769</span>             logstash-1-496340ea-935d-444d-a184-51d42e225054  /10.37.62.24    logstash-1
+logstash_mysql  mysql-audit-log <span class="token number">12</span>         <span class="token number">1313083</span>         <span class="token number">1313194</span>         <span class="token number">111</span>             logstash-6-806b20cb-a9af-49c1-b37d-ccb33a646ab2  /10.37.62.24    logstash-6
+logstash_mysql  mysql-audit-log <span class="token number">6</span>          <span class="token number">1310984</span>         <span class="token number">1311192</span>         <span class="token number">208</span>             logstash-13-8d474bf6-e8d0-4b8a-b319-cf5e2e6cc078 /10.37.62.24    logstash-13
+logstash_mysql  mysql-audit-log <span class="token number">9</span>          <span class="token number">1312998</span>         <span class="token number">1313768</span>         <span class="token number">770</span>             logstash-3-29863fb0-6708-4fb1-9e28-bd81c30ce8ef  /10.37.62.24    logstash-3
+logstash_mysql  mysql-audit-log <span class="token number">4</span>          <span class="token number">1315150</span>         <span class="token number">1315276</span>         <span class="token number">126</span>             logstash-11-6d66a188-85b7-476b-bd89-5423ef48cd01 /10.37.62.24    logstash-11
+logstash_mysql  mysql-audit-log <span class="token number">0</span>          <span class="token number">22770935522</span>     <span class="token number">22770935650</span>     <span class="token number">128</span>             logstash-0-7be475d6-a49e-4ff9-bf83-6b83f6067306  /10.37.62.24    logstash-0
+logstash_mysql  mysql-audit-log <span class="token number">8</span>          <span class="token number">1309956</span>         <span class="token number">1310103</span>         <span class="token number">147</span>             logstash-2-3c313c6f-8c98-4333-8bad-2f9696457d7d  /10.37.62.24    logstash-2
+logstash_mysql  mysql-audit-log <span class="token number">13</span>         <span class="token number">1314659</span>         <span class="token number">1314775</span>         <span class="token number">116</span>             logstash-7-e98fd14e-e7f6-45e5-8ccf-2442058f0bc9  /10.37.62.24    logstash-7
+logstash_mysql  mysql-audit-log <span class="token number">14</span>         <span class="token number">1313145</span>         <span class="token number">1313250</span>         <span class="token number">105</span>             logstash-8-2c3345a8-f8f1-4f08-a18e-333dff2f0d65  /10.37.62.24    logstash-8
+logstash_mysql  mysql-audit-log <span class="token number">5</span>          <span class="token number">1314037</span>         <span class="token number">1314297</span>         <span class="token number">260</span>             logstash-12-ce018227-9e59-4137-a23f-5ccc0c7d4f6a /10.37.62.24    logstash-12
+logstash_mysql  mysql-audit-log <span class="token number">10</span>         <span class="token number">1312883</span>         <span class="token number">1312962</span>         <span class="token number">79</span>              logstash-4-9eb84ae4-3351-4083-9b1f-288910a6c3b8  /10.37.62.24    logstash-4
+logstash_mysql  mysql-audit-log <span class="token number">7</span>          <span class="token number">1312476</span>         <span class="token number">1313200</span>         <span class="token number">724</span>             logstash-14-680c982e-5cf3-406b-810a-4d5c96b5bdee /10.37.62.24    logstash-14
+logstash_mysql  mysql-audit-log <span class="token number">3</span>          <span class="token number">1313227</span>         <span class="token number">1313328</span>         <span class="token number">101</span>             logstash-10-e212dc18-a2bb-42d9-9d0b-095a93841efc /10.37.62.24    logstash-10
+</code></pre></div><h3 id="删除指定-consumer-group"><a href="#删除指定-consumer-group" class="header-anchor">#</a> 删除指定 Consumer Group</h3> <div class="language-sh extra-class"><pre class="language-sh"><code> kafka-topics.sh --bootstrap-server <span class="token number">10.37</span>.62.20:9092 --delete --topic pgw-nginx
+</code></pre></div><h2 id="消息"><a href="#消息" class="header-anchor">#</a> 消息</h2> <h3 id="生产消息"><a href="#生产消息" class="header-anchor">#</a> 生产消息</h3> <h4 id="普通生产消息"><a href="#普通生产消息" class="header-anchor">#</a> 普通生产消息</h4> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-console-producer.sh --broker-list <span class="token number">11.8</span>.36.125:9092 --topic mytopic
+<span class="token operator">&gt;</span>this is my topic
+</code></pre></div><h4 id="生产消息指定-key"><a href="#生产消息指定-key" class="header-anchor">#</a> 生产消息指定 Key</h4> <p><code>key.separator=,</code> 指定以逗号作为 key 和 value 的分隔符。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-console-producer.sh --broker-list kafka1:9092 --topic cr7-topic --property parse.key<span class="token operator">=</span>true --property key.separator<span class="token operator">=</span>,
+
+<span class="token operator">&gt;</span>mykey,<span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:1,<span class="token string">&quot;productId&quot;</span>:101,<span class="token string">&quot;productNum&quot;</span>:1<span class="token punctuation">}</span>
+</code></pre></div><h3 id="消费消息"><a href="#消费消息" class="header-anchor">#</a> 消费消息</h3> <h4 id="从头开始消费"><a href="#从头开始消费" class="header-anchor">#</a> 从头开始消费</h4> <p>从头开始消费是可以消费到之前的消息的，通过 <code>--from-beginning</code> 指定：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-console-consumer.sh --bootstrap-server <span class="token number">11.8</span>.36.125:9092 --topic mytopic --from-beginning
+this is my topic
+</code></pre></div><h4 id="从尾部开始消费"><a href="#从尾部开始消费" class="header-anchor">#</a> 从尾部开始消费</h4> <p><code>--offset latest</code> 指定从尾部开始消费，另外还需要指定 partition，可以指定多个：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-console-consumer.sh --bootstrap-server <span class="token number">11.8</span>.36.125:9092 --topic mytopic  --offset latest  --partition <span class="token number">0</span> <span class="token number">1</span> <span class="token number">2</span> 
+</code></pre></div><h4 id="消费指定条数的消息"><a href="#消费指定条数的消息" class="header-anchor">#</a> 消费指定条数的消息</h4> <p><code>--max-messages</code>指定取的个数：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-console-consumer.sh --bootstrap-server <span class="token number">11.8</span>.36.125:9092 --topic mytopic  --offset latest  --partition <span class="token number">0</span> <span class="token number">1</span> <span class="token number">2</span> --max-messages <span class="token number">2</span>
+bobo
+<span class="token number">1111</span>
+Processed a total of <span class="token number">2</span> messages
+</code></pre></div><h4 id="指定消费组进行消费"><a href="#指定消费组进行消费" class="header-anchor">#</a> 指定消费组进行消费</h4> <p><code>--consumer-property group.id=&lt;消费者组名&gt;</code>执行消费者组进行消费：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-console-consumer.sh --bootstrap-server  kafka1:9092 --topic test_partition --consumer-property  group.id<span class="token operator">=</span>test_group --from-beginning 
+</code></pre></div><h3 id="查看消息具体内容"><a href="#查看消息具体内容" class="header-anchor">#</a> 查看消息具体内容</h3> <div class="language-sh extra-class"><pre class="language-sh"><code> kafka-dump-log.sh --files cr7-topic-0/00000000000000000000.log  -deep-iteration --print-data-log
+ 
+ <span class="token comment">#输出结果</span>
+<span class="token operator">|</span> offset: <span class="token number">1080</span> CreateTime: <span class="token number">1615020877664</span> keysize: <span class="token number">1</span> valuesize: <span class="token number">63</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">1</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:1,<span class="token string">&quot;productId&quot;</span>:101,<span class="token string">&quot;productNum&quot;</span>:1<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1081</span> CreateTime: <span class="token number">1615020877677</span> keysize: <span class="token number">1</span> valuesize: <span class="token number">63</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">5</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:5,<span class="token string">&quot;productId&quot;</span>:105,<span class="token string">&quot;productNum&quot;</span>:5<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1082</span> CreateTime: <span class="token number">1615020877677</span> keysize: <span class="token number">1</span> valuesize: <span class="token number">63</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">7</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:7,<span class="token string">&quot;productId&quot;</span>:107,<span class="token string">&quot;productNum&quot;</span>:7<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1083</span> CreateTime: <span class="token number">1615020877677</span> keysize: <span class="token number">1</span> valuesize: <span class="token number">63</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">8</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:8,<span class="token string">&quot;productId&quot;</span>:108,<span class="token string">&quot;productNum&quot;</span>:8<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1084</span> CreateTime: <span class="token number">1615020877677</span> keysize: <span class="token number">2</span> valuesize: <span class="token number">65</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">11</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:11,<span class="token string">&quot;productId&quot;</span>:111,<span class="token string">&quot;productNum&quot;</span>:11<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1085</span> CreateTime: <span class="token number">1615020877677</span> keysize: <span class="token number">2</span> valuesize: <span class="token number">65</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">15</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:15,<span class="token string">&quot;productId&quot;</span>:115,<span class="token string">&quot;productNum&quot;</span>:15<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1086</span> CreateTime: <span class="token number">1615020877678</span> keysize: <span class="token number">2</span> valuesize: <span class="token number">65</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">17</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:17,<span class="token string">&quot;productId&quot;</span>:117,<span class="token string">&quot;productNum&quot;</span>:17<span class="token punctuation">}</span>
+<span class="token operator">|</span> offset: <span class="token number">1087</span> CreateTime: <span class="token number">1615020877678</span> keysize: <span class="token number">2</span> valuesize: <span class="token number">65</span> sequence: -1 headerKeys: <span class="token punctuation">[</span><span class="token punctuation">]</span> key: <span class="token number">21</span> payload: <span class="token punctuation">{</span><span class="token string">&quot;orderAmount&quot;</span>:1000,<span class="token string">&quot;orderId&quot;</span>:21,<span class="token string">&quot;productId&quot;</span>:121,<span class="token string">&quot;productNum&quot;</span>:21<span class="token punctuation">}</span>
+</code></pre></div><h3 id="查看-topic-中当前消息总数"><a href="#查看-topic-中当前消息总数" class="header-anchor">#</a> 查看 Topic 中当前消息总数</h3> <p>Kafka 自带的命令没有直接提供这样的功能，要使用 Kafka 提供的工具类 GetOffsetShell 来计算给定 Topic 每个分区当前最早位移和最新位移，差值就是每个分区的当前的消息总数，将该 Topic 所有分区的消息总数累加就能得到该 Topic 总的消息数。</p> <p>首先查询 Topic 中每个分区 offset 的最小值（起始位置），使用 <code>--time -2</code> 参数。一个分区的起始位置并不是每时每刻都为 0 ，因为日志清理的动作会清理旧的数据，所以分区的起始位置会自然而然地增加。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list kafka1:9092 -topic test-topic  --time -2
+
+<span class="token comment">#前面是分区号，后面是 offset</span>
+test-topic:0:0
+test-topic:1:0
+</code></pre></div><p>然后使用<code>--time -1</code> 参数查询 Topic 各个分区的 offset 的最大值。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list kafka1:9092 --time -1 --topic test-topic
+
+<span class="token comment">#输出结果</span>
+test-topic:0:5500000
+test-topic:1:5500000
+</code></pre></div><p>对于本例来说，test-topic 中当前总的消息数为 (5500000 - 0) + （5500000 - 0），等于 1100 万条。
+如果只是要获取 Topic 中总的消息数（包括已经从 Kafka 删除的消息），那么只需要将 Topic 中每个 Partition 的 Offset 累加即可。</p> <h2 id="offset"><a href="#offset" class="header-anchor">#</a> Offset</h2> <h3 id="重置消费者-offset"><a href="#重置消费者-offset" class="header-anchor">#</a> 重置消费者 Offset</h3> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment">#查看消费者组消费情况</span>
+<span class="token comment">#目前的 0 分区 CURRENT-OFFSET 是 4，2 分区 CURRENT-OFFSET 是 6</span>
+kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --describe --group my-consumer-group
+
+<span class="token comment">#返回结果</span>
+Consumer group <span class="token string">'my-consumer-group'</span> has no active members.
+
+GROUP             TOPIC                 PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+my-consumer-group transaction-topic-msg <span class="token number">2</span>          <span class="token number">6</span>               <span class="token number">6</span>               <span class="token number">0</span>               -               -               -
+my-consumer-group transaction-topic-msg <span class="token number">1</span>          <span class="token number">0</span>               <span class="token number">0</span>               <span class="token number">0</span>               -               -               -
+my-consumer-group transaction-topic-msg <span class="token number">0</span>          <span class="token number">4</span>               <span class="token number">4</span>               <span class="token number">0</span>               -               -               -         -
+
+<span class="token comment">#重置消费者组 offset 为 3，重置是所有分区一起重置</span>
+kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --group my-consumer-group --reset-offsets --execute --to-offset <span class="token number">3</span> --topic transaction-topic-msg
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">[</span><span class="token number">2021</span>-06-25 <span class="token number">10</span>:44:51,848<span class="token punctuation">]</span> WARN New offset <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span> is higher than latest offset <span class="token keyword">for</span> topic partition transaction-topic-msg-1. Value will be <span class="token builtin class-name">set</span> to <span class="token number">0</span> <span class="token punctuation">(</span>kafka.admin.ConsumerGroupCommand$<span class="token punctuation">)</span>
+
+GROUP                          TOPIC                          PARTITION  NEW-OFFSET     
+my-consumer-group              transaction-topic-msg          <span class="token number">0</span>          <span class="token number">3</span>              
+my-consumer-group              transaction-topic-msg          <span class="token number">1</span>          <span class="token number">0</span>              
+my-consumer-group              transaction-topic-msg          <span class="token number">2</span>          <span class="token number">3</span>              
+
+<span class="token comment">#可以看到 0 分区和 2 分区的 CURRENT-OFFSET 都变为 3 了</span>
+kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --describe --group my-consumer-group
+
+<span class="token comment">#返回结果</span>
+Consumer group <span class="token string">'my-consumer-group'</span> has no active members.
+
+GROUP             TOPIC                 PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+my-consumer-group transaction-topic-msg <span class="token number">2</span>          <span class="token number">3</span>               <span class="token number">6</span>               <span class="token number">3</span>               -               -               -
+my-consumer-group transaction-topic-msg <span class="token number">1</span>          <span class="token number">0</span>               <span class="token number">0</span>               <span class="token number">0</span>               -               -               -
+my-consumer-group transaction-topic-msg <span class="token number">0</span>          <span class="token number">3</span>               <span class="token number">4</span>               <span class="token number">1</span>               -               -               -
+
+<span class="token comment">#可以重新消费到之前的数据</span>
+kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic transaction-topic-msg  --group my-consumer-group 
+
+<span class="token comment">#返回结果</span>
+message-111111
+message-333333
+</code></pre></div><h2 id="性能测试"><a href="#性能测试" class="header-anchor">#</a> 性能测试</h2> <h3 id="生产者性能测试"><a href="#生产者性能测试" class="header-anchor">#</a> 生产者性能测试</h3> <ul><li><strong>--num-records 10000000</strong>: 向指定主题发送了 1 千万条消息。</li> <li><strong>--record-size 1024</strong>: 每条消息的大小为 1024KB。</li> <li><strong>--throughput -1</strong>: 不限制吞吐量。</li> <li><strong>--producer-props</strong>: 指定生产者参数。
+<ul><li><strong>acks=-1</strong>: 这要求 ISR 列表里跟 leader 保持同步的那些 follower 都要把消息同步过去，才能认为这条消息是写入成功。</li> <li><strong>linger.ms=2000</strong>: batch.size 和 linger.ms 是对 kafka producer  性能影响比较大的两个参数。batch.size 是  producer 批量发送的基本单位，默认是 16384Bytes，即 16kB；lingger.ms 是 sender 线程在检查 batch 是否 ready 时候，判断有没有过期的参数，默认大小是 0ms。</li> <li><strong>compression.type=lz4</strong>: 使用 lz4 压缩算法。</li></ul></li></ul> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@kafka1 ~<span class="token punctuation">]</span><span class="token comment"># kafka-producer-perf-test.sh --topic test_producer_perf --num-records 10000000 --throughput -1 --record-size 1024 --producer-props bootstrap.servers=kafka1:9092 acks=-1 linger.ms=2000 compression.type=lz4</span>
+
+<span class="token comment">#输出结果</span>
+<span class="token number">705600</span> records sent, <span class="token number">141063.6</span> records/sec <span class="token punctuation">(</span><span class="token number">137.76</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">54.8</span> ms avg latency, <span class="token number">557.0</span> ms max latency.
+<span class="token number">1204178</span> records sent, <span class="token number">240739.3</span> records/sec <span class="token punctuation">(</span><span class="token number">235.10</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">44.1</span> ms avg latency, <span class="token number">402.0</span> ms max latency.
+<span class="token number">1370938</span> records sent, <span class="token number">274187.6</span> records/sec <span class="token punctuation">(</span><span class="token number">267.76</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">27.9</span> ms avg latency, <span class="token number">311.0</span> ms max latency.
+<span class="token number">1464605</span> records sent, <span class="token number">292628.4</span> records/sec <span class="token punctuation">(</span><span class="token number">285.77</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">19.2</span> ms avg latency, <span class="token number">139.0</span> ms max latency.
+<span class="token number">1477239</span> records sent, <span class="token number">295447.8</span> records/sec <span class="token punctuation">(</span><span class="token number">288.52</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">31.8</span> ms avg latency, <span class="token number">290.0</span> ms max latency.
+<span class="token number">1446682</span> records sent, <span class="token number">289336.4</span> records/sec <span class="token punctuation">(</span><span class="token number">282.56</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">26.4</span> ms avg latency, <span class="token number">281.0</span> ms max latency.
+<span class="token number">1555098</span> records sent, <span class="token number">311019.6</span> records/sec <span class="token punctuation">(</span><span class="token number">303.73</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">37.6</span> ms avg latency, <span class="token number">344.0</span> ms max latency.
+<span class="token number">10000000</span> records sent, <span class="token number">263894.020162</span> records/sec <span class="token punctuation">(</span><span class="token number">257.71</span> MB/sec<span class="token punctuation">)</span>, <span class="token number">32.60</span> ms avg latency, <span class="token number">557.00</span> ms max latency, <span class="token number">12</span> ms 50th, <span class="token number">140</span> ms 95th, <span class="token number">262</span> ms 99th, <span class="token number">396</span> ms <span class="token number">99</span>.9th.
+</code></pre></div><p>我们应该关心延时的概率分布情况，仅仅知道一个平均值是没有意义的。这就是这里计算分位数的原因。通常我们关注到 99th 分位就可以了。比如在上面的输出中，99th 值是 262 ms，这表明测试生产者生产的消息中，有 99% 消息的延时都在 262 ms 以内。你完全可以把这个数据当作这个生产者对外承诺的 SLA。</p> <h3 id="消费者性能测试"><a href="#消费者性能测试" class="header-anchor">#</a> 消费者性能测试</h3> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@kafka1 ~<span class="token punctuation">]</span><span class="token comment"># kafka-consumer-perf-test.sh --broker-list kafka1:9092 --messages 10000000 --topic test_producer_perf</span>
+
+<span class="token comment">#输出结果</span>
+start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec, rebalance.time.ms, fetch.time.ms, fetch.MB.sec, fetch.nMsg.sec
+<span class="token number">2021</span>-03-09 <span class="token number">10</span>:34:18:447, <span class="token number">2021</span>-03-09 <span class="token number">10</span>:34:33:948, <span class="token number">9765.6250</span>, <span class="token number">629.9997</span>, <span class="token number">10000000</span>, <span class="token number">645119.6697</span>, <span class="token number">1615257259068</span>, -1615257243567, -0.0000, -0.0062
+</code></pre></div><p>虽然输出格式有所差别，但该脚本也会打印出消费者的吞吐量数据。比如本例中的 629.9997MB/s。有点令人遗憾的是，它没有计算不同分位数下的分布情况。因此，在实际使用过程中，这个脚本的使用率要比生产者性能测试脚本的使用率低。</p> <h3 id="修改动态参数"><a href="#修改动态参数" class="header-anchor">#</a> 修改动态参数</h3> <h4 id="查看支持的动态参数"><a href="#查看支持的动态参数" class="header-anchor">#</a> 查看支持的动态参数</h4> <p>如果你想要知道动态 Broker 参数都有哪些，一种方式是在 Kafka 官网中查看 Broker 端参数列表，另一种方式是直接运行无参数的 kafka-configs 脚本，该脚本的说明文档会告诉你当前动态 Broker 参数都有哪些。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>root@kafka1 ~<span class="token punctuation">]</span><span class="token comment"># kafka-configs.sh </span>
+This tool helps to manipulate and describe entity config <span class="token keyword">for</span> a topic, client, user or broker
+Option                                 Description                            
+------                                 -----------                            
+--add-config <span class="token operator">&lt;</span>String<span class="token operator">&gt;</span>                  Key Value pairs of configs to add.     
+                                         Square brackets can be used to group 
+                                         values <span class="token function">which</span> contain commas: <span class="token string">'k1=v1, 
+                                         k2=[v1,v2,v2],k3=v3'</span><span class="token builtin class-name">.</span> The following  
+                                         <span class="token comment">#Topic 动态参数</span>
+                                         is a list of valid configurations:   
+                                         For entity-type <span class="token string">'topics'</span><span class="token builtin class-name">:</span>            
+                                        cleanup.policy                        
+                                        compression.type                      
+                                        delete.retention.ms                   
+                                        file.delete.delay.ms                  
+                                        flush.messages                        
+                                        flush.ms                              
+                                        follower.replication.throttled.       
+                                         replicas                             
+                                        index.interval.bytes                  
+                                        leader.replication.throttled.replicas 
+                                        max.compaction.lag.ms                 
+                                        max.message.bytes                     
+                                        message.downconversion.enable         
+                                        message.format.version                
+                                        message.timestamp.difference.max.ms   
+                                        message.timestamp.type                
+                                        min.cleanable.dirty.ratio             
+                                        min.compaction.lag.ms                 
+                                        min.insync.replicas                   
+                                        preallocate                           
+                                        retention.bytes                       
+                                        retention.ms                          
+                                        segment.bytes                         
+                                        segment.index.bytes                   
+                                        segment.jitter.ms                     
+                                        segment.ms                            
+                                        unclean.leader.election.enable        
+                                        <span class="token comment">#Broker 动态参数</span>
+                                       For entity-type <span class="token string">'brokers'</span><span class="token builtin class-name">:</span>             
+                                        advertised.listeners                  
+                                        background.threads                    
+                                        compression.type                      
+                                        follower.replication.throttled.rate   
+                                        leader.replication.throttled.rate     
+                                        listener.security.protocol.map        
+                                        listeners                             
+                                        log.cleaner.backoff.ms                
+                                        log.cleaner.dedupe.buffer.size        
+                                        log.cleaner.delete.retention.ms       
+                                        log.cleaner.io.buffer.load.factor     
+                                        log.cleaner.io.buffer.size            
+                                        log.cleaner.io.max.bytes.per.second   
+                                        log.cleaner.max.compaction.lag.ms     
+                                        log.cleaner.min.cleanable.ratio       
+                                        log.cleaner.min.compaction.lag.ms     
+                                        log.cleaner.threads                   
+                                        log.cleanup.policy                    
+                                        log.flush.interval.messages           
+                                        log.flush.interval.ms                 
+                                        log.index.interval.bytes              
+                                        log.index.size.max.bytes              
+                                        log.message.downconversion.enable     
+                                        log.message.timestamp.difference.max. 
+                                         ms                                   
+                                        log.message.timestamp.type            
+                                        log.preallocate                       
+                                        log.retention.bytes                   
+                                        log.retention.ms                      
+                                        log.roll.jitter.ms                    
+                                        log.roll.ms                           
+                                        log.segment.bytes                     
+                                        log.segment.delete.delay.ms           
+                                        max.connection.creation.rate          
+                                        max.connections                       
+                                        max.connections.per.ip                
+                                        max.connections.per.ip.overrides      
+                                        message.max.bytes                     
+                                        metric.reporters                      
+                                        min.insync.replicas                   
+                                        num.io.threads                        
+                                        num.network.threads                   
+                                        num.recovery.threads.per.data.dir     
+                                        num.replica.fetchers                  
+                                        principal.builder.class               
+                                        replica.alter.log.dirs.io.max.bytes.  
+                                         per.second                           
+                                        sasl.enabled.mechanisms               
+                                        sasl.jaas.config                      
+                                        sasl.kerberos.kinit.cmd               
+                                        sasl.kerberos.min.time.before.relogin 
+                                        sasl.kerberos.principal.to.local.rules
+                                        sasl.kerberos.service.name            
+                                        sasl.kerberos.ticket.renew.jitter     
+                                        sasl.kerberos.ticket.renew.window.    
+                                         factor                               
+                                        sasl.login.refresh.buffer.seconds     
+                                        sasl.login.refresh.min.period.seconds 
+                                        sasl.login.refresh.window.factor      
+                                        sasl.login.refresh.window.jitter      
+                                        sasl.mechanism.inter.broker.protocol  
+                                        ssl.cipher.suites                     
+                                        ssl.client.auth                       
+                                        ssl.enabled.protocols                 
+                                        ssl.endpoint.identification.algorithm 
+                                        ssl.engine.factory.class              
+                                        ssl.key.password                      
+                                        ssl.keymanager.algorithm              
+                                        ssl.keystore.certificate.chain        
+                                        ssl.keystore.key                      
+                                        ssl.keystore.location                 
+                                        ssl.keystore.password                 
+                                        ssl.keystore.type                     
+                                        ssl.protocol                          
+                                        ssl.provider                          
+                                        ssl.secure.random.implementation      
+                                        ssl.trustmanager.algorithm            
+                                        ssl.truststore.certificates           
+                                        ssl.truststore.location               
+                                        ssl.truststore.password               
+                                        ssl.truststore.type                   
+                                        unclean.leader.election.enable        
+                                       For entity-type <span class="token string">'users'</span><span class="token builtin class-name">:</span>               
+                                        SCRAM-SHA-256                         
+                                        SCRAM-SHA-512                         
+                                        consumer_byte_rate                    
+                                        controller_mutation_rate              
+                                        producer_byte_rate                    
+                                        request_percentage                    
+                                       For entity-type <span class="token string">'clients'</span><span class="token builtin class-name">:</span>             
+                                        consumer_byte_rate                    
+                                        controller_mutation_rate              
+                                        producer_byte_rate                    
+                                        request_percentage                    
+                                       Entity types <span class="token string">'users'</span> and <span class="token string">'clients'</span> may 
+                                         be specified together to update      
+                                         config <span class="token keyword">for</span> clients of a specific     
+                                         user.   
+</code></pre></div><h4 id="修改-broker-动态参数"><a href="#修改-broker-动态参数" class="header-anchor">#</a> 修改 Broker 动态参数</h4> <p>修改动态参数无需重启 Broker，动态 Broker 参数的使用场景非常广泛，通常包括但不限于以下几种：</p> <ul><li>动态调整 Broker 端各种线程池大小，实时应对突发流量。</li> <li>动态调整 Broker 端连接信息或安全配置信息。</li> <li>动态更新 SSL Keystore 有效期。</li> <li>动态调整 Broker 端 Compact 操作性能。</li> <li>实时变更 JMX 指标收集器 (JMX Metrics Reporter)。</li></ul> <p>Kafka Broker Config 的参数有以下 3 种类型：</p> <ul><li><strong>read-only</strong>：被标记为 read-only 的参数和原来的参数行为一样，只有重启 Broker，才能令修改生效。</li> <li><strong>per-broker</strong>：被标记为 per-broker 的参数属于动态参数，修改它之后，只会在对应的 Broker 上生效。</li> <li><strong>cluster-wide</strong>：被标记为 cluster-wide 的参数也属于动态参数，修改它之后，会在整个集群范围内生效，也就是说，对所有 Broker 都生效。你也可以为具体的 Broker 修改 cluster-wide 参数。</li></ul> <p>在集群层面设置全局值，即设置 cluster-wide 范围值，将 <code>unclean.leader.election.enable</code> 参数在集群层面设置为 true。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server  <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type brokers --entity-default --alter <span class="token punctuation">\</span>
+--add-config unclean.leader.election.enable<span class="token operator">=</span>true
+
+<span class="token comment">#返回结果</span>
+Completed updating default config <span class="token keyword">for</span> <span class="token for-or-select variable">brokers</span> <span class="token keyword">in</span> the cluster.
+</code></pre></div><p>如果要设置 cluster-wide 范围的动态参数，需要显式指定 entity-default。现在，我们使用下面的命令来查看一下刚才的配置是否成功。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type brokers --entity-default --describe
+
+<span class="token comment">#返回结果</span>
+Default configs <span class="token keyword">for</span> <span class="token for-or-select variable">brokers</span> <span class="token keyword">in</span> the cluster are:
+  unclean.leader.election.enable<span class="token operator">=</span>true <span class="token assign-left variable">sensitive</span><span class="token operator">=</span>false <span class="token assign-left variable">synonyms</span><span class="token operator">=</span><span class="token punctuation">{</span>DYNAMIC_DEFAULT_BROKER_CONFIG:unclean.leader.election.enable<span class="token operator">=</span>true<span class="token punctuation">}</span>
+</code></pre></div><p>在 Zookeeper 上查看 /config/brokers/<default> 节点可以查看 cluster-wide 的动态参数设置。</default></p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>zk: <span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">]</span> <span class="token operator">&gt;</span> get /config/brokers/<span class="token operator">&lt;</span>default<span class="token operator">&gt;</span>
+<span class="token punctuation">{</span><span class="token string">&quot;version&quot;</span>:1,<span class="token string">&quot;config&quot;</span>:<span class="token punctuation">{</span><span class="token string">&quot;unclean.leader.election.enable&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;true&quot;</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+cZxid <span class="token operator">=</span> <span class="token number">17179869570</span>
+ctime <span class="token operator">=</span> <span class="token number">1631246402937</span>
+mZxid <span class="token operator">=</span> <span class="token number">17179869570</span>
+mtime <span class="token operator">=</span> <span class="token number">1631246402937</span>
+pZxid <span class="token operator">=</span> <span class="token number">17179869570</span>
+cversion <span class="token operator">=</span> <span class="token number">0</span>
+dataVersion <span class="token operator">=</span> <span class="token number">0</span>
+aclVersion <span class="token operator">=</span> <span class="token number">0</span>
+ephemeralOwner <span class="token operator">=</span> <span class="token number">0</span>
+dataLength <span class="token operator">=</span> <span class="token number">64</span>
+numChildren <span class="token operator">=</span> <span class="token number">0</span>
+</code></pre></div><p>设置 per-broker 范围参数。我们还是以 <code>unclean.leader.election.enable</code> 参数为例，我现在为 ID 为 1 的 Broker 设置一个不同的值。命令如下：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server  <span class="token number">10.37</span>.249.58:9092 --entity-type brokers --entity-name <span class="token number">1</span> --alter --add-config unclean.leader.election.enable<span class="token operator">=</span>false
+
+<span class="token comment">#返回结果</span>
+Completed updating config <span class="token keyword">for</span> broker <span class="token number">1</span>.
+</code></pre></div><p>我们使用下列命令查看 Broker ID 为 1 的节点动态参数，可以看到 <code>DYNAMIC_BROKER_CONFIG:unclean.leader.election.enable=false</code>，表示我们刚才对 per-broker 参数的调整生效了。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server <span class="token number">10.37</span>.249.58:9092 --entity-type brokers --entity-name <span class="token number">1</span> --describe
+
+<span class="token comment">#返回结果</span>
+Dynamic configs <span class="token keyword">for</span> broker <span class="token number">1</span> are:
+  unclean.leader.election.enable<span class="token operator">=</span>false <span class="token assign-left variable">sensitive</span><span class="token operator">=</span>false <span class="token assign-left variable">synonyms</span><span class="token operator">=</span><span class="token punctuation">{</span>DYNAMIC_BROKER_CONFIG:unclean.leader.election.enable<span class="token operator">=</span>false, DYNAMIC_DEFAULT_BROKER_CONFIG:unclean.leader.election.enable<span class="token operator">=</span>true, STATIC_BROKER_CONFIG:unclean.leader.election.enable<span class="token operator">=</span>false, DEFAULT_CONFIG:unclean.leader.election.enable<span class="token operator">=</span>false<span class="token punctuation">}</span>
+</code></pre></div><p>在 Zookeeper 上查看 /config/brokers/1 节点可以查看 Broker ID 为 1 的节点的动态参数设置。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>zk: <span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">]</span> <span class="token operator">&gt;</span> get /config/brokers/1
+<span class="token punctuation">{</span><span class="token string">&quot;version&quot;</span>:1,<span class="token string">&quot;config&quot;</span>:<span class="token punctuation">{</span><span class="token string">&quot;unclean.leader.election.enable&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;false&quot;</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+cZxid <span class="token operator">=</span> <span class="token number">17179869574</span>
+ctime <span class="token operator">=</span> <span class="token number">1631246495120</span>
+mZxid <span class="token operator">=</span> <span class="token number">17179869574</span>
+mtime <span class="token operator">=</span> <span class="token number">1631246495120</span>
+pZxid <span class="token operator">=</span> <span class="token number">17179869574</span>
+cversion <span class="token operator">=</span> <span class="token number">0</span>
+dataVersion <span class="token operator">=</span> <span class="token number">0</span>
+aclVersion <span class="token operator">=</span> <span class="token number">0</span>
+ephemeralOwner <span class="token operator">=</span> <span class="token number">0</span>
+dataLength <span class="token operator">=</span> <span class="token number">65</span>
+numChildren <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">[</span>zk: <span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">]</span> <span class="token operator">&gt;</span> get /config/brokers/<span class="token operator">&lt;</span>default<span class="token operator">&gt;</span><span class="token punctuation">[</span>zk: <span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">]</span> <span class="token operator">&gt;</span> get /config/brokers/1
+</code></pre></div><p>删除 cluster-wide 范围动态参数。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type brokers --entity-default --alter <span class="token punctuation">\</span>
+--delete-config unclean.leader.election.enable
+
+<span class="token comment">#返回结果</span>
+Completed updating default config <span class="token keyword">for</span> <span class="token for-or-select variable">brokers</span> <span class="token keyword">in</span> the cluster.
+</code></pre></div><p>删除  per-broker 范围参数。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type brokers --entity-name <span class="token number">1</span> --alter <span class="token punctuation">\</span>
+--delete-config unclean.leader.election.enable
+
+<span class="token comment">#返回结果</span>
+Completed updating config <span class="token keyword">for</span> broker <span class="token number">1</span>.
+</code></pre></div><h4 id="修改-topic-动态参数"><a href="#修改-topic-动态参数" class="header-anchor">#</a> 修改 Topic 动态参数</h4> <p>设置 Topic test-topic 的 <code>retention.ms</code> 为 10000。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server  <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type topics --entity-name test-topic --alter <span class="token punctuation">\</span>
+--add-config retention.ms<span class="token operator">=</span><span class="token number">10000</span>
+</code></pre></div><p>查看设置的 Topic 动态参数。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server  <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type topics --entity-name test-topic --describe
+
+<span class="token comment">#返回结果</span>
+Dynamic configs <span class="token keyword">for</span> topic test-topic are:
+  retention.ms<span class="token operator">=</span><span class="token number">10000</span> <span class="token assign-left variable">sensitive</span><span class="token operator">=</span>false <span class="token assign-left variable">synonyms</span><span class="token operator">=</span><span class="token punctuation">{</span>DYNAMIC_TOPIC_CONFIG:retention.ms<span class="token operator">=</span><span class="token number">10000</span><span class="token punctuation">}</span>
+</code></pre></div><p>在 Zookeeper 上可以查看 /config/topics/<topic-name> 来查看 Topic 动态参数。</topic-name></p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token punctuation">[</span>zk: <span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">]</span> <span class="token operator">&gt;</span> get /config/topics/test-topic
+<span class="token punctuation">{</span><span class="token string">&quot;version&quot;</span>:1,<span class="token string">&quot;config&quot;</span>:<span class="token punctuation">{</span><span class="token string">&quot;retention.ms&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;10000&quot;</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+cZxid <span class="token operator">=</span> <span class="token number">17179869460</span>
+ctime <span class="token operator">=</span> <span class="token number">1631245744105</span>
+mZxid <span class="token operator">=</span> <span class="token number">17179869619</span>
+mtime <span class="token operator">=</span> <span class="token number">1631250116481</span>
+pZxid <span class="token operator">=</span> <span class="token number">17179869460</span>
+cversion <span class="token operator">=</span> <span class="token number">0</span>
+dataVersion <span class="token operator">=</span> <span class="token number">10</span>
+aclVersion <span class="token operator">=</span> <span class="token number">0</span>
+ephemeralOwner <span class="token operator">=</span> <span class="token number">0</span>
+dataLength <span class="token operator">=</span> <span class="token number">47</span>
+numChildren <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">[</span>zk: <span class="token punctuation">(</span>CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">]</span> <span class="token operator">&gt;</span> get /config/topics/test-topic
+</code></pre></div><p>删除 Topic 动态参数。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>kafka-configs.sh --bootstrap-server  <span class="token number">10.37</span>.249.58:9092 <span class="token punctuation">\</span>
+--entity-type topics --entity-name test-topic --alter <span class="token punctuation">\</span>
+--delete-config retention.ms
+</code></pre></div><h2 id="kafka-集群一键启动-停止脚本"><a href="#kafka-集群一键启动-停止脚本" class="header-anchor">#</a> Kafka 集群一键启动/停止脚本</h2> <p>环境变量设置：</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token comment">#/etc/profile 文件</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">KAFKA_HOME</span><span class="token operator">=</span>/usr/local/kafka
+<span class="token builtin class-name">export</span> <span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span><span class="token environment constant">$PATH</span><span class="token builtin class-name">:</span><span class="token variable">$KAFKA_HOME</span>/bin
+</code></pre></div><p>一键启动/停止脚本，查看状态需要安装 jps 工具。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token shebang important">#! /bin/bash</span>
+<span class="token comment"># 填写 Kafka Broker 节点地址</span>
+<span class="token assign-left variable">hosts</span><span class="token operator">=</span><span class="token punctuation">(</span>kafka1 kafka2 kafka3<span class="token punctuation">)</span>
+
+<span class="token comment"># 打印启动分布式脚本信息</span>
+<span class="token assign-left variable">mill</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%N&quot;</span><span class="token variable">`</span></span>
+<span class="token assign-left variable">tdate</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%Y-%m-%d %H:%M:%S,<span class="token variable">${mill<span class="token operator">:</span>0<span class="token operator">:</span>3}</span>&quot;</span><span class="token variable">`</span></span>
+
+<span class="token builtin class-name">echo</span> <span class="token punctuation">[</span><span class="token variable">$tdate</span><span class="token punctuation">]</span> INFO <span class="token punctuation">[</span>Kafka Cluster<span class="token punctuation">]</span> begins to execute the <span class="token variable">$1</span> operation.
+
+<span class="token comment"># 执行分布式开启命令</span>
+<span class="token keyword">function</span> <span class="token function-name function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable">${hosts<span class="token punctuation">[</span>@<span class="token punctuation">]</span>}</span>
+                <span class="token keyword">do</span>
+                        <span class="token assign-left variable">smill</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%N&quot;</span><span class="token variable">`</span></span>
+                        <span class="token assign-left variable">stdate</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%Y-%m-%d %H:%M:%S,<span class="token variable">${smill<span class="token operator">:</span>0<span class="token operator">:</span>3}</span>&quot;</span><span class="token variable">`</span></span>
+                        <span class="token function">ssh</span> root@<span class="token variable">$i</span> <span class="token string">&quot;source /etc/profile;echo [<span class="token variable">$stdate</span>] INFO [Kafka Broker <span class="token variable">$i</span>] begins to execute the startup operation.;kafka-server-start.sh <span class="token variable">$KAFKA_HOME</span>/config/server.properties&gt;/dev/null&quot;</span> <span class="token operator">&amp;</span>
+                        <span class="token function">sleep</span> <span class="token number">1</span>
+                <span class="token keyword">done</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># 执行分布式关闭命令</span>
+<span class="token keyword">function</span> <span class="token function-name function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable">${hosts<span class="token punctuation">[</span>@<span class="token punctuation">]</span>}</span>
+                <span class="token keyword">do</span>
+                        <span class="token assign-left variable">smill</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%N&quot;</span><span class="token variable">`</span></span>
+                        <span class="token assign-left variable">stdate</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%Y-%m-%d %H:%M:%S,<span class="token variable">${smill<span class="token operator">:</span>0<span class="token operator">:</span>3}</span>&quot;</span><span class="token variable">`</span></span>
+                        <span class="token function">ssh</span> root@<span class="token variable">$i</span> <span class="token string">&quot;source /etc/profile;echo [<span class="token variable">$stdate</span>] INFO [Kafka Broker <span class="token variable">$i</span>] begins to execute the shutdown operation.;kafka-server-stop.sh&gt;/dev/null;&quot;</span> <span class="token operator">&amp;</span>
+                        <span class="token function">sleep</span> <span class="token number">1</span>
+                <span class="token keyword">done</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># 查看 Kafka Broker 节点状态</span>
+<span class="token keyword">function</span> <span class="token function-name function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable">${hosts<span class="token punctuation">[</span>@<span class="token punctuation">]</span>}</span>
+                <span class="token keyword">do</span>
+                        <span class="token assign-left variable">smill</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%N&quot;</span><span class="token variable">`</span></span>
+                        <span class="token assign-left variable">stdate</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">&quot;+%Y-%m-%d %H:%M:%S,<span class="token variable">${smill<span class="token operator">:</span>0<span class="token operator">:</span>3}</span>&quot;</span><span class="token variable">`</span></span>
+                        <span class="token function">ssh</span> root@<span class="token variable">$i</span> <span class="token string">&quot;source /etc/profile;echo [<span class="token variable">$stdate</span>] INFO [Kafka Broker <span class="token variable">$i</span>] status message is :;jps | grep Kafka;&quot;</span> <span class="token operator">&amp;</span>
+                        <span class="token function">sleep</span> <span class="token number">1</span>
+                <span class="token keyword">done</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># 判断输入的 Kafka 命令参数是否有效</span>
+<span class="token keyword">case</span> <span class="token string">&quot;<span class="token variable">$1</span>&quot;</span> <span class="token keyword">in</span>
+    start<span class="token punctuation">)</span>
+        start
+        <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    stop<span class="token punctuation">)</span>
+        stop
+        <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    status<span class="token punctuation">)</span>
+        status
+        <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    *<span class="token punctuation">)</span>
+        <span class="token builtin class-name">echo</span> <span class="token string">&quot;Usage: <span class="token variable">$0</span> {start|stop|status}&quot;</span>
+        <span class="token assign-left variable">RETVAL</span><span class="token operator">=</span><span class="token number">1</span>
+<span class="token keyword">esac</span>
+</code></pre></div><h2 id="参考资料"><a href="#参考资料" class="header-anchor">#</a> 参考资料</h2> <ul><li><a href="https://time.geekbang.org/column/article/113504" target="_blank" rel="noopener noreferrer">Kafka 动态配置了解下?<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://time.geekbang.org/column/article/116111" target="_blank" rel="noopener noreferrer">常见工具脚本大汇总<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/24.264ea023.js" defer></script>
+  </body>
+</html>

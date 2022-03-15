@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kubernetes 持久卷 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/31.6ce9437c.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link router-link-active">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link router-link-active">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Kubernetes 持久卷</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/cloudnative/kubernetes/persistent_volume.html#volume-卷" class="sidebar-link">Volume 卷</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#persistent-volume-持久卷" class="sidebar-link">Persistent Volume 持久卷</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#pv-回收策略" class="sidebar-link">PV 回收策略</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#访问模式" class="sidebar-link">访问模式</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#卷绑定模式" class="sidebar-link">卷绑定模式</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#静态供应" class="sidebar-link">静态供应</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#创建-pv" class="sidebar-link">创建 PV</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#创建-pvc" class="sidebar-link">创建 PVC</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#创建-pod-挂载-pv" class="sidebar-link">创建 Pod 挂载 PV</a></li></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#动态供应" class="sidebar-link">动态供应</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#安装-nfs" class="sidebar-link">安装 NFS</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#配置存储插件" class="sidebar-link">配置存储插件</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#方式一-创建-pvc-自动申请-pv" class="sidebar-link">方式一：创建 PVC 自动申请 PV</a></li><li class="sidebar-sub-header"><a href="/cloudnative/kubernetes/persistent_volume.html#方式二-volumeclaimtemplates" class="sidebar-link">方式二：volumeClaimTemplates</a></li></ul></li><li><a href="/cloudnative/kubernetes/persistent_volume.html#设置默认-storageclass" class="sidebar-link">设置默认 StorageClass</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="kubernetes-持久卷"><a href="#kubernetes-持久卷" class="header-anchor">#</a> Kubernetes 持久卷</h1> <h2 id="volume-卷"><a href="#volume-卷" class="header-anchor">#</a> Volume 卷</h2> <p>Container 中的文件在磁盘上是临时存放的，这给 Container 中运行的较重要的应用程序带来一些问题：</p> <ul><li>1.当容器崩溃时，kubelet 会重新启动容器，但容器会以干净的状态重启，造成文件的丢失。</li> <li>2.Pod 中运行多个容器时，希望能在多个容器中共享文件。</li></ul> <p>因此 Kubernetes 使用了卷（Volume） 这一抽象概念能够来解决这两个问题。Kubernetes 支持下列类型的卷：</p> <ul><li><strong>hostpath</strong>：将主机节点文件系统上的文件或目录挂载到你的 Pod 中。</li> <li><strong>emptyDir</strong>: 当 Pod 分派到某个 Node 上时，emptyDir 卷会被创建，并且在 Pod 在该节点上运行期间，卷一直存在。 就像其名称表示的那样，卷最初是空的。 Pod 中的多个容器可以共享 emptyDir 卷中的文件。 当 Pod 因为某些原因被从节点上删除时，emptyDir 卷中的数据也会被永久删除。 容器崩溃并不会导致 Pod 被从节点上移除，因此容器崩溃期间 emptyDir 卷中的数据是安全的。</li> <li><strong>Persistent Volume</strong>：persistentVolumeClaim 卷用来将持久卷（PersistentVolume） 挂载到 Pod 中。 持久卷申领（PersistentVolumeClaim）是用户在不知道特定云环境细节的情况下&quot;申领&quot;持久存储 （例如 NFS，iSCSI）的一种方法。</li></ul> <p>以上只是列举了其中一小部分支持的卷，具体可以查看： https://kubernetes.io/zh/docs/concepts/storage/volumes/#persistentvolumeclaim</p> <h2 id="persistent-volume-持久卷"><a href="#persistent-volume-持久卷" class="header-anchor">#</a> Persistent Volume 持久卷</h2> <p>本文主要介绍持久卷的使用。Kubernetes 为了使开发人员能够在请求存储资源时，避免处理存储设施细节，引入了持久卷（PersistentVolume，PV） 和 持久卷申领（PersistentVolumeClaim，PVC）：</p> <ul><li><strong>持久卷（PersistentVolume，PV</strong> 是集群中的一块存储，可以由管理员事先供应，或者 使用存储类（Storage Class）来动态供应。 持久卷是集群资源，就像节点也是集群资源一样。PV 持久卷和普通的 Volume 一样，也是使用 卷插件来实现的，只是它们拥有独立于任何使用 PV 的 Pod 的生命周期。 此 API 对象中记述了存储的实现细节，无论其背后是 NFS、iSCSI 还是特定于云平台的存储系统。</li> <li><strong>持久卷申领（PersistentVolumeClaim，PVC</strong> 表达的是用户对存储的请求。概念上与 Pod 类似。 Pod 会耗用节点资源，而 PVC 申领会耗用 PV 资源。Pod 可以请求特定数量的资源（CPU 和内存）；同样 PVC 申领也可以请求特定的大小和访问模式 （例如，可以要求 PV 卷能够以 ReadWriteOnce、ReadOnlyMany 或 ReadWriteMany 模式之一来挂载）。</li></ul> <p>创建 PV 有两种方式：</p> <ul><li>静态供应：一种是集群管理员通过手动方式静态创建应用所需要的 PV。</li> <li>动态供应：
+<ul><li>方式一：用户手动创建 PVC 并由 Provisioner 组件动态创建对应的 PV。</li> <li>方式二：在创建 Pod 的时候使用 volumeClaimTemplates 声明。</li></ul></li></ul> <h2 id="pv-回收策略"><a href="#pv-回收策略" class="header-anchor">#</a> PV 回收策略</h2> <ul><li><strong>保留（Retain）</strong>
+保留策略允许手动回收资源，当删除PVC的时候，PV仍然存在，变为Realease状态，需要用户手动通过以下步骤回收卷（只有hostPath和nfs支持Retain回收策略）：
+<ul><li>1.删除PV。</li> <li>2.手动清理存储的数据资源。</li></ul></li> <li><strong>回收（Resycle）</strong>
+该策略已废弃，推荐使用dynamic provisioning，回收策略会在 volume上执行基本擦除（rm -rf /thevolume/*），可被再次声明使用。</li> <li><strong>删除（Delete）</strong> <ul><li>当发生删除操作的时候，会从 Kubernetes 集群中删除 PV 对象，并执行外部存储资源的删除操作（根据不同的provisioner 定义的删除逻辑不同，有的是重命名而不是删除）。</li> <li>动态配置的卷继承其 StorageClass 的回收策略，默认为Delete，即当用户删除 PVC 的时候，会自动执行 PV 的删除策略。</li></ul></li></ul> <h2 id="访问模式"><a href="#访问模式" class="header-anchor">#</a> 访问模式</h2> <p>访问模式有：</p> <ul><li>ReadWriteOnce -- 卷可以被一个节点以读写方式挂载；</li> <li>ReadOnlyMany -- 卷可以被多个节点以只读方式挂载；</li> <li>ReadWriteMany -- 卷可以被多个节点以读写方式挂载。</li></ul> <p>在命令行接口（CLI）中，访问模式也使用以下缩写形式：</p> <ul><li>RWO -- ReadWriteOnce</li> <li>ROX -- ReadOnlyMany</li> <li>RWX -- ReadWriteMany</li></ul> <p>每个卷只能同一时刻只能以一种访问模式挂载，即使该卷能够支持 多种访问模式。例如，一个 GCEPersistentDisk 卷可以被某节点以 ReadWriteOnce 模式挂载，或者被多个节点以 ReadOnlyMany 模式挂载，但不可以同时以两种模式挂载。</p> <h2 id="卷绑定模式"><a href="#卷绑定模式" class="header-anchor">#</a> 卷绑定模式</h2> <p>volumeBindingMode 字段控制了 PVC 和 PV 在什么时候进行绑定。</p> <ul><li>Immediate：表示一旦创建了 PVC 也就完成了卷绑定和动态制备。 对于由于拓扑限制而非集群所有节点可达的存储后端，PV 会在不知道 Pod 调度要求的情况下绑定或者制备。</li> <li>WaitForFirstConsumer：该模式将延迟 PV 的绑定和制备，直到使用该 PVC 的 Pod 被创建。PV 会根据 Pod 调度约束指定的拓扑来选择或制备，包括但不限于 资源需求、 节点筛选器、 pod 亲和性和互斥性、 以及污点和容忍度。</li></ul> <h2 id="静态供应"><a href="#静态供应" class="header-anchor">#</a> 静态供应</h2> <p>静态供应需要管理员手动创建 PV，然后创建 PVC 绑定 PV，最后创建 Pod 声明使用 PVC。</p> <h3 id="创建-pv"><a href="#创建-pv" class="header-anchor">#</a> 创建 PV</h3> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolume
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>volume
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> local
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> manual <span class="token comment">#静态供应，名字可以任意取</span>
+  <span class="token key atrule">capacity</span><span class="token punctuation">:</span>
+    <span class="token key atrule">storage</span><span class="token punctuation">:</span> 10Gi
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteOnce
+  <span class="token key atrule">hostPath</span><span class="token punctuation">:</span>
+    <span class="token key atrule">path</span><span class="token punctuation">:</span> <span class="token string">&quot;/mnt/data&quot;</span>  <span class="token comment">#在创建pod的节点上会新建该目录</span>
+</code></pre></div><h3 id="创建-pvc"><a href="#创建-pvc" class="header-anchor">#</a> 创建 PVC</h3> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">fapiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>claim
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> manual <span class="token comment">#storageClassName要和PV中的一致</span>
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteOnce  <span class="token comment">#accessMode要和PV中的一致</span>
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+    <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+      <span class="token key atrule">storage</span><span class="token punctuation">:</span> 3Gi <span class="token comment">#申请3G容量，申请就近原则，如果有一个10G的和一个20G的PV满足要求，那么使用10G的PV</span>
+</code></pre></div><h3 id="创建-pod-挂载-pv"><a href="#创建-pod-挂载-pv" class="header-anchor">#</a> 创建 Pod 挂载 PV</h3> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>pod
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>storage
+      <span class="token key atrule">persistentVolumeClaim</span><span class="token punctuation">:</span>
+        <span class="token key atrule">claimName</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>claim  <span class="token comment">#使用的PVC的名字</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>container
+      <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx
+      <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">80</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> <span class="token string">&quot;http-server&quot;</span>
+      <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> <span class="token string">&quot;/usr/share/nginx/html&quot;</span> <span class="token comment">#容器中挂载的目录</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> task<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>storage
+</code></pre></div><p>在宿主机上的目录创建一个文件：</p> <div class="language- extra-class"><pre class="language-text"><code>root@worker01:~# cd /mnt/data/
+root@worker01:/mnt/data# echo &quot;volume nginx&quot; &gt; index.html
+</code></pre></div><p>尝试访问 Pod 的服务，可以看到 nginx 的 index.html 文件已经被修改：</p> <div class="language-shell extra-class"><pre class="language-shell"><code>root@master01:~/yaml/volume<span class="token comment"># kubectl get pod -o wide                                   </span>
+NAME          READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+task-pv-pod   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          11m   <span class="token number">192.168</span>.5.17   worker01   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+root@master01:~/yaml/volume<span class="token comment"># curl 192.168.5.17</span>
+volume nginx
+</code></pre></div><p>删除要按照 Pod--&gt;PVC--&gt;PV 的顺序删除，如果先删除了 PVC 会等 Pod 删除掉，才会删除 PVC ，如果先删除了 PV，会等 pod 和 PVC 删除了才会删除 PV。</p> <h2 id="动态供应"><a href="#动态供应" class="header-anchor">#</a> 动态供应</h2> <p>动态卷供应允许按需创建存储卷。 如果没有动态供应，集群管理员必须手动地联系他们的云或存储提供商来创建新的存储卷， 然后在 Kubernetes 集群创建 PersistentVolume 对象来表示这些卷。 动态供应功能消除了集群管理员预先配置存储的需要。 相反，它在用户请求时自动供应存储。</p> <h3 id="安装-nfs"><a href="#安装-nfs" class="header-anchor">#</a> 安装 NFS</h3> <h4 id="安装nfs服务端"><a href="#安装nfs服务端" class="header-anchor">#</a> 安装NFS服务端</h4> <div class="language-shell extra-class"><pre class="language-shell"><code>root@master01:/<span class="token comment"># apt-get -y install nfs-kernel-server </span>
+root@master01:/<span class="token comment"># systemctl enable nfs-kernel-server.service &amp;&amp; systemctl restart nfs-kernel-server.service</span>
+</code></pre></div><h4 id="安装nfs客户端"><a href="#安装nfs客户端" class="header-anchor">#</a> 安装NFS客户端</h4> <p>在 worker 节点安装NFS客户端：</p> <div class="language-shell extra-class"><pre class="language-shell"><code>root@worker01:~<span class="token comment"># apt-get -y install nfs-common</span>
+</code></pre></div><h3 id="配置存储插件"><a href="#配置存储插件" class="header-anchor">#</a> 配置存储插件</h3> <h4 id="配置rbac"><a href="#配置rbac" class="header-anchor">#</a> 配置RBAC</h4> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> ServiceAccount
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token comment"># replace with namespace where provisioner is deployed</span>
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> default
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> ClusterRole
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> rbac.authorization.k8s.io/v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner<span class="token punctuation">-</span>runner
+<span class="token key atrule">rules</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">resources</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;persistentvolumes&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">verbs</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;get&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;list&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;watch&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;create&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;delete&quot;</span><span class="token punctuation">]</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">resources</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;persistentvolumeclaims&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">verbs</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;get&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;list&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;watch&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;update&quot;</span><span class="token punctuation">]</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;storage.k8s.io&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">resources</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;storageclasses&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">verbs</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;get&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;list&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;watch&quot;</span><span class="token punctuation">]</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">resources</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;events&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">verbs</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;create&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;update&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;patch&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> ClusterRoleBinding
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> rbac.authorization.k8s.io/v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> run<span class="token punctuation">-</span>nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+<span class="token key atrule">subjects</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">kind</span><span class="token punctuation">:</span> ServiceAccount
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+    <span class="token comment"># replace with namespace where provisioner is deployed</span>
+    <span class="token key atrule">namespace</span><span class="token punctuation">:</span> default
+<span class="token key atrule">roleRef</span><span class="token punctuation">:</span>
+  <span class="token key atrule">kind</span><span class="token punctuation">:</span> ClusterRole
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner<span class="token punctuation">-</span>runner
+  <span class="token key atrule">apiGroup</span><span class="token punctuation">:</span> rbac.authorization.k8s.io
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Role
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> rbac.authorization.k8s.io/v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> leader<span class="token punctuation">-</span>locking<span class="token punctuation">-</span>nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token comment"># replace with namespace where provisioner is deployed</span>
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> default
+<span class="token key atrule">rules</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">resources</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;endpoints&quot;</span><span class="token punctuation">]</span>
+    <span class="token key atrule">verbs</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;get&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;list&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;watch&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;create&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;update&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;patch&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> RoleBinding
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> rbac.authorization.k8s.io/v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> leader<span class="token punctuation">-</span>locking<span class="token punctuation">-</span>nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token comment"># replace with namespace where provisioner is deployed</span>
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> default
+<span class="token key atrule">subjects</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">kind</span><span class="token punctuation">:</span> ServiceAccount
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+    <span class="token comment"># replace with namespace where provisioner is deployed</span>
+    <span class="token key atrule">namespace</span><span class="token punctuation">:</span> default
+<span class="token key atrule">roleRef</span><span class="token punctuation">:</span>
+  <span class="token key atrule">kind</span><span class="token punctuation">:</span> Role
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> leader<span class="token punctuation">-</span>locking<span class="token punctuation">-</span>nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token key atrule">apiGroup</span><span class="token punctuation">:</span> rbac.authorization.k8s.io
+</code></pre></div><h4 id="部署存储插件"><a href="#部署存储插件" class="header-anchor">#</a> 部署存储插件</h4> <p>动态卷供应的实现基于 storage.k8s.io API 组中的 StorageClass API 对象。 集群管理员可以根据需要定义多个 StorageClass 对象，每个对象指定一个存储插件（又名 provisioner），存储插件以 Pod 的形式存在于 Kubernetes 集群中：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">app</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token comment"># replace with namespace where provisioner is deployed</span>
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> default
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token key atrule">strategy</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> Recreate
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">app</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+  <span class="token key atrule">template</span><span class="token punctuation">:</span>
+    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">app</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">serviceAccountName</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner
+          <span class="token key atrule">image</span><span class="token punctuation">:</span> quay.io/external_storage/nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>provisioner<span class="token punctuation">:</span>latest
+          <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>root
+              <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /persistentvolumes
+          <span class="token key atrule">env</span><span class="token punctuation">:</span>
+           <span class="token comment"># 指定标识插件的值</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> PROVISIONER_NAME
+              <span class="token key atrule">value</span><span class="token punctuation">:</span> fuseim.pri/ifs    <span class="token comment">#匹配StorageClass的provisioner</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> NFS_SERVER
+              <span class="token key atrule">value</span><span class="token punctuation">:</span> 10.0.1.31  <span class="token comment">#NFS服务器的ip地址</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> NFS_PATH
+              <span class="token key atrule">value</span><span class="token punctuation">:</span> /storage  <span class="token comment">#NFS服务器的路径</span>
+      <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nfs<span class="token punctuation">-</span>client<span class="token punctuation">-</span>root
+          <span class="token key atrule">nfs</span><span class="token punctuation">:</span>
+            <span class="token key atrule">server</span><span class="token punctuation">:</span> 10.0.1.31   <span class="token comment">#NFS服务器的ip地址</span>
+            <span class="token key atrule">path</span><span class="token punctuation">:</span> /storage    <span class="token comment">#NFS服务器的路径</span>
+</code></pre></div><h3 id="方式一-创建-pvc-自动申请-pv"><a href="#方式一-创建-pvc-自动申请-pv" class="header-anchor">#</a> 方式一：创建 PVC 自动申请 PV</h3> <h4 id="配置-storageclass"><a href="#配置-storageclass" class="header-anchor">#</a> 配置 StorageClass</h4> <p>StorageClass 声明存储插件，用于自动创建 PV，provisioner 参数和存储插件的标识对应上才能动态供应卷 ：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> storage.k8s.io/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> StorageClass
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> managed<span class="token punctuation">-</span>nfs<span class="token punctuation">-</span>storage
+<span class="token key atrule">provisioner</span><span class="token punctuation">:</span> fuseim.pri/ifs <span class="token comment">#要匹配nfs deployment env PROVISIONER_NAME的值，默认不支持nfs存储需要添加插件标识</span>
+<span class="token key atrule">parameters</span><span class="token punctuation">:</span>
+  <span class="token key atrule">archiveOnDelete</span><span class="token punctuation">:</span> <span class="token string">&quot;false&quot;</span>
+</code></pre></div><h4 id="创建-pvc-2"><a href="#创建-pvc-2" class="header-anchor">#</a> 创建 PVC</h4> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>storage
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteMany
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> managed<span class="token punctuation">-</span>nfs<span class="token punctuation">-</span>storage
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+    <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+      <span class="token key atrule">storage</span><span class="token punctuation">:</span> 1Gi
+</code></pre></div><p>查看创建的 PVC 和 PV，可以看到我们只创建了 PVC，PV 是存储插件自动配置的</p> <div class="language-shell extra-class"><pre class="language-shell"><code>root@master01:~/yaml/storageClass<span class="token comment"># kubectl get pvc</span>
+NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE
+nginx-pv-storage   Bound    pvc-e52ac960-182a-4065-a6e8-6957f5c93b8a   1Gi        RWX            managed-nfs-storage   3s
+root@master01:~/yaml/storageClass<span class="token comment"># kubectl get pv</span>
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS          REASON   AGE
+pvc-e52ac960-182a-4065-a6e8-6957f5c93b8a   1Gi        RWX            Delete           Bound    default/nginx-test   managed-nfs-storage            11s
+</code></pre></div><p>Pod 使用 PVC 申请 Volume：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>pod
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>storage
+      <span class="token key atrule">persistentVolumeClaim</span><span class="token punctuation">:</span>
+        <span class="token key atrule">claimName</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>test
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>container
+      <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx
+      <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">80</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> <span class="token string">&quot;nginx-server&quot;</span>
+      <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> <span class="token string">&quot;/usr/share/nginx/html&quot;</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>pv<span class="token punctuation">-</span>storage
+</code></pre></div><h3 id="方式二-volumeclaimtemplates"><a href="#方式二-volumeclaimtemplates" class="header-anchor">#</a> 方式二：volumeClaimTemplates</h3> <p>除了上面创建 PVC 自动创建 PV，然后 Pod 再声明使用 PVC 的方式以外，还有一个更简便的方法，就是使用 volumeClaimTemplates 直接指定 StorageClass 和 申请存储的大小，动态创建 PVC 和 PV：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> StatefulSet
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> web
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">app</span><span class="token punctuation">:</span> nginx
+  <span class="token key atrule">serviceName</span><span class="token punctuation">:</span> <span class="token string">&quot;nginx&quot;</span>
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">2</span>
+  <span class="token key atrule">template</span><span class="token punctuation">:</span>
+    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">app</span><span class="token punctuation">:</span> nginx
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx
+        <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx
+        <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">80</span>
+          <span class="token key atrule">name</span><span class="token punctuation">:</span> web
+        <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>disk<span class="token punctuation">-</span>ssd
+          <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /data
+  <span class="token key atrule">volumeClaimTemplates</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx<span class="token punctuation">-</span>disk<span class="token punctuation">-</span>ssd
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">accessModes</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> <span class="token string">&quot;ReadWriteOnce&quot;</span> <span class="token punctuation">]</span>
+      <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> <span class="token string">&quot;managed-nfs-storage&quot;</span>  <span class="token comment">#storageClass的名字</span>
+      <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+        <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+          <span class="token key atrule">storage</span><span class="token punctuation">:</span> 10Gi
+</code></pre></div><h2 id="设置默认-storageclass"><a href="#设置默认-storageclass" class="header-anchor">#</a> 设置默认 StorageClass</h2> <div class="language-sh extra-class"><pre class="language-sh"><code>kubectl patch storageclass managed-nfs-storage -p <span class="token string">'{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;}}}'</span>
+</code></pre></div><p>查看 StorageClass 旁边会标识 default：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>❯ kubectl get storageclasses.storage.k8s.io
+NAME                            PROVISIONER      RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+managed-nfs-storage <span class="token punctuation">(</span>default<span class="token punctuation">)</span>   fuseim.pri/ifs   Delete          Immediate           <span class="token boolean">false</span>                  36d
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/31.6ce9437c.js" defer></script>
+  </body>
+</html>

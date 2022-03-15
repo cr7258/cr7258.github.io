@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Elasticsearch 文档命令 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/35.9f2b93ad.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Elasticsearch 文档命令</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/search/elasticsearch/command/document.html#更新文档" class="sidebar-link">更新文档</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/search/elasticsearch/command/document.html#使用-script-修改文档" class="sidebar-link">使用 Script 修改文档</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/command/document.html#使用-doc-修改文档值" class="sidebar-link">使用 doc 修改文档值</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/command/document.html#noop-返回结果" class="sidebar-link">noop 返回结果</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/command/document.html#upsert" class="sidebar-link">Upsert</a></li></ul></li><li><a href="/search/elasticsearch/command/document.html#并发控制" class="sidebar-link">并发控制</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/search/elasticsearch/command/document.html#使用-version-字段进行并发控制-乐观锁-6-7-版本以前" class="sidebar-link">使用 _version 字段进行并发控制（乐观锁）-- 6.7 版本以前</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/command/document.html#使用-if-seq-no-和-if-primary-term" class="sidebar-link">使用 ifseqno 和 ifprimaryterm</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="elasticsearch-文档命令"><a href="#elasticsearch-文档命令" class="header-anchor">#</a> Elasticsearch 文档命令</h1> <h2 id="更新文档"><a href="#更新文档" class="header-anchor">#</a> 更新文档</h2> <p>参考链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html</p> <h3 id="使用-script-修改文档"><a href="#使用-script-修改文档" class="header-anchor">#</a> 使用 Script 修改文档</h3> <p>一个更新脚本具有以下三项重要元素：</p> <ul><li>script 的作用比较强大，可以修改字段值，往列表中添加新元素，执行更复杂的 painless 脚本等等。 默认的脚本语言是 painless。</li> <li>由于更新要获得现有文档的 _source 内容，修改并重新索引新的文档，因此脚本会修改 _source 中的字段。使用 ctx._source 来引用 _source，使用 ctx._source[字段名] 来引用某个指定的字段。</li> <li>如果需要变量，推荐在 params 下作为参数单独定义，和脚本本身分开。这是因为脚本需要编译，一旦编译完成，就会被缓存。如果使用不同的参数，多次运行同样的脚本，脚本只需要编译一次。之后的运行都会从缓存中获取现有的脚本。相比每次不同的脚本，这样运行会更快，因为不同的脚本每次都需要编译。这个思想和 Oracle 的绑定变量与软编译概念异曲同工。</li></ul> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#先插入一条数据，指定 id 为 1</span>
+PUT my<span class="token punctuation">-</span>index/_doc/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;chengzw&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;age&quot;</span><span class="token punctuation">:</span> <span class="token number">18</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#修改这条文档的值，加上一个字段 new_field </span>
+POST my<span class="token punctuation">-</span>index/_update/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;script&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;ctx._source.new_field = 'new content'&quot;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#查看文档修改后的值</span>
+GET my<span class="token punctuation">-</span>index/_doc/1
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;my-index&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_version&quot;</span> <span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_seq_no&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_primary_term&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;found&quot;</span> <span class="token punctuation">:</span> <span class="token boolean important">true</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_source&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;name&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;chengzw&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;age&quot;</span> <span class="token punctuation">:</span> <span class="token number">18</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;new_field&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;new content&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="使用-doc-修改文档值"><a href="#使用-doc-修改文档值" class="header-anchor">#</a> 使用 doc 修改文档值</h3> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#先插入一条数据，指定 id 为 1</span>
+PUT my<span class="token punctuation">-</span>index/_doc/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;chengzw&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;age&quot;</span><span class="token punctuation">:</span> <span class="token number">18</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#指定修改 name 的值</span>
+POST my<span class="token punctuation">-</span>index/_update/1
+<span class="token punctuation">{</span>
+  &quot;doc&quot;<span class="token punctuation">:</span><span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;jack&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">#相同作用的 script 写法</span>
+POST my<span class="token punctuation">-</span>index/_update/1
+<span class="token punctuation">{</span>
+
+  <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx._source.name = 'peter'&quot;</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token comment">#查看修改后的值</span>
+GET my<span class="token punctuation">-</span>index/_doc/1
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;my-index&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_version&quot;</span> <span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_seq_no&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_primary_term&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;found&quot;</span> <span class="token punctuation">:</span> <span class="token boolean important">true</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_source&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;name&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;jack&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;age&quot;</span> <span class="token punctuation">:</span> <span class="token number">18</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果 doc 和 script 同时作用于同一个字段，那么 doc 将会被忽略。</p> <h3 id="noop-返回结果"><a href="#noop-返回结果" class="header-anchor">#</a> noop 返回结果</h3> <p>如果 update 最终没有修改原文档的任何值，返回结果 result 将会显示 noop。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#先插入一条数据，指定 id 为 1</span>
+PUT my<span class="token punctuation">-</span>index/_doc/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;chengzw&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;age&quot;</span><span class="token punctuation">:</span> <span class="token number">18</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#修改 name 的值，值和原先一样</span>
+POST my<span class="token punctuation">-</span>index/_update/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;doc&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;chengzw&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;my-index&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_version&quot;</span> <span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;result&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;noop&quot;</span><span class="token punctuation">,</span>  <span class="token comment">#没有修改</span>
+  <span class="token key atrule">&quot;_shards&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;total&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;successful&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;failed&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_seq_no&quot;</span> <span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_primary_term&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>想要 update 没有修改文档的时候 result 也显示 updated，可以加上 <code>&quot;detect_noop&quot;: false</code>。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST my<span class="token punctuation">-</span>index/_update/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;doc&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;chengzw&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+   <span class="token key atrule">&quot;detect_noop&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;my-index&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_version&quot;</span> <span class="token punctuation">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;result&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;updated&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_shards&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;total&quot;</span> <span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;successful&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;failed&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_seq_no&quot;</span> <span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_primary_term&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="upsert"><a href="#upsert" class="header-anchor">#</a> Upsert</h3> <p>为了处理更新时文档并不存在的情况，可以使用 upsert。这个单词是关系数据库中 update 和 insert 的混成词。如果被更新的文档不存在，可以在 json 的 upsert 部分中添加一个初始文档用于索引。</p> <div class="language-sh extra-class"><pre class="language-sh"><code>POST test/_update/1
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;doc&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;counter&quot;</span><span class="token builtin class-name">:</span> <span class="token number">3</span>
+  <span class="token punctuation">}</span>,
+  <span class="token string">&quot;upsert&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;counter&quot;</span><span class="token builtin class-name">:</span> <span class="token number">3</span>,
+    <span class="token string">&quot;name&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;chengzw&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="upsert-配合-script"><a href="#upsert-配合-script" class="header-anchor">#</a> Upsert 配合 script</h4> <p>配合 script 使用，如果文档不存在，则 upsert 元素的内容将作为新文档插入，如果文档存在，则执行 script 中的内容。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST test/_update/1
+<span class="token punctuation">{</span>
+  //count + 4
+  <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx._source.counter += params.count&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;lang&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;painless&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;params&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;count&quot;</span><span class="token punctuation">:</span> <span class="token number">4</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  //设置 count 为 1
+  <span class="token key atrule">&quot;upsert&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;counter&quot;</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>cripted upsert 不管文档是否存在，都执行 script。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST test/_update/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;scripted_upsert&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">true</span><span class="token punctuation">,</span>  //不管文档是否存在，都执行 script。
+  <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx._source.counter += params.count&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;lang&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;painless&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;params&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;count&quot;</span><span class="token punctuation">:</span> <span class="token number">4</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;upsert&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;counter&quot;</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#文档是不存在的，count 最终是 5</span>
+GET test/_doc/1
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_index&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;test&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_type&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;_doc&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_id&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_version&quot;</span> <span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_seq_no&quot;</span> <span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_primary_term&quot;</span> <span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;found&quot;</span> <span class="token punctuation">:</span> <span class="token boolean important">true</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_source&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;counter&quot;</span> <span class="token punctuation">:</span> <span class="token number">5</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="doc-upsert"><a href="#doc-upsert" class="header-anchor">#</a> Doc upsert</h4> <p>当文档存在时修改 name 的值，当文档不存在时插入新文档。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST test/_update/1
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;doc&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;name&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;new_name&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;doc_as_upsert&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="并发控制"><a href="#并发控制" class="header-anchor">#</a> 并发控制</h2> <h3 id="使用-version-字段进行并发控制-乐观锁-6-7-版本以前"><a href="#使用-version-字段进行并发控制-乐观锁-6-7-版本以前" class="header-anchor">#</a> 使用 _version 字段进行并发控制（乐观锁）-- 6.7 版本以前</h3> <p>插入一条文档：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>PUT /test_index/_doc/1
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;test_field&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;test test&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>其中一个客户端先更新了一下这个数据，更新成功，version 有 1 变为 2.</p> <div class="language-sh extra-class"><pre class="language-sh"><code>PUT /test_index/_doc/1?version<span class="token operator">=</span><span class="token number">1</span>
+<span class="token punctuation">{</span>
+    <span class="token string">&quot;test_field&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;test client 1&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>另外一个客户端，尝试基于 version=1 的数据去修改，，此时就会报错 version conflict：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>PUT /test_index/_doc/1?version<span class="token operator">=</span><span class="token number">1</span>
+<span class="token punctuation">{</span>
+    <span class="token string">&quot;test_field&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;test client 2&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="使用-if-seq-no-和-if-primary-term"><a href="#使用-if-seq-no-和-if-primary-term" class="header-anchor">#</a> 使用 if_seq_no 和 if_primary_term</h3> <p>if_primary_term 记录的就是具体的哪个主分片，而 if_seq_no 这个参数起的作用和旧版本中的 _version 是一样的，之所以加上 if_primary_term 这个参数主要是提高并发的性能以及更自然，因为每个 document 都只会在某一个主分片中，所以由所在主分片分配序列号比由之前通过一个参数 _version，相当于由整个 Elasticsearch 集群分配版本号要来的更好。</p> <p>插入一条数据：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>PUT /test_index/_doc/1
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;test_field&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;test test&quot;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;_index&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;test_index&quot;</span>,
+  <span class="token string">&quot;_type&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;_doc&quot;</span>,
+  <span class="token string">&quot;_id&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;1&quot;</span>,
+  <span class="token string">&quot;_version&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">3</span>,
+  <span class="token string">&quot;result&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;created&quot;</span>,
+  <span class="token string">&quot;_shards&quot;</span> <span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;total&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">2</span>,
+    <span class="token string">&quot;successful&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">1</span>,
+    <span class="token string">&quot;failed&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span>,
+  <span class="token string">&quot;_seq_no&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">2</span>,
+  <span class="token string">&quot;_primary_term&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>其中一个客户端，先更新了一下这个数据，_seq_no 会变为 3：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>PUT /test_index/_doc/1?if_seq_no<span class="token operator">=</span><span class="token number">2</span><span class="token operator">&amp;</span><span class="token assign-left variable">if_primary_term</span><span class="token operator">=</span><span class="token number">1</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;test_field&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;test client 1&quot;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;_index&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;test_index&quot;</span>,
+  <span class="token string">&quot;_type&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;_doc&quot;</span>,
+  <span class="token string">&quot;_id&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;1&quot;</span>,
+  <span class="token string">&quot;_version&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">4</span>,
+  <span class="token string">&quot;result&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;updated&quot;</span>,
+  <span class="token string">&quot;_shards&quot;</span> <span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;total&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">2</span>,
+    <span class="token string">&quot;successful&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">1</span>,
+    <span class="token string">&quot;failed&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span>,
+  <span class="token string">&quot;_seq_no&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">3</span>,
+  <span class="token string">&quot;_primary_term&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>另外一个客户端，尝试基于 if_seq_no 和 if_primary_term 的数据进行修改，会更新失败：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>PUT /test_index/_doc/1?if_seq_no<span class="token operator">=</span><span class="token number">2</span><span class="token operator">&amp;</span><span class="token assign-left variable">if_primary_term</span><span class="token operator">=</span><span class="token number">1</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;test_field&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;test client 2&quot;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;error&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;root_cause&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token string">&quot;type&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;version_conflict_engine_exception&quot;</span>,
+        <span class="token string">&quot;reason&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;[1]: version conflict, required seqNo [2], primary term [1]. current document has seqNo [3] and primary term [1]&quot;</span>,
+        <span class="token string">&quot;index_uuid&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;0jAS2GP1TPG5J8PlqGdYIQ&quot;</span>,
+        <span class="token string">&quot;shard&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;4&quot;</span>,
+        <span class="token string">&quot;index&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;test_index&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>,
+    <span class="token string">&quot;type&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;version_conflict_engine_exception&quot;</span>,
+    <span class="token string">&quot;reason&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;[1]: version conflict, required seqNo [2], primary term [1]. current document has seqNo [3] and primary term [1]&quot;</span>,
+    <span class="token string">&quot;index_uuid&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;0jAS2GP1TPG5J8PlqGdYIQ&quot;</span>,
+    <span class="token string">&quot;shard&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;4&quot;</span>,
+    <span class="token string">&quot;index&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;test_index&quot;</span>
+  <span class="token punctuation">}</span>,
+  <span class="token string">&quot;status&quot;</span><span class="token builtin class-name">:</span> <span class="token number">409</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/35.9f2b93ad.js" defer></script>
+  </body>
+</html>

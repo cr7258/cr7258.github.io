@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Elasticsearch 查询语句 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/39.6cae878b.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/33.27e3d994.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Elasticsearch 查询语句</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/search/elasticsearch/command/query.html#当-total-value-大于10000时-查询完整数量" class="sidebar-link">当 total value 大于10000时，查询完整数量</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/query.html#搜索-date-类型数据指定时区" class="sidebar-link">搜索 date 类型数据指定时区</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/query.html#分桶后根据-doc-count-排序" class="sidebar-link">分桶后根据 doc_count 排序</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/query.html#查看字段有的基数-去重" class="sidebar-link">查看字段有的基数（去重）</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/query.html#聚合结果根据-bucket-count-进行过滤" class="sidebar-link">聚合结果根据 bucket count 进行过滤</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/query.html#获取聚合查询结果中-bucket-数量" class="sidebar-link">获取聚合查询结果中 bucket 数量</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/command/query.html#计算按照源目-ip-地址之前流量大小排序" class="sidebar-link">计算按照源目 IP 地址之前流量大小排序</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="elasticsearch-查询语句"><a href="#elasticsearch-查询语句" class="header-anchor">#</a> Elasticsearch 查询语句</h1> <h2 id="当-total-value-大于10000时-查询完整数量"><a href="#当-total-value-大于10000时-查询完整数量" class="header-anchor">#</a> 当 total value 大于10000时，查询完整数量</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#URI Search</span>
+GET shakespeare/_search<span class="token punctuation">?</span>track_total_hits=true
+
+<span class="token comment">#Query DSL</span>
+GET shakespeare/_search
+<span class="token punctuation">{</span>
+   <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+     <span class="token key atrule">&quot;match_all&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+   <span class="token punctuation">}</span><span class="token punctuation">,</span> 
+   <span class="token key atrule">&quot;track_total_hits&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#加上size:{number}参数指定内容条数</span>
+</code></pre></div><h2 id="搜索-date-类型数据指定时区"><a href="#搜索-date-类型数据指定时区" class="header-anchor">#</a> 搜索 date 类型数据指定时区</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET vba<span class="token punctuation">-</span>app<span class="token punctuation">-</span>logstash/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;@timestamp&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;range&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;@timestamp&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;gte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-03-31T08:53:19&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;lte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-03-31T09:53:19&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;time_zone&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;Asia/Shanghai&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> 
+  <span class="token key atrule">&quot;sort&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;@timestamp&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;order&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;desc&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>也可以指定 UTC + 8 换算成中国时区：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET vba<span class="token punctuation">-</span>app<span class="token punctuation">-</span>logstash/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;_source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;@timestamp&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;range&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;@timestamp&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;gte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-03-31T08:53:19+08:00&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;lte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-03-31T09:53:19+08:00&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> 
+  <span class="token key atrule">&quot;sort&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;@timestamp&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;order&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;desc&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="分桶后根据-doc-count-排序"><a href="#分桶后根据-doc-count-排序" class="header-anchor">#</a> 分桶后根据 doc_count 排序</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET vba<span class="token punctuation">-</span>app<span class="token punctuation">-</span>logstash/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;range&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;@timestamp&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;gte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-03-31&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;lte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-03-31&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;time_bucket&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;date_histogram&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;@timestamp&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;interval&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;minute&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;order&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;_count&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;desc&quot;</span>  <span class="token comment">#排序字段是doc_count，顺序是降序</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="查看字段有的基数-去重"><a href="#查看字段有的基数-去重" class="header-anchor">#</a> 查看字段有的基数（去重）</h2> <p>查询 IP 为 116.236.154.162 发送的请求路径的基数：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET <span class="token important">*nginx-access*/_search</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;term&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;x-forwarded-for.keyword&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;\&quot;116.236.154.162\&quot;&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;request_count&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;cardinality&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;request.keyword&quot;</span>  <span class="token comment">#查询有多种不同的request请求</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># 返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;took&quot;</span> <span class="token punctuation">:</span> <span class="token number">766</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;timed_out&quot;</span> <span class="token punctuation">:</span> <span class="token boolean important">false</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_shards&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;total&quot;</span> <span class="token punctuation">:</span> <span class="token number">235</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;successful&quot;</span> <span class="token punctuation">:</span> <span class="token number">235</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;skipped&quot;</span> <span class="token punctuation">:</span> <span class="token number">21</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;failed&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;hits&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;total&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;relation&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;gte&quot;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;max_score&quot;</span> <span class="token punctuation">:</span> <span class="token null important">null</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;hits&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span> <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;aggregations&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;request_count&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">29309</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><p>按照 IP 地址分桶，并查询该 IP 中对应的请求路径的基数，按照基数从大到小排序：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET <span class="token important">*nginx-access-logstash-2021.06*/_search</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> 
+  <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;ip_agg&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;terms&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;x-forwarded-for.keyword&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">500</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;order&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;request_count&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;desc&quot;</span>  <span class="token comment">#按照请求路径基数降序排序</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;request_count&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;cardinality&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;request.keyword&quot;</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># 返回结果</span>
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;took&quot;</span> <span class="token punctuation">:</span> <span class="token number">13995</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;timed_out&quot;</span> <span class="token punctuation">:</span> <span class="token boolean important">false</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;_shards&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;total&quot;</span> <span class="token punctuation">:</span> <span class="token number">23</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;successful&quot;</span> <span class="token punctuation">:</span> <span class="token number">23</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;skipped&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;failed&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;hits&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;total&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;relation&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;gte&quot;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;max_score&quot;</span> <span class="token punctuation">:</span> <span class="token null important">null</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;hits&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span> <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;aggregations&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;ip_agg&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;doc_count_error_upper_bound&quot;</span> <span class="token punctuation">:</span> <span class="token number">-1</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;sum_other_doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">32836214</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;buckets&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;\&quot;47.102.187.132\&quot;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">1683964</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;request_count&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">363034</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;\&quot;109.244.43.1\&quot;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">1544682</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;request_count&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">340964</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;\&quot;180.167.189.58\&quot;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">139003</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;request_count&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">50875</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;\&quot;116.236.154.162\&quot;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">52320</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;request_count&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">29309</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;\&quot;124.74.24.138\&quot;&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">345872</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;request_count&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;value&quot;</span> <span class="token punctuation">:</span> <span class="token number">23322</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">...</span><span class="token punctuation">...</span>
+</code></pre></div><h2 id="聚合结果根据-bucket-count-进行过滤"><a href="#聚合结果根据-bucket-count-进行过滤" class="header-anchor">#</a> 聚合结果根据 bucket count 进行过滤</h2> <p>目的是过滤出一个手机号对应两个人名的内容，通过 _bucket_count 获取 bucket 列表中的元素数量。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET telphone<span class="token punctuation">-</span>vba<span class="token punctuation">-</span>app/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;telphone_agg&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;terms&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;phoneno.keyword&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">20000</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;name_agg&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;terms&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;name.keyword&quot;</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;size&quot;</span><span class="token punctuation">:</span> <span class="token number">100</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        &quot;min_bucket_selector&quot;<span class="token punctuation">:</span><span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;bucket_selector&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;buckets_path&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;count&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;name_agg._bucket_count&quot;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;params.count &gt; 1&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#返回结果</span>
+<span class="token punctuation">...</span><span class="token punctuation">...</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;18747096441&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">73</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;name_agg&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;doc_count_error_upper_bound&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;sum_other_doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;buckets&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>
+              <span class="token punctuation">{</span>
+                <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;巴雅斯乐18747096441&quot;</span><span class="token punctuation">,</span>
+                <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">45</span>
+              <span class="token punctuation">}</span><span class="token punctuation">,</span>
+              <span class="token punctuation">{</span>
+                <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;巴雅斯乐&quot;</span><span class="token punctuation">,</span>
+                <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">28</span>
+              <span class="token punctuation">}</span>
+            <span class="token punctuation">]</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;15807512219&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">72</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;name_agg&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;doc_count_error_upper_bound&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;sum_other_doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;buckets&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>
+              <span class="token punctuation">{</span>
+                <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;汤辉&quot;</span><span class="token punctuation">,</span>
+                <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">70</span>
+              <span class="token punctuation">}</span><span class="token punctuation">,</span>
+              <span class="token punctuation">{</span>
+                <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;黄建红&quot;</span><span class="token punctuation">,</span>
+                <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">2</span>
+              <span class="token punctuation">}</span>
+            <span class="token punctuation">]</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;18369433076&quot;</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">69</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;name_agg&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;doc_count_error_upper_bound&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;sum_other_doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;buckets&quot;</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>
+              <span class="token punctuation">{</span>
+                <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;邵长春&quot;</span><span class="token punctuation">,</span>
+                <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">67</span>
+              <span class="token punctuation">}</span><span class="token punctuation">,</span>
+              <span class="token punctuation">{</span>
+                <span class="token key atrule">&quot;key&quot;</span> <span class="token punctuation">:</span> <span class="token string">&quot;李辉&quot;</span><span class="token punctuation">,</span>
+                <span class="token key atrule">&quot;doc_count&quot;</span> <span class="token punctuation">:</span> <span class="token number">2</span>
+              <span class="token punctuation">}</span>
+            <span class="token punctuation">]</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">...</span><span class="token punctuation">...</span>
+</code></pre></div><h2 id="获取聚合查询结果中-bucket-数量"><a href="#获取聚合查询结果中-bucket-数量" class="header-anchor">#</a> 获取聚合查询结果中 bucket 数量</h2> <div class="language-sh extra-class"><pre class="language-sh"><code>GET network/_search
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;size&quot;</span><span class="token builtin class-name">:</span> <span class="token number">0</span>, 
+  <span class="token string">&quot;aggs&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;network_devices&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;terms&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+        <span class="token string">&quot;field&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;enrich-data.device_name.keyword&quot;</span>,
+        <span class="token string">&quot;size&quot;</span><span class="token builtin class-name">:</span> <span class="token number">1000</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>,
+    <span class="token string">&quot;count&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+       <span class="token string">&quot;cardinality&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+        <span class="token string">&quot;field&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;enrich-data.device_name.keyword&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#返回结果</span>
+  <span class="token string">&quot;aggregations&quot;</span> <span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;network_devices&quot;</span> <span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;doc_count_error_upper_bound&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">0</span>,
+      <span class="token string">&quot;sum_other_doc_count&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">0</span>,
+      <span class="token string">&quot;buckets&quot;</span> <span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token string">&quot;key&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;YL_INT_FW3&quot;</span>,
+          <span class="token string">&quot;doc_count&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">8335877</span>
+        <span class="token punctuation">}</span>,
+        <span class="token punctuation">{</span>
+          <span class="token string">&quot;key&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;YL_INT_DMZ_LTM1&quot;</span>,
+          <span class="token string">&quot;doc_count&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">2551407</span>
+        <span class="token punctuation">}</span>,
+        <span class="token punctuation">{</span>
+          <span class="token string">&quot;key&quot;</span> <span class="token builtin class-name">:</span> <span class="token string">&quot;YL_SRV_HW_DIS1&quot;</span>,
+          <span class="token string">&quot;doc_count&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">1</span>
+        <span class="token punctuation">}</span>,
+        <span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>,
+    <span class="token string">&quot;count&quot;</span> <span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;value&quot;</span> <span class="token builtin class-name">:</span> <span class="token number">69</span> <span class="token comment">#总共有 69 个 bucket</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+</code></pre></div><h2 id="计算按照源目-ip-地址之前流量大小排序"><a href="#计算按照源目-ip-地址之前流量大小排序" class="header-anchor">#</a> 计算按照源目 IP 地址之前流量大小排序</h2> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET netflow<span class="token punctuation">-</span>2021.12.03/_search<span class="token punctuation">?</span>filter_path=aggregations
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;bool&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;filter&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;range&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;@timestamp&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;gte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-12-03T14:50:30&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;lte&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-12-03T14:57:30&quot;</span><span class="token punctuation">,</span>
+              <span class="token key atrule">&quot;time_zone&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;Asia/Shanghai&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> 
+  <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;ip&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;multi_terms&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;terms&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;netflow.ipv4_src_addr.keyword&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;netflow.ipv4_dst_addr.keyword&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;order&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;sum_bytes&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;desc&quot;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;aggs&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;sum_bytes&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;sum&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;field&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;netflow.in_bytes&quot;</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/39.6cae878b.js" defer></script>
+  </body>
+</html>

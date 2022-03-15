@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Elasticsearch集群规划最佳实践 | Se7en 的架构笔记</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/images/Se7en.jpeg">
+    <meta name="description" content="分享云原生，大数据，搜索引擎，编程语言等相关技术">
+    
+    <link rel="preload" href="/assets/css/0.styles.d70ae141.css" as="style"><link rel="preload" href="/assets/js/app.ecde058b.js" as="script"><link rel="preload" href="/assets/js/2.5b7d18b2.js" as="script"><link rel="preload" href="/assets/js/33.27e3d994.js" as="script"><link rel="prefetch" href="/assets/js/10.a25b4bf2.js"><link rel="prefetch" href="/assets/js/11.2df26a38.js"><link rel="prefetch" href="/assets/js/12.ab75d995.js"><link rel="prefetch" href="/assets/js/13.c64e1f64.js"><link rel="prefetch" href="/assets/js/14.1c3d052a.js"><link rel="prefetch" href="/assets/js/15.f6d5371e.js"><link rel="prefetch" href="/assets/js/16.1a9bf897.js"><link rel="prefetch" href="/assets/js/17.2d976bf0.js"><link rel="prefetch" href="/assets/js/18.defaf369.js"><link rel="prefetch" href="/assets/js/19.700721e4.js"><link rel="prefetch" href="/assets/js/20.a97c37f4.js"><link rel="prefetch" href="/assets/js/21.866e06d2.js"><link rel="prefetch" href="/assets/js/22.26ec80f7.js"><link rel="prefetch" href="/assets/js/23.f07dc830.js"><link rel="prefetch" href="/assets/js/24.264ea023.js"><link rel="prefetch" href="/assets/js/25.f74f5a18.js"><link rel="prefetch" href="/assets/js/26.1c7e9ae6.js"><link rel="prefetch" href="/assets/js/27.8260d319.js"><link rel="prefetch" href="/assets/js/28.f902cbc7.js"><link rel="prefetch" href="/assets/js/29.879039d8.js"><link rel="prefetch" href="/assets/js/3.bf45b6ed.js"><link rel="prefetch" href="/assets/js/30.c76adb41.js"><link rel="prefetch" href="/assets/js/31.6ce9437c.js"><link rel="prefetch" href="/assets/js/32.120103f3.js"><link rel="prefetch" href="/assets/js/34.0c94922f.js"><link rel="prefetch" href="/assets/js/35.9f2b93ad.js"><link rel="prefetch" href="/assets/js/36.b891c47e.js"><link rel="prefetch" href="/assets/js/37.fc565b80.js"><link rel="prefetch" href="/assets/js/38.2e29a73e.js"><link rel="prefetch" href="/assets/js/39.6cae878b.js"><link rel="prefetch" href="/assets/js/4.50e14c88.js"><link rel="prefetch" href="/assets/js/40.c438f661.js"><link rel="prefetch" href="/assets/js/5.3fa89781.js"><link rel="prefetch" href="/assets/js/6.5d156775.js"><link rel="prefetch" href="/assets/js/7.fecfe3f0.js"><link rel="prefetch" href="/assets/js/8.59ee1962.js"><link rel="prefetch" href="/assets/js/9.12646ea1.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d70ae141.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Se7en 的架构笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="搜索引擎" class="dropdown-title"><span class="title">搜索引擎</span> <span class="arrow down"></span></button> <button type="button" aria-label="搜索引擎" class="mobile-dropdown-title"><span class="title">搜索引擎</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/search/elasticsearch/" class="nav-link router-link-active">
+  Elasticsearch
+</a></li><li class="dropdown-item"><!----> <a href="/search/lucene/" class="nav-link">
+  Lucene
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据结构与算法" class="dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据结构与算法" class="mobile-dropdown-title"><span class="title">数据结构与算法</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/algorithm/structure/" class="nav-link">
+  数据结构基础
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/sort/" class="nav-link">
+  排序算法
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/thought/" class="nav-link">
+  算法思想
+</a></li><li class="dropdown-item"><!----> <a href="/algorithm/leetcode/" class="nav-link">
+  LeetCode 刷题
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="大数据" class="dropdown-title"><span class="title">大数据</span> <span class="arrow down"></span></button> <button type="button" aria-label="大数据" class="mobile-dropdown-title"><span class="title">大数据</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/bigdata/mq/" class="nav-link">
+  消息队列
+</a></li><li class="dropdown-item"><!----> <a href="/bigdata/compute/" class="nav-link">
+  计算引擎
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="云原生" class="dropdown-title"><span class="title">云原生</span> <span class="arrow down"></span></button> <button type="button" aria-label="云原生" class="mobile-dropdown-title"><span class="title">云原生</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cloudnative/kubernetes/" class="nav-link">
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/cloudnative/container/" class="nav-link">
+  容器技术
+</a></li></ul></div></div><div class="nav-item"><a href="https://www.github.com/cr7258" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Elasticsearch集群规划最佳实践</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#角色规划" class="sidebar-link">角色规划</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#节点间数据加密" class="sidebar-link">节点间数据加密</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#主节点选举" class="sidebar-link">主节点选举</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#架构设计" class="sidebar-link">架构设计</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#hot-warm-架构" class="sidebar-link">Hot &amp; Warm 架构</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#rack-awareness" class="sidebar-link">Rack Awareness</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#系统配置" class="sidebar-link">系统配置</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#文件描述符" class="sidebar-link">文件描述符</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#禁用swap" class="sidebar-link">禁用swap</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#虚拟内存" class="sidebar-link">虚拟内存</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#线程数" class="sidebar-link">线程数</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#jvm" class="sidebar-link">JVM</a></li></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#硬件配置" class="sidebar-link">硬件配置</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#资源预估" class="sidebar-link">资源预估</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#分片与副本" class="sidebar-link">分片与副本</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#分片大小" class="sidebar-link">分片大小</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#分片数量" class="sidebar-link">分片数量</a></li></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#索引设计" class="sidebar-link">索引设计</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/search/elasticsearch/cluster_management/cluster_design.html#读写优化" class="sidebar-link">读写优化</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#写入优化" class="sidebar-link">写入优化</a></li><li class="sidebar-sub-header"><a href="/search/elasticsearch/cluster_management/cluster_design.html#查询优化" class="sidebar-link">查询优化</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="elasticsearch集群规划最佳实践"><a href="#elasticsearch集群规划最佳实践" class="header-anchor">#</a> Elasticsearch集群规划最佳实践</h1> <h2 id="角色规划"><a href="#角色规划" class="header-anchor">#</a> 角色规划</h2> <p>一个节点在默认情况会下同时扮演:master eligible，data node 和 ingest node。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210224155022.png" alt=""></p> <p>在生产环境中建议每个节点只承担一个角色：</p> <ul><li><p>Dedicated <strong>master</strong> eligible nodes:负责分片管理，索引创建，集群管理等操作，使用低配置的 CPU，RAM 和磁盘。</p></li> <li><p>Dedicated <strong>data</strong> nodes:负责数据存储及处理客户端请求，使用高配置的 CPU, RAM 和磁盘。</p></li> <li><p>Dedicated <strong>ingest</strong> nodes:负责数据处理，使用高配置 CPU，中等配置的RAM，低配置的磁盘。</p></li> <li><p>Dedicate <strong>coordinating</strong> only node (client node)：扮演Load Balancers，降低master和data nodes的负载，负责搜索结果的Gather/Reduce。使用高/中等配置 CPU，高/中等配置的RAM，低配置的磁盘。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210224155748.png" alt=""></p></li></ul> <h2 id="节点间数据加密"><a href="#节点间数据加密" class="header-anchor">#</a> 节点间数据加密</h2> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20210303093105.png" alt=""></p> <ul><li>加密数据 ，避免数据抓包，敏感信息泄漏。</li> <li>验证身份 ，避免 Impostor Node。</li></ul> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#生成CA</span>
+bin/elasticsearch<span class="token punctuation">-</span>certutil ca
+<span class="token comment">#签名证书</span>
+bin/elasticsearch<span class="token punctuation">-</span>certutil cert <span class="token punctuation">-</span><span class="token punctuation">-</span>ca elastic<span class="token punctuation">-</span>stack<span class="token punctuation">-</span>ca.p12
+
+<span class="token comment">#elasticsearch.yml配置</span>
+<span class="token key atrule">xpack.security.transport.ssl.enabled</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+<span class="token key atrule">xpack.security.transport.ssl.verification_mode</span><span class="token punctuation">:</span> certificate
+<span class="token key atrule">xpack.security.transport.ssl.keystore.path</span><span class="token punctuation">:</span> certs/elastic<span class="token punctuation">-</span>certificates.p12
+<span class="token key atrule">xpack.security.transport.ssl.truststore.path</span><span class="token punctuation">:</span> certs/elastic<span class="token punctuation">-</span>certificates.p12
+</code></pre></div><h2 id="主节点选举"><a href="#主节点选举" class="header-anchor">#</a> 主节点选举</h2> <p>从高可用 &amp; 避免脑裂的角度出发，一般在生产环境中配置3台master节点。</p> <p>在新版7.0的es中，对es的集群发现系统做了调整，不再有discovery.zen.minimum_master_nodes这个控制集群脑裂的配置，转而由集群自主控制，并且新版在启动一个新的集群的时候需要有cluster.initial_master_nodes初始化集群列表。在集群初始化第一次完成选举后，应当删除cluster.initial_master_nodes配置。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">discovery.seed_hosts</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;master1&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;master2&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;master3&quot;</span><span class="token punctuation">]</span> <span class="token comment">#master-eligible节点</span>
+<span class="token key atrule">cluster.initial_master_nodes</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;master1&quot;</span><span class="token punctuation">]</span>  <span class="token comment">#初始化选举的master节点</span>
+</code></pre></div><h2 id="架构设计"><a href="#架构设计" class="header-anchor">#</a> 架构设计</h2> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210224160329.png" alt=""></p> <ul><li><p>当系统中有大量的复杂查询及聚合时候，增加 Coordinating 节点，增加查询的性能。</p></li> <li><p>当磁盘容量无法满足需求时或者磁盘读写压力大时，可以增加数据节点。</p></li> <li><p>读写分离：配置LB负载均衡写请求到Ingest节点，读请求到Coordinating节点。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210224160617.png" alt=""></p></li> <li><p>Kibana部署在每台Coordinating上，同样使用LB做流量分发。</p></li></ul> <h2 id="hot-warm-架构"><a href="#hot-warm-架构" class="header-anchor">#</a> Hot &amp; Warm 架构</h2> <p>Hot 节点(通常使用 SSD):索引有不断有新文档写入，通常使用 SSD。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210225112140.png" alt=""></p> <p>Warm 节点(通常使用 HDD):索引不存在新数据的写入，同时也不存在大量的数据查询。</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210225112151.png" alt=""></p> <p>实现原理，借助Elasticsearch的分片分配策略：</p> <ul><li>第一：集群节点层面支持规划节点类型，这是划分热暖节点的前提。</li> <li>第二：索引层面支持将数据路由到给定节点，这为数据写入冷、热节点做了保障。</li></ul> <p>在 Elastic Stack 6.6 版本后推出了新功能 Index Lifecycle Management(索引生命周期管理)，支持针对索引的全生命周期托管管理，并且在 Kibana 上也提供了一套UI界面来配置策略。</p> <p>例如这里配置了一条IML策略：</p> <ul><li>当docs数超过5000时进行rollover操作。</li> <li>20天后进入warm阶段，索引只读。</li> <li>40天后进入cold阶段，副本分片缩减为0。</li> <li>60天后进入delete阶段，删除索引。</li></ul> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT /_ilm/policy/log_ilm_policy
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;policy&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;phases&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;hot&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;actions&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;rollover&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;max_docs&quot;</span><span class="token punctuation">:</span> <span class="token number">5000</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;warm&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;min_age&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;20d&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;actions&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;allocate&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;include&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;box_type&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;warm&quot;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token key atrule">&quot;readonly&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;cold&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;min_age&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;40d&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;actions&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;allocate&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;include&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+              <span class="token key atrule">&quot;box_type&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;cold&quot;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token key atrule">&quot;number_of_replicas&quot;</span><span class="token punctuation">:</span> <span class="token number">0</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token key atrule">&quot;delete&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;min_age&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;60d&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;actions&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;delete&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="rack-awareness"><a href="#rack-awareness" class="header-anchor">#</a> Rack Awareness</h2> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210225113046.png" alt=""></p> <p>Elasticsearch的节点可能分布在不同的机架，当一个机架断电时，可能会丢失几个节点。如果一个索引相同的主分片和副本分片同时在这个机架上，就有可能导致数据的丢失。通过Rack Awareness的机制，就可以尽可能避免将同一个索引的主副分片分配在一个机架的节点上。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT _cluster/settings
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;persistent&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;cluster.routing.allocation.awareness.attributes&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;rack&quot;</span><span class="token punctuation">,</span>
+    <span class="token key atrule">&quot;cluster.routing.allocation.awareness.force.rack.values&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;rack1,rack2&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="系统配置"><a href="#系统配置" class="header-anchor">#</a> 系统配置</h2> <h3 id="文件描述符"><a href="#文件描述符" class="header-anchor">#</a> 文件描述符</h3> <p>Elasticsearch使用大量的文件描述符（文件句柄）。用完文件描述符可能是灾难性的，并极有可能导致数据丢失。确保将运行Elasticsearch的用户打开文件描述符的数量限制增加到65,536或更高。</p> <p>编辑<code>/etc/security/limits.conf</code>文件，设置打开的文件句柄数：</p> <div class="language- extra-class"><pre class="language-text"><code>elasticsearch  -  nofile  65535
+</code></pre></div><p>通过该命令查看Elasticsearch每个节点所能使用的最大文件描述符数量：</p> <div class="language- extra-class"><pre class="language-text"><code>GET _nodes/stats/process?filter_path=**.max_file_descriptors
+</code></pre></div><h3 id="禁用swap"><a href="#禁用swap" class="header-anchor">#</a> 禁用swap</h3> <p>swap对节点的性能和稳定性非常不利，swap可能导致GC持续几分钟而不是几毫秒，还可能导致节点响应缓慢，甚至断开与集群的连接。</p> <div class="language-sh extra-class"><pre class="language-sh"><code><span class="token function">sudo</span> swapoff -a  <span class="token comment">#并将/etc/fstab 文件中包含swap的行注释掉。</span>
+</code></pre></div><p>也可以通过在 elasticsearch.yml 中设置 <code>bootstrap.memory_lock: true</code>，以保持 JVM 锁定内存，保证 Elasticsearch 的性能。</p> <h3 id="虚拟内存"><a href="#虚拟内存" class="header-anchor">#</a> 虚拟内存</h3> <p>Easticsearch 对各种文件混合使用了 NioFs（ 非阻塞文件系统）和 MMapFs （ 内存映射文件系统）。请确保配置的最大映射数量，以便有足够的虚拟内存可用于 mmapped 文件。</p> <p>编辑<code>/etc/sysctl.conf</code>文件：</p> <div class="language- extra-class"><pre class="language-text"><code>vm.max_map_count=262144
+</code></pre></div><p>使用以下命令使配置生效：</p> <div class="language-sh extra-class"><pre class="language-sh"><code>sysctl -p
+</code></pre></div><h3 id="线程数"><a href="#线程数" class="header-anchor">#</a> 线程数</h3> <p>Elasticsearch对不同类型的操作使用许多线程池，能够在需要时创建新线程很重要。确保Elasticsearch用户可以创建的线程数至少为4096，编辑<code>/etc/security/limits.conf</code>文件：</p> <div class="language- extra-class"><pre class="language-text"><code>elasticsearch - nproc 4096
+</code></pre></div><h3 id="jvm"><a href="#jvm" class="header-anchor">#</a> JVM</h3> <ul><li>将内存 Xms 和 Xmx 设置成一样，避免 heap resize 时引发停顿。</li> <li>Xmx 设置不要超过物理内存的 50%，单个节点上，最大内存建议不要超过 32 G 内存。</li></ul> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210225145707.png" alt=""></p> <ul><li><p>Lucene 中的 倒排索引 segments 存储在文件中，为提高访问速度，都会把它加载到内存中，从而提高 Lucene 性能。所以建议至少留系统一半内存给Lucene。</p></li> <li><p><strong>Node Query Cache</strong>：负责缓存filter 查询结果，每个节点有一个，被所有 shard 共享，filter query查询结果不涉及 scores 的计算。</p></li> <li><p><strong>Indexing Buffe</strong>r：索引缓冲区，用于存储新索引的文档，当其被填满时，缓冲区中的文档被写入磁盘中的 segments 中。</p></li> <li><p><strong>Shard Request Cache</strong>： 用于缓存请求结果。</p></li> <li><p><strong>Field Data Cache</strong>：Elasticsearch 加载内存 fielddata 的默认行为是延迟加载 。在首次对text类型字段做聚合、排序或者在脚本中使用时，需要设置字段为fielddata数据结构，它将会完整加载这个字段所有 Segment 中的倒排索引到堆内存中。不推荐使用，因为fielddata会占用大量堆内存空间 ，聚合或者排序使用doc_value。</p></li></ul> <h2 id="硬件配置"><a href="#硬件配置" class="header-anchor">#</a> 硬件配置</h2> <p>搜索等性能要求高的场景，建议 SSD，按照 1 :10 的比例配置内存和硬盘。</p> <p>日志类和查询并发低的场景，可以考虑使用机械硬盘存储，按照 1:50 的比例配置内存和硬盘。</p> <p>单节点数据建议控制在 2 TB 以内，最大不建议超过 5 TB。</p> <p>大多数的ES集群对于CPU要求都不高，一般2C~8C的配置都可以，具体CPU数根据业务场景来。</p> <p>ES JVM heap 最大建议不要超过 32 G 内存 ，30G heap 大概能处理的数据量 10T，其余都给OS cache，标准的建议是分50%的机器内存给JVM，剩余给OS cache，或可适当将OS cache比例上调。</p> <h2 id="资源预估"><a href="#资源预估" class="header-anchor">#</a> 资源预估</h2> <ul><li>通过数据量预估磁盘容量</li></ul> <p>腾讯云在2019年4月的 meetup 分享中建议：磁盘容量大小 = 原始数据大小 * 3.38。假设一条文档数据1K，预计数据量有1亿条，那么就有100G的原始数据大小，磁盘占用上可能就会有300多G的内容（存储倒排索引，行存和列存等）。</p> <ul><li>通过搜索吞吐率预估系统配置</li></ul> <p>Lucene引擎非常依赖底层的File System Cache，搜索如果需要达到ms级响应，那就需要有足够的内存去缓存大部分的索引数据。 比如10亿级文档数，300G数据总量，假设用到5台数据服务器，8C64G，内存总量大小为300G，其中150G分给JVM堆内存，剩余150G分给OS cache，操作系统用掉了50G大小，那么剩余100G的OS cache可以用于存储索引数据，大约会有30%的概率是基于OS cache做磁盘索引文件的读写，平均响应差不多会在亚秒级~秒级。</p> <h2 id="分片与副本"><a href="#分片与副本" class="header-anchor">#</a> 分片与副本</h2> <h3 id="分片大小"><a href="#分片大小" class="header-anchor">#</a> 分片大小</h3> <p>为什么要控制分片存储大小？</p> <ul><li>提高 Update 的性能。</li> <li>Merge 时，减少所需的资源。</li> <li>丢失节点后，具备更快的恢复速度，便于分片在集群内 Rebalancing。</li></ul> <p>日志类应用，单个分片不要大于 50 GB；搜索类应用，单个分片不要超过20 GB。</p> <h3 id="分片数量"><a href="#分片数量" class="header-anchor">#</a> 分片数量</h3> <p>为什么要控制分片的数量？</p> <ul><li>每个分片是一个 Lucene 的 索引，会使用机器的资源。过多的分片会导致额外的性能开销。</li> <li>分片的 Meta 信息由 Master 节点维护。过多，会增加管理的负担。</li></ul> <p>一个很好的经验法则是：确保每个节点的分片数量保持在低于<strong>每1GB堆内存对应集群的分片在20-25之间</strong>。分片总数在控制在10W以内。</p> <p>合理设置主分片数，确保均匀分配在所有数据节点上。 限定每个索引在每个节点上可分配的主分片数：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT my_index
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;settings&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;routing.allocation.total_shards_per_node&quot;</span><span class="token punctuation">:</span> <span class="token number">2</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">#5 个节点的集群。 索引有 5 个主分片，1 个副本，应该如何设置?</span>
+<span class="token comment">#(5+5)/5=2</span>
+</code></pre></div><h2 id="索引设计"><a href="#索引设计" class="header-anchor">#</a> 索引设计</h2> <p>Mapping 是定义文档和字段的字段的存储和索引方式的过程(类似于Mysql里的表结构设计)，一般会从如下角度去设计与优化：</p> <p><img src="https://chengzw258.oss-cn-beijing.aliyuncs.com/Elasticsearch/20210301163424.png" alt=""></p> <p>Mapping 字段的相关设置:</p> <ul><li><p>enabled – 设置成 false，仅做存储，不支持搜索和聚合分析 (数据保存在 _source 中)</p></li> <li><p>index – 是否构倒建排索引。设置成 false，无法被搜索，但还是支持 aggregation，并出现在 _source</p></li></ul> <p>中。</p> <ul><li><p>index_options: 控制将哪些信息添加到倒排索引中，以进行搜索和高亮显示。它接受以下设置：docs | freqs | posistions | offsets。</p></li> <li><p>norms – 如果字段⽤用来过滤和聚合分析，可以关闭，节约存储。</p></li> <li><p>doc_values – 是否启用 doc_values，⽤用于排序和聚合分析。</p></li> <li><p>fielddata – 如果要对 text 类型启用排序和聚合分析， fielddata 需要设置成true</p></li> <li><p>store – 默认不存储，数据默认存储在 _source。</p></li> <li><p>coerce – 默认开启，是否开启数据类型的自动转换(例如，字符串转数字)。</p></li> <li><p>fields 多字段特性。</p></li> <li><p>dynamic – true / false / strict 控制 Mapping 的自动更新。</p></li></ul> <p><strong>Elasticsearch != 关系型数据库。尽可能 Denormalize 数据，从而获取最佳的性能，使用 Nested 类型的数据，查询速度会慢几倍。使用 Parent / Child 关系，查询速度会慢几百倍。</strong></p> <h2 id="读写优化"><a href="#读写优化" class="header-anchor">#</a> 读写优化</h2> <h3 id="写入优化"><a href="#写入优化" class="header-anchor">#</a> 写入优化</h3> <h4 id="translog"><a href="#translog" class="header-anchor">#</a> Translog</h4> <p>默认 translog 是每 5 秒被 fsync 刷新到硬盘。如果ES有大量的写请求会导致频繁IO影响性能，在允许数据丢失情况（极低概率，断电或宕机等故障）可以调低translog的刷盘频率、提高落盘文件的大小和周期、并改用异步方式来提升写的性能:</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT my<span class="token punctuation">-</span>index/_settings
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;translog.flush_threshold_size&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;1gb&quot;</span><span class="token punctuation">,</span>  <span class="token comment">#默认512M，当 translog 超过该值，会触发 flush</span>
+  <span class="token key atrule">&quot;translog.sync_interval&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;60s&quot;</span><span class="token punctuation">,</span> <span class="token comment">#默认5s</span>
+  <span class="token key atrule">&quot;translog.durability&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;async&quot;</span> <span class="token comment">#默认是 request，每个请求都落盘。设置成 async，异步写入</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="refresh-interval"><a href="#refresh-interval" class="header-anchor">#</a> Refresh_interval</h4> <p>默认情况下，ES每一秒会refresh一次，产生一个新的segment，这样会导致产生的 segment较多，segment merge较为频繁，系统开销增大。如果对数据的实时查询性要求较低，可以通过下面的命令提高refresh的时间间隔，降低系统开销:</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT my<span class="token punctuation">-</span>index/_settings
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;refresh_interval&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;60s&quot;</span> <span class="token comment">#默认1s</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="index-buffer"><a href="#index-buffer" class="header-anchor">#</a> Index Buffer</h4> <p>默认是10%，这意味着分配给一个节点的总堆栈的10％将用作所有分片共享的索引缓冲区大小，用满会导致自动触发refresh，可以通过编辑elasticsearch.yml文件，调整配置参数适当调大：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">indices.memory.index_buffer_size</span><span class="token punctuation">:</span> 20%  <span class="token comment">#默认10%</span>
+</code></pre></div><h4 id="merge并发控制"><a href="#merge并发控制" class="header-anchor">#</a> Merge并发控制</h4> <p>Lucene会不断地把一些小的segment合并成一个大的segment，合并时并发线程数默认值是<code>Math.max(1, Math.min(4, &lt;&lt;node.processors, node.processors&gt;&gt; / 2))</code>，当节点配置的cpu核数较高时，merge占用的资源可能会偏高，影响集群的性能，可以通过下面的命令调整某个index的merge过程的并发度:</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT my<span class="token punctuation">-</span>index/_settings
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;merge.scheduler.max_thread_count&quot;</span><span class="token punctuation">:</span> <span class="token number">2</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="dynamic-mapping"><a href="#dynamic-mapping" class="header-anchor">#</a> Dynamic Mapping</h4> <p>建议关闭dynamic index:</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT _cluster/settings
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;persistent&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;action.auto_create_index&quot;</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#或者设置白名单</span>
+PUT _cluster/settings
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;persistent&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;action.auto_create_index&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;logstash-*,kibana*&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="bulk"><a href="#bulk" class="header-anchor">#</a> Bulk</h4> <ul><li><p>单个 bulk 请求体的数据量不要太大，官方建议大约5-15mb。</p></li> <li><p>写入端的 bulk 请求超时需要足够长，建议60s以上。</p></li> <li><p>写入端尽量将数据轮询打到不同节点。</p></li> <li><p>客户端批量写入数据时尽量使用下面的bulk接口批量写入，提高写入效率：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>POST _bulk
+<span class="token punctuation">{</span>&quot;index&quot;<span class="token punctuation">:</span><span class="token punctuation">{</span>&quot;_index&quot;<span class="token punctuation">:</span><span class="token string">&quot;test&quot;</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span>&quot;field1&quot;<span class="token punctuation">:</span><span class="token string">&quot;value1&quot;</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span>&quot;index&quot;<span class="token punctuation">:</span><span class="token punctuation">{</span>&quot;_index&quot;<span class="token punctuation">:</span><span class="token string">&quot;test&quot;</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span>&quot;field2&quot;<span class="token punctuation">:</span><span class="token string">&quot;value2&quot;</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span>&quot;index&quot;<span class="token punctuation">:</span><span class="token punctuation">{</span>&quot;_index&quot;<span class="token punctuation">:</span><span class="token string">&quot;test&quot;</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span>&quot;field3&quot;<span class="token punctuation">:</span><span class="token string">&quot;value3&quot;</span><span class="token punctuation">}</span>
+</code></pre></div></li></ul> <h4 id="写入数据不指定-id-让es自动产生"><a href="#写入数据不指定-id-让es自动产生" class="header-anchor">#</a> 写入数据不指定_id，让ES自动产生</h4> <p>如果用户显示指定id写入数据时，ES会先发起查询来确定index中是否已经有相同id的doc存在，若有则先删除原有doc再写入新doc，这样每次写入时，ES都会耗费一定的资源做查询。如果不 指定就直接跳过查询直接随机id入库，性能可快一倍。</p> <h4 id="routing"><a href="#routing" class="header-anchor">#</a> Routing</h4> <p>对于数据量较大的index，一般会配置多个shard来分摊压力。这种场景下，一个查询会同时搜索所有的shard，然后再将各个shard的结果合并后，返回给用户。对于高并发的小查询场景，每个分片通常仅抓取极少量数据，此时查询过程中的调度开销远大于实际读取数据的开销，且查询速度取决于最慢的一个分片。开启routing功能后，ES会将routing相同的数据写入到同一个分片中（也可以是多个，由index.routing_partition_size参数控制）。如果查询时指定routing，那么ES只会查询routing指向的那个分片，可显著降低调度开销，提升查询效率。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>PUT my_index/_doc/1<span class="token punctuation">?</span>routing=user1<span class="token important">&amp;refresh=true</span> 
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;title&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;This is a document&quot;</span>
+<span class="token punctuation">}</span>
+
+GET my_index/_doc/1<span class="token punctuation">?</span>routing=user1 
+</code></pre></div><h4 id="分片设定"><a href="#分片设定" class="header-anchor">#</a> 分片设定</h4> <p>副本在写入时设为 0，完成后再增加。</p> <h3 id="查询优化"><a href="#查询优化" class="header-anchor">#</a> 查询优化</h3> <h4 id="使用query-bool-filter组合取代普通query"><a href="#使用query-bool-filter组合取代普通query" class="header-anchor">#</a> 使用query-bool-filter组合取代普通query</h4> <p>默认情况下，ES通过一定的算法计算返回的每条数据与查询语句的相关度，并通过_score字段来表征。但对于非全文索引的使用场景，用户并不care查询结果与查询条件的相关度，只是想精确的查找目标数据。此时，可以通过query-bool-filter组合来让ES不计算_score，并且尽可能的缓存filter的结果集，供后续包含相同filter的查询使用，提高查询效率。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment"># 普通query查询</span>
+GET my<span class="token punctuation">-</span>index/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;term&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;user&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;kimchy&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># query-bool-filter 加速查询</span>
+GET my<span class="token punctuation">-</span>index/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;bool&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;filter&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token key atrule">&quot;term&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token key atrule">&quot;user&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;kimchy&quot;</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><h4 id="禁用通配符开始的正则表达"><a href="#禁用通配符开始的正则表达" class="header-anchor">#</a> 禁用通配符开始的正则表达</h4> <p>通配符开头的正则，性能非常糟糕，需避免使用。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>GET my<span class="token punctuation">-</span>index/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;wildcard&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;user&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;value&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*imchy&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="避免查询时脚本"><a href="#避免查询时脚本" class="header-anchor">#</a> 避免查询时脚本</h4> <p>避免使用script查询，例如这里想查询userlist列表中元素个数等于3的doc：</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#避免使用script查询</span>
+GET my<span class="token punctuation">-</span>index/_search
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;query&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;doc['userlist.keyword'].length==3&quot;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>可以在 Index 文档时，使用 Ingest Pipeline，计算并写入user_length用于记录userlist列表中元素的个数，需要查询的时候直接查询user_length。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token comment">#定义pipline</span>
+PUT _ingest/pipeline/my<span class="token punctuation">-</span>pipline
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;description&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;score user length&quot;</span><span class="token punctuation">,</span>
+  <span class="token key atrule">&quot;processors&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token key atrule">&quot;script&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token key atrule">&quot;lang&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;painless&quot;</span><span class="token punctuation">,</span>
+        <span class="token key atrule">&quot;source&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;ctx.user_length = ctx.userlist.length&quot;</span>  <span class="token comment">#添加user_length字段</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">#在插入数据时使用pipline</span>
+POST my<span class="token punctuation">-</span>index/_doc<span class="token punctuation">?</span>pipeline=my<span class="token punctuation">-</span>pipline
+<span class="token punctuation">{</span>
+  <span class="token key atrule">&quot;userlist&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;user1&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;user2&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;user3&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ecde058b.js" defer></script><script src="/assets/js/2.5b7d18b2.js" defer></script><script src="/assets/js/33.27e3d994.js" defer></script>
+  </body>
+</html>
