@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # 任务1: 部署 GitHub Pages
+  # 部署 GitHub Pages
   deploy-github-pages:
     runs-on: ubuntu-latest
     steps:
@@ -66,25 +66,3 @@ jobs:
           BRANCH: pages
           FOLDER: docs/.vitepress/dist
 
-  # 任务2: 部署 Gitee Pages
-  deploy-gitee-pages:
-    runs-on: ubuntu-latest
-    steps:
-      # 1、同步内容到 Gitee
-      - name: Sync to Gitee
-        uses: wearerequired/git-mirror-action@master #使用action库
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }} #Gitee私钥
-        with:
-          source-repo: git@github.com:Charles7c/charles7c.github.io.git #GitHub 源仓库地址
-          destination-repo: git@gitee.com:Charles7c/charles7c.git #Gitee 目标仓库地址
-      # 2、部署 Gitee Pages
-      - name: Deploy Gitee Pages
-        # 手动执行时只同步内容, 不进行部署
-        if: github.event_name != 'workflow_dispatch'
-        uses: yanglbme/gitee-pages-action@main
-        with:
-          gitee-username: ${{ secrets.GITEE_USERNAME }} #Gitee 用户名
-          gitee-password: ${{ secrets.GITEE_PASSWORD }} #Gitee 密码
-          gitee-repo: Charles7c/charles7c #Gitee 仓库
-          branch: pages #要部署的分支，默认是 master，若是其他分支，则需要指定（指定的分支必须存在）
