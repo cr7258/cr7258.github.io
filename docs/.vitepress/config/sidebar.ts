@@ -13,6 +13,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   '/courses/java/': getItems("courses/java"),
   '/courses/mysql/': getItems("courses/mysql"),
   '/courses/mybatis/': getItems("courses/mybatis"),
+  '/courses/elastic-stack/': getItems("courses/elastic-stack"),
 }
 
 /**
@@ -107,9 +108,9 @@ function getItemsByDate (path: string) {
 
 /**
  * 根据 某小课/序号-分组/序号-xxx.md 的目录格式, 获取侧边栏分组及分组下标题
- * 
+ *
  * courses/mybatis/01-MyBatis基础/01-xxx.md
- * 
+ *
  * @param path 扫描基础路径
  * @returns {DefaultTheme.SidebarItem[]}
  */

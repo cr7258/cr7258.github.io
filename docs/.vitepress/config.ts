@@ -24,6 +24,18 @@ export default withMermaid(
       },
     },
     themeConfig, // 主题配置
+
+    // 本地化
+    locales: {
+      root: {
+        label: '中文',
+        lang: 'zh'
+      },
+      en: {
+        label: 'English',
+        lang: 'en', // 可选，将作为 `lang` 属性添加到 `html` 标签中
+      }
+    }
   }),
 );
 
