@@ -1,6 +1,6 @@
 ---
 title: for循环中删除集合元素隐藏的陷阱
-author: 查尔斯
+author: Se7en
 date: 2021/12/08 20:00
 categories:
  - Bug万象集
@@ -50,7 +50,7 @@ System.out.println(list); // [1, 3, 4]
 /**
  * List集合-循环中删除元素-测试
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2021/12/8 20:59
  */
 @DisplayName("List集合-循环中删除元素-测试")
@@ -94,7 +94,7 @@ public class ListRemoveEleInForLoopTest {
 /**
  * List集合-循环中删除元素-测试
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2021/12/8 20:59
  */
 @DisplayName("List集合-循环中删除元素-测试")
@@ -177,7 +177,7 @@ public E remove(int index) {
 /**
  * List集合-循环中删除元素-测试
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2021/12/8 20:59
  */
 @DisplayName("List集合-循环中删除元素-测试")
@@ -225,7 +225,7 @@ public class ListRemoveEleInForLoopTest {
 /**
  * List集合-循环中删除元素-测试
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2021/12/8 20:59
  */
 @DisplayName("List集合-循环中删除元素-测试")
@@ -270,7 +270,7 @@ public class ListRemoveEleInForLoopTest {
 /**
  * List集合-循环中删除元素-测试
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2021/12/8 20:59
  */
 @DisplayName("List集合-循环中删除元素-测试")
@@ -313,7 +313,7 @@ public class ListRemoveEleInForLoopTest {
 /**
  * List集合-循环中删除元素-测试
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2021/12/8 20:59
  */
 @DisplayName("List集合-循环中删除元素-测试")

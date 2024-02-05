@@ -1,6 +1,6 @@
 ---
 title: 解决 DotNet 安装完，报错：Couldn't find a valid ICU package installed on the system. Please install libicu using your package manager and try again
-author: 查尔斯
+author: Se7en
 date: 2022/11/06 15:35
 categories:
  - Bug万象集

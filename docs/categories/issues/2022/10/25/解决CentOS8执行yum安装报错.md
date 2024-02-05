@@ -1,6 +1,6 @@
 ---
 title: "解决 CentOS 8 执行 yum install 报 Error: Failed to download metadata for repo 'appstream': Cannot prepare internal mirrorlist: No URLs in mirrorlist 的问题"
-author: 查尔斯
+author: Se7en
 date: 2022/10/25 21:20
 categories:
  - Bug万象集

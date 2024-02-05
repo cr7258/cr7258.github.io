@@ -1,6 +1,6 @@
 ---
 title: 解决 Windows 桌面部分快捷方式图标变为空白的问题
-author: 查尔斯
+author: Se7en
 date: 2022/10/15 21:10
 categories:
  - Bug万象集

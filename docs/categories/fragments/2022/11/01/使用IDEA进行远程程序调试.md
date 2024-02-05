@@ -1,6 +1,6 @@
 ---
 title: 使用 IntelliJ IDEA 进行远程程序调试
-author: 查尔斯
+author: Se7en
 date: 2022/11/01 20:55
 categories:
  - 杂碎逆袭史

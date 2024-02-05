@@ -1,6 +1,6 @@
 ---
 title: CentOS 安装 Docker、Docker Compose
-author: 查尔斯
+author: Se7en
 date: 2022/10/31 20:56
 categories:
  - 杂碎逆袭史

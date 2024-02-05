@@ -1,6 +1,6 @@
 ---
 title: 精密计算工具类-BigDecimal
-author: 查尔斯
+author: Se7en
 date: 2021/03/12 18:07
 categories:
  - 杂碎逆袭史

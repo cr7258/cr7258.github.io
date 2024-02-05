@@ -1,6 +1,6 @@
 ---
 title: 修改Git所有提交记录中的作者和邮箱
-author: 查尔斯
+author: Se7en
 date: 2022/03/27 13:00
 categories:
  - 杂碎逆袭史

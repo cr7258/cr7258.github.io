@@ -1,6 +1,6 @@
 ---
 title: "执行Shell脚本，报java: command not found"
-author: 查尔斯
+author: Se7en
 date: 2022/08/11 20:19
 categories:
  - Bug万象集

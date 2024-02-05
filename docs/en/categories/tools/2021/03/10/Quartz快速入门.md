@@ -1,6 +1,6 @@
 ---
 title: Quartz 快速入门
-author: 查尔斯
+author: Se7en
 date: 2021/03/10 18:58
 categories:
  - 工具四海谈

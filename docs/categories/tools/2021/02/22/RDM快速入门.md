@@ -1,6 +1,6 @@
 ---
 title: Redis Desktop Manager 快速入门
-author: 查尔斯
+author: Se7en
 date: 2021/02/22 09:41
 categories:
  - 工具四海谈

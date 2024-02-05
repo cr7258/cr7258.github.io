@@ -1,6 +1,6 @@
 ---
 title: JavaScript 无法存储 Java Long 类型数据问题
-author: 查尔斯
+author: Se7en
 date: 2022/01/26 09:07
 categories:
  - Bug万象集

@@ -1,6 +1,6 @@
 ---
 title: 内网CentOS服务器设置网络代理
-author: 查尔斯
+author: Se7en
 date: 2022/08/29 20:53
 categories:
  - 杂碎逆袭史

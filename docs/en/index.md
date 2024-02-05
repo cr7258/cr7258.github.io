@@ -1,11 +1,11 @@
 ---
 layout: home
 
-title: 查尔斯的知识库
+title: Se7en的知识库
 titleTemplate: 个人技术知识库，记录和分享个人碎片化、结构化、体系化的技术知识内容
 
 hero:
-  name: 查尔斯的知识库
+  name: Se7en的知识库
   text: 专注 & 洞察 & 分享
   tagline: 个人技术知识库，记录 & 分享个人碎片化、结构化、体系化的技术知识内容。
   image:
@@ -17,7 +17,7 @@ hero:
       link: /categories/issues/index
     - theme: alt
       text: 在 GitHub 查看
-      link: https://github.com/Charles7c/charles7c.github.io
+      link: https://github.com/cr7258/cr7258.github.io
 
 features:
   - icon:

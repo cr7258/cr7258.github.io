@@ -1,6 +1,6 @@
 ---
 title: Command line is too long. Shorten command line for XXX or also for Spring Boot default configuration？
-author: 查尔斯
+author: Se7en
 date: 2021/12/10 22:11
 categories:
  - Bug万象集

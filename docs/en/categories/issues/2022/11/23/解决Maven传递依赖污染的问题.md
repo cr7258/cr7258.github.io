@@ -1,6 +1,6 @@
 ---
 title: 解决 Maven 传递依赖污染的问题
-author: 查尔斯
+author: Se7en
 date: 2022/11/21 21:30
 categories:
  - Bug万象集

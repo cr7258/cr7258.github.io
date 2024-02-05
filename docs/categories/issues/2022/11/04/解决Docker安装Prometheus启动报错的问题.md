@@ -1,6 +1,6 @@
 ---
 title: 解决 Docker 安装 Prometheus 启动报 permission denied 的问题
-author: 查尔斯
+author: Se7en
 date: 2022/11/04 20:30
 categories:
  - Bug万象集

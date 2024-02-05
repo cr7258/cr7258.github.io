@@ -1,6 +1,6 @@
 ---
 title: 合并两个Git仓库的历史提交记录
-author: 查尔斯
+author: Se7en
 date: 2022/03/25 21:30
 categories:
  - 杂碎逆袭史
@@ -41,7 +41,7 @@ tags:
 1. 克隆后端项目仓库到本地（笔者没有在 git bash 中操作，而是在 cmd 中进行的）
 
    ```sh
-   git clone https://gitee.com/Charles7c/eladminx.git
+   git clone https://gitee.com/cr7258/eladminx.git
    cd eladminx
    ```
 
@@ -50,7 +50,7 @@ tags:
 2. 将前端仓库作为后端仓库的远程仓库，起别名为 frontend（这个随便起）
 
    ```sh
-   git remote add -f frontend https://gitee.com/Charles7c/eladminx-web.git
+   git remote add -f frontend https://gitee.com/cr7258/eladminx-web.git
    ```
 
    ![202203252252926](../../../../../public/img/2022/03/25/202203252252926.png)

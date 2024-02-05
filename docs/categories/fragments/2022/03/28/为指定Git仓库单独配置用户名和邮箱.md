@@ -1,6 +1,6 @@
 ---
 title: 为指定Git仓库单独配置用户名和邮箱
-author: 查尔斯
+author: Se7en
 date: 2022/03/28 21:29
 categories:
  - 杂碎逆袭史
@@ -31,9 +31,9 @@ tags:
 
 ```sh
 # 全局配置用户名
-git config --global user.name "Charles7c"
+git config --global user.name "Se7en"
 # 全局配置邮箱
-git config --global user.email "charles7c@126.com"
+git config --global user.email "chengzw258@163.com"
 ```
 
 ## 局部配置用户名和邮箱
@@ -44,9 +44,9 @@ git config --global user.email "charles7c@126.com"
 # 进入指定 Git 仓库
 cd HelloWorld
 # 局部配置用户名
-git config user.name "Charles7c"
+git config user.name "Se7en"
 # 局部配置邮箱
-git config user.email "charles7c@126.com"
+git config user.email "chengzw258@163.com"
 ```
 
 没错，只需要在配置时去掉 `--global` 这个参数就可以了，配置完成后，你可以通过命令查看下配置是否成功。

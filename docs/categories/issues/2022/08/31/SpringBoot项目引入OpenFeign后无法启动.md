@@ -1,6 +1,6 @@
 ---
 title: SpringBoot项目引入OpenFeign后无法启动
-author: 查尔斯
+author: Se7en
 date: 2022/08/31 22:39
 categories:
  - Bug万象集
@@ -75,7 +75,7 @@ FeignConfig 配置类：
 /**
  * Feign配置
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2022/8/30 18:10
  */
 @Configuration
@@ -120,7 +120,7 @@ public class FeignConfig {
 /**
  * 启动程序
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2022/8/24 15:46
  */
 @EnableFeignClients
@@ -151,7 +151,7 @@ public class WebApiApplication {
 /**
  * 启动程序
  *
- * @author Charles7c
+ * @author Se7en
  * @date 2022/8/24 15:46
  */
 @EnableFeignClients

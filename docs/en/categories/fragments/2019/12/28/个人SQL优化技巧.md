@@ -1,6 +1,6 @@
 ---
 title: 个人 SQL 优化技巧
-author: 查尔斯
+author: Se7en
 date: 2019/12/28 10:00
 isTop: true
 categories:
@@ -25,7 +25,7 @@ tags:
 ::: code-group
 ```sql [正例]
 # email 不是主键，也没有设置唯一约束，根据熵增定律，查询结果是有可能会出现多条的
-SELECT * FROM `sys_user` WHERE `email` = 'charles7c@126.com' LIMIT 1;
+SELECT * FROM `sys_user` WHERE `email` = 'chengzw258@163.com' LIMIT 1;
 ```
 
 ```sql [反例]

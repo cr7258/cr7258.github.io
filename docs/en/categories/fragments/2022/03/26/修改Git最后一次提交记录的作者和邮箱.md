@@ -1,6 +1,6 @@
 ---
 title: 修改Git最后一次提交记录的作者和邮箱
-author: 查尔斯
+author: Se7en
 date: 2022/03/26 10:30
 categories:
  - 杂碎逆袭史
@@ -23,7 +23,7 @@ tags:
 1. 修改最后一次提交的作者和邮箱信息
 
    ```sh
-   git commit --amend --author="Charles7c <charles7c@126.com>"
+   git commit --amend --author="Se7en <chengzw258@163.com>"
    ```
 
 2. 最后将本地的修改强制推送到远程仓库即可（如果你没推送到远程仓库，这步就不需要执行了）

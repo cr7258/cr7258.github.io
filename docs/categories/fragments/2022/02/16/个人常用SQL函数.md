@@ -1,6 +1,6 @@
 ---
 title: 个人常用 SQL 函数
-author: 查尔斯
+author: Se7en
 date: 2022/02/16 15:43
 isTop: true
 categories:

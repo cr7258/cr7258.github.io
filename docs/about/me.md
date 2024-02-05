@@ -8,31 +8,27 @@ showComment: false
 
 <img width=100% src="../public/img/svg/about-me-header.svg" alt="头部图" />
 <p align="center">
-  <a href="https://blog.charles7c.top/" target="_blank" style="display: inline-block;">
-    <img alt="个人主页" src="https://img.shields.io/badge/知识库-查尔斯-lightblue?logo=blogger&logoColor=lightblue" />
+  <a href="https://cr7258.github.io" target="_blank" style="display: inline-block;">
+    <img alt="个人主页" src="https://img.shields.io/badge/知识库-Se7en-lightblue?logo=blogger&logoColor=lightblue" />
   </a>&nbsp;
-    <a href="https://github.com/Charles7c" target="_blank" style="display: inline-block;">
-        <img alt="GitHub个人主页" src="https://img.shields.io/badge/GitHub-Charles7c-lightblue?logo=github" />
+    <a href="https://github.com/cr7258" target="_blank" style="display: inline-block;">
+        <img alt="GitHub个人主页" src="https://img.shields.io/badge/GitHub-Se7en-lightblue?logo=github" />
     </a>&nbsp;
-    <a href="https://gitee.com/Charles7c" target="_blank" style="display: inline-block;">
-        <img alt="码云个人主页" src="https://img.shields.io/badge/码云-Charles7c-C71D23?logo=gitee&logoColor=C71D23" />
+    <a href="https://blog.csdn.net/cr7258" target="_blank" style="display: inline-block;">
+        <img alt="CSDN个人主页" src="https://img.shields.io/badge/CSDN-Se7en-FC5531?logo=C&logoColor=FC5531" />
     </a>&nbsp;
-    <a href="https://blog.csdn.net/Charles_7c" target="_blank" style="display: inline-block;">
-        <img alt="CSDN个人主页" src="https://img.shields.io/badge/CSDN-查尔斯-FC5531?logo=C&logoColor=FC5531" />
+    <a href="https://juejin.cn/user/1028798616450734" target="_blank" style="display: inline-block;">
+        <img alt="掘金个人主页" src="https://img.shields.io/badge/掘金-Se7en-1E80FF" />
     </a>&nbsp;
-    <a href="https://juejin.cn/user/685744115170142" target="_blank" style="display: inline-block;">
-        <img alt="掘金个人主页" src="https://img.shields.io/badge/掘金-查尔斯-1E80FF" />
-    </a>&nbsp;
-    <a href="https://www.yuque.com/charles7c" target="_blank" style="display: inline-block;">
-        <img alt="语雀个人主页" src="https://img.shields.io/badge/语雀-查尔斯-38D27D" />
+    <a href="https://www.infoq.cn/profile/56A4FBF7A99A2F/publish" target="_blank" style="display: inline-block;">
+        <img alt="InfoQ个人主页" src="https://img.shields.io/badge/InfoQ-Se7en-38D27D" />
     </a>&nbsp;
 </p>
 
 ---
-- 👋 Hi, I'm Charles7c
-- 🔭 I'm currently working on backend development
-- 📫 How to reach me: [charles7c@126.com](mailto:charles7c@126.com)
-- 📖 My motto: “东隅已逝，桑榆非晚。”
+- 👋 Hi, I'm Se7en
+- 🔭 I'm currently working on Cloud Native
+- 📫 How to reach me: [chengzw258@163.com](mailto:chengzw258@163.com)
 ---
 
 ### 后端技术栈
