@@ -8,13 +8,15 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   '/categories/issues/': getItemsByDate("categories/issues"),
   '/categories/fragments/': getItemsByDate("categories/fragments"),
   '/categories/tools/': getItemsByDate("categories/tools"),
+  '/blogs/original/': getItemsByDate("blogs/original/"),
+  '/blogs/translate/': getItemsByDate("blogs/translate/"),
   '/courses/elastic-stack/': getItems("courses/elastic-stack"),
 }
 
 /**
- * 根据 某分类/YYYY/MM/dd/xxx.md 的目录格式, 获取侧边栏分组及分组下标题
+ * 根据 某分类/YYYY/xxx.md 的目录格式, 获取侧边栏分组及分组下标题
  * 
- * /categories/issues/2022/07/20/xxx.md
+ * /categories/issues/2022/xxx.md
  * 
  * @param path 扫描基础路径
  * @returns {DefaultTheme.SidebarItem[]}
@@ -34,21 +36,8 @@ function getItemsByDate (path: string) {
     // 年份数组
     let articleItems: DefaultTheme.SidebarItem[] = [];
 
-    // 2.获取所有月份目录
-    sync(`docs/${path}/${year}/*`, {
-      onlyDirectories: true,
-      objectMode: true,
-    }).forEach(({ name }) => {
-      let month = name
-
-      // 3.获取所有日期目录
-      sync(`docs/${path}/${year}/${month}/*`, {
-        onlyDirectories: true,
-        objectMode: true,
-      }).forEach(({ name }) => {
-        let day = name;
-        // 4.获取日期目录下的所有文章
-        sync(`docs/${path}/${year}/${month}/${day}/*`, {
+        // 获取日期目录下的所有文章
+        sync(`docs/${path}/${year}/*`, {
           onlyFiles: true,
           objectMode: true,
         }).forEach((article) => {
@@ -58,18 +47,16 @@ function getItemsByDate (path: string) {
             // 向置顶分组前追加标题
             topArticleItems.unshift({
               text: data.title,
-              link: `/${path}/${year}/${month}/${day}/${article.name.replace('.md', '')}`,
+              link: `/${path}/${year}/${article.name.replace('.md', '')}`,
             });
           }
 
           // 向年份分组前追加标题
           articleItems.unshift({
             text: data.title,
-            link: `/${path}/${year}/${month}/${day}/${article.name.replace('.md', '')}`,
+            link: `/${path}/${year}/${article.name.replace('.md', '')}`,
           });
         })
-      })
-    })
 
     // 添加年份分组
     yearGroups.unshift({

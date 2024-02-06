@@ -2,6 +2,15 @@ import type { DefaultTheme } from 'vitepress';
 
 export const nav: DefaultTheme.Config['nav'] = [
   {
+    text: '博客',
+    items: [
+      { text: '原创', link: '/blogs/original/index', activeMatch: '/blogs/original/' },
+      { text: '翻译', link: '/blogs/translate/index', activeMatch: '/blogs/translate/' },
+      { text: '转载', link: '/blogs/repost/index', activeMatch: '/blogs/repost/' },
+    ],
+    activeMatch: '/blogs/'
+  },
+  {
     text: '我的分类',
     items: [
       { text: 'Bug万象集', link: '/categories/issues/index', activeMatch: '/categories/issues/' },

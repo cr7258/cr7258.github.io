@@ -29,11 +29,11 @@ export const themeConfig: DefaultTheme.Config = {
   },
   // 搜索配置（二选一）
   search: {
-    provider: 'algolia',
-    options: algoliaSearchOptions,
+    // provider: 'algolia',
+    // options: algoliaSearchOptions,
     // 本地离线搜索
-    // provider: 'local',
-    // options: localSearchOptions
+    provider: 'local',
+    options: localSearchOptions
   },
   // 导航栏右侧社交链接配置
   socialLinks: [
@@ -55,7 +55,7 @@ export const themeConfig: DefaultTheme.Config = {
   // 自定义扩展: 评论配置
   commentConfig: {
     type: 'gitalk',
-    showComment: false // 是否显示评论
+    showComment: true // 是否显示评论
   },
   // 自定义扩展: 页脚配置
   footerConfig: {
