@@ -1,11 +1,11 @@
 ---
 layout: home
 
-title: Se7en的知识库
+title: Se7en的架构笔记
 titleTemplate: 个人技术知识库，记录和分享个人碎片化、结构化、体系化的技术知识内容
 
 hero:
-  name: Se7en的知识库
+  name: Se7en的架构笔记
   text: 专注 & 洞察 & 分享
   tagline: 个人技术知识库，记录 & 分享个人碎片化、结构化、体系化的技术知识内容。
   image:

@@ -1,6 +1,6 @@
 [English](./README.en.md) | 中文
 
-# Se7en的知识库
+# Se7en的架构笔记
 
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
     <img src="https://img.shields.io/badge/文章%20License-CC%204.0%20BY--SA-blue.svg">
