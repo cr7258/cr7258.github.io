@@ -1131,8 +1131,6 @@ kind create cluster --name krustlet-demo --image kindest/node:v1.21.14@sha256:8a
 对于 Krustlet 节点我们就需要手动处理这些事情了，我们可以使用 Krustlet 官方准备的脚本。这个脚本会为我们创建 bootstrap token，这个 token 是 Krustlet 初始化时和 API Server 临时通信而使用的。脚本还会根据 token 生成 Krustlet 临时的 kubeconfig 文件，默认在 `console
 ~/.krustlet/config/kubeconfig`。
 
-```。
-
 ```bash
 bash <(curl https://raw.githubusercontent.com/krustlet/krustlet/main/scripts/bootstrap.sh)
 ```
