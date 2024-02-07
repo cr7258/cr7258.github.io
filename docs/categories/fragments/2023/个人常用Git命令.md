@@ -4,7 +4,7 @@ author: Se7en
 date: 2022/10/05 21:30
 isTop: true
 categories:
- - 杂碎逆袭史
+ - 个人速查手册
 tags:
  - Git
 ---

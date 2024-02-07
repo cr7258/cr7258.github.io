@@ -4,7 +4,7 @@ author: Se7en
 date: 2019/12/31 21:00
 isTop: true
 categories:
- - 杂碎逆袭史
+ - 个人速查手册
 tags:
  - Linux
 ---

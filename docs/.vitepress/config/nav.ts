@@ -6,7 +6,7 @@ export const nav: DefaultTheme.Config['nav'] = [
     items: [
       { text: '原创', link: '/blogs/original/index', activeMatch: '/blogs/original/' },
       { text: '翻译', link: '/blogs/translate/index', activeMatch: '/blogs/translate/' },
-      { text: '转载', link: '/blogs/repost/index', activeMatch: '/blogs/repost/' },
+      // { text: '转载', link: '/blogs/repost/index', activeMatch: '/blogs/repost/' },
     ],
     activeMatch: '/blogs/'
   },
@@ -14,8 +14,9 @@ export const nav: DefaultTheme.Config['nav'] = [
     text: '我的分类',
     items: [
       { text: 'Bug万象集', link: '/categories/issues/index', activeMatch: '/categories/issues/' },
-      { text: '"杂碎"逆袭史', link: '/categories/fragments/index', activeMatch: '/categories/fragments/' },
-      { text: '工具四海谈', link: '/categories/tools/index', activeMatch: '/categories/tools/' },
+      { text: '个人速查手册', link: '/categories/fragments/index', activeMatch: '/categories/fragments/' },
+      { text: '精选工具箱', link: '/categories/tools/index', activeMatch: '/categories/tools/' },
+      { text: '开源项目', link: '/categories/open-source/index', activeMatch: '/categories/open-source/' },
     ],
     activeMatch: '/categories/'
   },
