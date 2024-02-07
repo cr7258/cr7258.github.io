@@ -162,7 +162,7 @@ docker-compose ps
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220405134229.png)
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220405134330.png)
 
-客户端创建完成后，需要修改客户端的  `Access Type` 为 **confidential**，表示客户端通过 `client secret` 来获取令牌；`Valid Redirect URIs` 用于设置浏览器登录成功后有效的重定向 URL，**http://*** 匹配所有 HTTP 重定向的网址。默认情况下，登录成功后将会重定向到 http://localhost:8000。
+客户端创建完成后，需要修改客户端的  `Access Type` 为 **confidential**，表示客户端通过 `client secret` 来获取令牌；`Valid Redirect URIs` 用于设置浏览器登录成功后有效的重定向 URL，**http://*** 匹配所有 HTTP 重定向的网址。默认情况下，登录成功后将会重定向到 <http://localhost:8000>。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220405221343.png)
 
