@@ -63,7 +63,7 @@ function getItemsByDate (path: string) {
       text: `<img class="chinese-zodiac" style="position: static; vertical-align: middle; padding-bottom: 3px;" src="/img/svg/chinese-zodiac/${getChineseZodiac(year.replace('年', ''))}.svg" title="${getChineseZodiacAlias(year.replace('年', ''))}" alt="生肖">
             ${year}年 (${articleItems.length}篇)`,
       items: articleItems,
-      collapsed: true,
+      collapsed: false,
     });
   })
 
@@ -75,14 +75,7 @@ function getItemsByDate (path: string) {
       items: topArticleItems,
       collapsed: false,
     });
-
-    // 将最近年份分组展开
-    yearGroups[1].collapsed = false;
-  } else {
-    // 将最近年份分组展开
-    yearGroups[0].collapsed = false;
   }
-
   // 添加序号
   addOrderNumber(yearGroups);
   return yearGroups;
