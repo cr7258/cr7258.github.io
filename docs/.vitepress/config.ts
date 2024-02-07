@@ -7,6 +7,7 @@ import { themeConfig } from './config/theme';
 
 export default withMermaid(
   defineConfig({
+    ignoreDeadLinks: true,
     lang: metaData.lang,
     title: metaData.title,
     description: metaData.description,
