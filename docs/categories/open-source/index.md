@@ -322,6 +322,13 @@ Kamaji 是 Kubernetes 的托管控制平面管理器。
 
 - [k0sproject/k0smotron](https://github.com/k0sproject/k0smotron)
 
+### Multi-Network
+
+该案例研究概述了一种基于 [KEP-3698: Multi-Network](https://github.com/kubernetes/enhancements/blob/10fc7c541babc290be1e9177b76a74d042ffc7ce/keps/sig-network/3698-multi-network/README.md#kep-3698-multi-network) 的解决方案，该解决方案支持使用 Pod 配置多个网络接口和 IP 地址，以隔离来自不同租户的网络流量，或将客户的网络流量与服务提供商的后端基础设施流量隔离开来。
+
+- [A Case Study for Improving Network Isolation in a Multitenant Kubernetes Cluster - Neha Aggarwal, Microsoft & Ardalan Kangarlou, NetApp](https://colocatedeventseu2024.sched.com/event/1YFdi/a-case-study-for-improving-network-isolation-in-a-multitenant-kubernetes-cluster-neha-aggarwal-microsoft-ardalan-kangarlou-netapp)
+- [KEP-3698: Multi-Network](https://github.com/kubernetes/enhancements/blob/10fc7c541babc290be1e9177b76a74d042ffc7ce/keps/sig-network/3698-multi-network/README.md#kep-3698-multi-network)
+
 ## 工具
 
 ### Bruno
