@@ -3,7 +3,7 @@ title: 5 种快速查找容器文件系统中文件的方法
 author: Se7en
 date: 2023/10/29 19:50
 categories:
- - Bug万象集
+ - 个人速查手册
 tags:
  - Docker
 ---

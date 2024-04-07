@@ -17,6 +17,7 @@ export const nav: DefaultTheme.Config['nav'] = [
       { text: '个人速查手册', link: '/categories/fragments/index', activeMatch: '/categories/fragments/' },
       { text: '精选工具箱', link: '/categories/tools/index', activeMatch: '/categories/tools/' },
       { text: '开源项目', link: '/categories/open-source/index', activeMatch: '/categories/open-source/' },
+      { text: '学习笔记', link: '/categories/learning/index', activeMatch: '/categories/learning/' },
     ],
     activeMatch: '/categories/'
   },
