@@ -1,14 +1,14 @@
 ---
-title: 5 种快速查找容器文件系统中文件的方法
+title: 5 种快速查找容器中文件的方法
 author: Se7en
-date: 2023/10/29 19:50
+date: 2024/07/20 19:00
 categories:
  - 个人速查手册
 tags:
  - Docker
 ---
 
-# 5 种快速查找容器文件系统中文件的方法
+# 5 种快速查找容器中文件的方法
 
 ## 创建一个示例容器
 ```sh
@@ -75,7 +75,7 @@ docker container inspect mycontainer | jq '.[0].GraphDriver'
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20211125094631.png)
 
-因此，要查看容器中的文件，只需查看 MergedDir 路径。这种方法**不需要目标容器中包含 /bin/bash（或其他 shell）*
+因此，要查看容器中的文件，只需查看 MergedDir 路径。这种方法**不需要目标容器中包含 /bin/bash（或其他 shell）。**
 ```bash
 root@ydt-net-portainer:/root #ls /var/lib/docker/overlay2/28efaabd0fb7ee3b42f8799e42752aa5fed96a5094064a044c9f410a29398ce7/merged
 bin  dev  etc  home  proc  root  sys  tmp  usr  var
