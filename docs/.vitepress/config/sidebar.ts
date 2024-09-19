@@ -12,6 +12,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   '/blogs/original/': getItemsByDate("blogs/original/"),
   '/blogs/translate/': getItemsByDate("blogs/translate/"),
   '/courses/elastic-stack/': getItems("courses/elastic-stack"),
+  '/courses/interview/': getItems("courses/interview"),
   '/meetup/network/': getItems("meetup/network"),
 }
 

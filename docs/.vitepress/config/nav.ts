@@ -31,7 +31,8 @@ export const nav: DefaultTheme.Config['nav'] = [
   {
     text: '我的小册',
     items: [
-      { text: 'Elastic Stack 教程', link: '/courses/elastic-stack/index', activeMatch: '/courses/elastic-stack/' }
+      { text: 'Elastic Stack 实战教程', link: '/courses/elastic-stack/index', activeMatch: '/courses/elastic-stack/' },
+      { text: '面试题', link: '/courses/interview/index', activeMatch: '/courses/interview/' }
     ],
     activeMatch: '/courses/'
   },
