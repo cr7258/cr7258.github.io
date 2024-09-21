@@ -1,5 +1,5 @@
 ---
-title: 面试题
+title: 面试宝典
 author: Se7en
 date: 2024/09/25 14:00
 categories:
@@ -10,7 +10,7 @@ tags:
  - Operating System
 ---
 
-# 面试题
+# 面试宝典
 
 ## Kubernetes
 
