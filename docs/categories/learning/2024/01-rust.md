@@ -3,7 +3,7 @@ title: Rust 学习笔记
 author: Se7en
 date: 2024/04/03 19:50
 categories:
- - 学习笔记
+ - Programming
 tags:
  - Rust
 ---
