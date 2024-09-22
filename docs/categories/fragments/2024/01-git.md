@@ -178,14 +178,14 @@ git rebase --abort
 
 git merge 和 git rebase 命令类似，也是用于将一个分支的变更合并到当前分支。与 git rebase 保持历史记录清晰线性不同，git merge 会保留分支的历史记录并生成一个新的合并提交（merge commit）。
 
-要将 master 分支合并到 feature 分支，以下是详细步骤和例子：
+要将 main 分支合并到 feature 分支，以下是详细步骤和例子：
 1. **切换到 feature 分支**：
 ```bash
 git checkout feature
 ```
-2. 执行 git merge 命令将 `master` 合并到 `feature`：
+2. 执行 git merge 命令将 `main` 合并到 `feature`：
 ```bash
-git merge master
+git merge main
 ```
 
 如果两者的代码没有冲突，Git 会直接进行快速合并。 如果合并过程中有冲突，Git 会标记冲突的文件，并要求你手动解决冲突：
@@ -220,6 +220,7 @@ git rebase：
 如果你在工作目录中修改了文件，但尚未将其添加到暂存区，可以使用以下命令恢复到最近的提交状态：
 
 ```bash
+# 建议使用 -- 参数用于明确区分文件名和其他选项
 git checkout -- <file-name>
 # 撤销工作区中所有文件的修改
 git checkout .
@@ -257,6 +258,8 @@ git reset --soft HEAD^
 
 ```bash
 git reset --mixed HEAD^
+# 或者
+git restore --staged
 ```
 
 ### 撤销最后一次提交并取消所有更改
