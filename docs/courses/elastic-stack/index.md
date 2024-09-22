@@ -1,5 +1,5 @@
 ---
-title: Elastic Stack 8 快速上手
+title: Elastic Stack 实战教程
 author: Se7en
 date: 2020/12/25 14:49
 categories:
