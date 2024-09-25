@@ -287,3 +287,143 @@ func main() {
 	}
 }
 ```
+
+#### time 包与 channel
+
+##### 定时器 Timer
+
+在 `time.Timer` 类型中，对外通知定时器到期的途径就是通道，用字段 `C` 代表。一旦触及到期时间，定时器就会向它的通道发送一个元素值。
+使用定时器，我们可以便捷地实现对接收操作的超时设定，如下面代码所示：
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	intChan := make(chan int, 1)
+	go func() {
+		time.Sleep(time.Second)
+		intChan <- 1
+	}()
+	select {
+	case e := <-intChan:
+		fmt.Printf("Received: %v\n", e) 
+    // case <-time.NewTimer(time.Millisecond * 500).C:
+    // 与前者等价
+	case <-time.After(time.Millisecond * 500):
+		fmt.Println("Timeout!")
+	}
+}
+```
+
+`time.Timer` 中包含了两个方法：`Reset` 和 `Stop`。`Reset` 方法会重置定时器的到期时间，而 `Stop` 方法会停止定时器。它们的返回值都是 bool 类型，如果值为 false，说明该定时器早已到期（或者说已经过期）或者已被停止，否则就说明该定时器刚刚由于方法的调用而被停止。
+我改造了前一个程序，在用于接收操作的 `for` 语句的开始做了一个额外的处理，这使得 `timer` 总是在当前迭代开始时（再次）启动。在需要频繁使用相对到期时间相同的定时器的情况下，你总是应该尽量复用，而不是重新创建定时器。
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	intChan := make(chan int, 1)
+	go func() {
+		for i := 0; i < 5; i++ {
+			time.Sleep(time.Second)
+			intChan <- i
+		}
+		close(intChan)
+	}()
+	timeout := time.Millisecond * 500
+	var timer *time.Timer
+	for {
+		if timer == nil {
+			timer = time.NewTimer(timeout)
+		} else {
+			timer.Reset(timeout)
+		}
+		select {
+		case e, ok := <-intChan:
+			// 当通道关闭并且通道中的元素为空时，ok 的值为 false
+			if !ok {
+				fmt.Println("End.")
+				return
+			}
+			fmt.Printf("Received: %v\n", e)
+		case <-timer.C:
+			fmt.Println("Timeout!")
+		}
+	}
+}
+```
+
+##### 断续器 Ticker
+
+`time.Ticker` 中只有一个 `Stop` 方法，用于停止断续器。定时器在重置之前只会到期一次，而断续器则会在到期后立即进入下一个周期并等待再次到期，周而复始，直到被停止。
+`Stop` 方法会停止 Ticker，停止后，Ticker 不会再被发送，但是 `Stop` 不会关闭通道，这是为了防止读取通道发生错误。
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	intChan := make(chan int, 1)
+	ticker := time.NewTicker(time.Second)
+	done := make(chan bool)
+
+	go func() {
+		defer ticker.Stop()
+		for {
+			select {
+			case <-done:
+				fmt.Println("End. [sender]")
+				return
+			case <-ticker.C:
+				select {
+				case intChan <- 1:
+				case intChan <- 2:
+				case intChan <- 3:
+				}
+			}
+		}
+	}()
+
+	var sum int
+	for e := range intChan {
+		fmt.Printf("received %v\n", e)
+		sum += e
+		if sum > 10 {
+			fmt.Printf("Got %v\n", sum)
+			break
+		}
+	}
+	fmt.Println("End. [receiver]")
+	close(done)             // 通知发送者 goroutine 结束
+	time.Sleep(time.Second) // 给发送者一些时间来打印
+
+}
+```
+
+程序的输出结果如下：
+
+```go
+received 1
+received 3
+received 1
+received 3
+received 2
+received 3
+Got 13
+End. [receiver]
+End. [sender]
+```
