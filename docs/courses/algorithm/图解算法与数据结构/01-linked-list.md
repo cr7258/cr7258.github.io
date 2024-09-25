@@ -1,10 +1,11 @@
 ---
-title: Kubernetes
+title: 链表
 author: Se7en
 categories:
-  - Interview
+  - Algorithm
 tags:
-  - Kubernetes
+  - Algorithm
+  - Linked List
 ---
 
 ## 图书整理 I
