@@ -403,6 +403,16 @@ git worktree remove <worktree>
 git worktree remove hotfix-1
 ```
 
+## Git 配置
+
+### 设置缓冲区
+
+遇到 `fatal: the remote end hung up unexpectedly` 错误时，可以尝试增加缓冲区大小。
+
+```bash
+git config http.postBuffer 524288000
+```
+
 ### 参考资料
 
 - [Git Worktree 的使用](https://www.cnblogs.com/wellcherish/p/17220100.html)
