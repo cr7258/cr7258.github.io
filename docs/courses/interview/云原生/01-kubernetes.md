@@ -34,6 +34,7 @@ PLEG 主要包含两个核心功能：一是感知容器变化，生成 Pod 事�
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202409242245211.png)
 
+
 kubelet 同时接收两个方向的事件，Pod Spec 有 API Server、File、HTTP 三大来源，而 Pod Status 则来自 PLEG。
 无论是收到 Pod Spec 变化，还是收到 Pod Status 变化，都会触发对应 Pod Worker 执行 Reconcile 调谐逻辑，使 Pod Status 符合最新的 Spec 定义。
 Pod Worker 在执行调谐的过程中，会读取由 PLEG 维护的最新的 Pod Status，以避免直接向容器运行时发起请求，降低容器运行时的压力，同时提高状态读取效率。
@@ -45,3 +46,20 @@ Pod Worker 在执行调谐的过程中，会读取由 PLEG 维护的最新的 Po
 - [KEP-3386: Kubelet Evented PLEG for Better Performance](https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/3386-kubelet-evented-pleg/README.md)
 
 ### 6 Kubelet 的主程序核心处理流程
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202409291054315.png)
+
+kubelet 的主调谐程序 `syncLoop` 同时监听来自不同组件的事件，包括：
+
+- 1. 来自 API Server、File、HTTP 的 Pod Spec 变化事件
+- 2. 来自 PLEG 的 Pod Status 变化事件
+- 3. 来自 ProbeManager（包括 liveness、readiness、startup 3 种健康探针）的状态变更事件
+- 4. 内置定时器（TimeTicker）事件
+
+为了保证所有事件都能及时得到处理，kubelet 的主调谐程序采用了非阻塞的基于事件的处理模式。在事件源方面，所有的事件监听程序采用独立协程运行，将产生的事件通过相应 Channel 传递给 `syncLoopIteration` 函数进行处理。
+
+`syncLoopIteration` 可以看作是一个事件分发器，它同时监听来自多个 Channel 的事件，根据事件类型的不同，分别执行不同的 SyncHandler 函数。
+
+为了实现主调谐程序的非阻塞运行，kubelet 对事件的处理同样采用了异步执行的方式。对于每个 Pod，kubelet 会通过 Pod Worker 单独为其创建一个 goroutine，由每个 goroutine 独立处理对应 Pod 的变更事件。
+
+参考资料：深入理解 Kubernetes 源码 P598
