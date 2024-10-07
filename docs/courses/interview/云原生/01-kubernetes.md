@@ -13,8 +13,11 @@ tags:
 
 
 参考资料：
+- [Kube-scheduler 源码分析之调度队列](http://rookie0080.info/archives/1706425339572)
+- [Scheduling queue in kube-scheduler](https://github.com/kubernetes/community/blob/f03b6d5692bd979f07dd472e7b6836b2dad0fd9b/contributors/devel/sig-scheduling/scheduler_queues.md)
 - [Kubernetes 调度器队列 - 设计与实现](https://dbwu.tech/posts/k8s/source_code/scheduler_queue/)
 - [k8s-src-analysis/kube-scheduler/SchedulingQueue.md](https://github.com/jindezgm/k8s-src-analysis/blob/master/kube-scheduler/SchedulingQueue.md)
+- [k8s源码分析 2: kube-scheduler](https://jeffdingzone.com/2020/11/k8s%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%902kube-scheduler/)
 - 深入理解 Kubernetes 源码 P432 ～ P433
 
 ### Scheduling Framework （调度框架）提供的扩展点有哪些？
@@ -24,7 +27,7 @@ tags:
 Scheduling Framework 通过 Plugin API 定义了多个扩展点，调度插件能够通过实现对应扩展点的 API 接口，注册到调度器框架中，在合适的时机被调用。
 Scheduler Framework 提供了丰富的扩展点，如上图所示，包括：
 
-- **PreEnqueue** 插件在 v1.27 版本引入，在 Pod 进入 `activeQ` 队列之前被调用，仅将符合条件的 Pod 放入活动队列（Pod 的 `spec.schedulingGates` 字段为空），否则直接放入 `unschedulablePods` 对象中。
+- **PreEnqueue** 插件在 v1.27 版本引入，在 Pod 进入 `activeQ` 队列之前被调用，仅将符合条件的 Pod 放入活动队列（Pod 的 `spec.schedulingGates` 字段为空），否则直接放入 `unschedulablePods` 队列中。
 - **QueueSort** 插件用于处理 Pod 在调度队列中的排序顺序。`QueueSort` 插件需要实现 `Less` 函数，该函数用于比较两个 Pod 的大小，以便调度器能够对等待调度的 Pod 进行排序。默认调度器使用的是 `PrioritySort` 插件，顾名思义是按照 Pod 的优先级进行排序，优先级高的 Pod 会被优先调度。如果优先级相同，则时间戳较早的 Pod 会被优先调度。注意，在一个调度器中，只能启用一个 `QueueSort` 插件。 
 - **PreFilter** 插件主要用于实现 `Filter` 之前的预处理，如根据待调度的 Pod 计算 `Filter` 阶段需要使用的调度相关信息，或者检查 Pod 依赖的集群状态必须满足的调度要求，在需求不满足时提前退出，避免无效调度。如果 `PreFilter` 插件返回错误，则调度过程会立即终止，后续的调度过程将不再执行。由于 `PreFilter` 插件在每个 Pod 调度过程中只执行一次，而 `Filter` 会对每个节点执行一次，因此一般将仅与 Pod 相关的计算逻辑前置到 `PreFilter` 阶段进行（比如 [Fit 插件](https://github.com/kubernetes/kubernetes/blob/1bbe775d5ffb131636193fe0bc15a8fcc0cd6fd6/pkg/scheduler/framework/plugins/noderesources/fit.go#L218-L230)在 `PreFilter` 阶段计算 Pod 的资源请求），通过 Scheduling Context（CycleState）将预计算结果传递给 `Filter` 函数，避免 `Filter` 阶段产生大量重复计算。
 - **Filter** 插件执行预选主逻辑，即选出能够运行待调度 Pod 的目标节点。对于每个节点，调度器会按照配置顺序依次执行 `Filter` 插件，如果有任意一个 `Filter` 插件将当前节点标记为不可调度，则该节点被认定为不符合调度要求，后续的调度过程将不再执行。由于对节点是否符合调度要求而言，不同节点之间是相互不影响的，因此针对不同节点的预选是并行执行的，默认调度器会启动 16 个协程分片处理。
