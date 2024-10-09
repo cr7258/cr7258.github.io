@@ -1,4 +1,4 @@
-package code
+package hashtable
 
 import (
 	"reflect"

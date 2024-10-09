@@ -1,4 +1,4 @@
-package code
+package double_pointer
 
 import "testing"
 

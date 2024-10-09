@@ -1,4 +1,4 @@
-package code
+package double_pointer
 
 func merge(nums1 []int, m int, nums2 []int, n int) {
 	i1 := m - 1

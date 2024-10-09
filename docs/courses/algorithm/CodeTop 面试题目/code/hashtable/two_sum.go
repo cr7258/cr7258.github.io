@@ -1,4 +1,4 @@
-package code
+package hashtable
 
 // 暴力解法
 func twoSumBruteForce(nums []int, target int) []int {

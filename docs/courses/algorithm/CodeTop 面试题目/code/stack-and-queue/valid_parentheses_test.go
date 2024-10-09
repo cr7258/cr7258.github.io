@@ -1,4 +1,4 @@
-package code
+package stack_and_queue
 
 import "testing"
 

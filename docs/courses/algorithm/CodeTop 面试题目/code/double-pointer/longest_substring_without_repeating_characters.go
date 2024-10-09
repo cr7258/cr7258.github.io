@@ -1,4 +1,4 @@
-package code
+package double_pointer
 
 func lengthOfLongestSubstring(s string) int {
 	dic := make(map[byte]int)

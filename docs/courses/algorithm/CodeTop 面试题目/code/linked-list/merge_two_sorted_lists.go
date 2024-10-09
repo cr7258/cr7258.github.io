@@ -1,9 +1,4 @@
-package code
-
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+package linked_list
 
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	// 用哨兵节点简化代码逻辑

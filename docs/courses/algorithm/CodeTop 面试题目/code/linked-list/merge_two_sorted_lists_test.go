@@ -1,4 +1,4 @@
-package code
+package linked_list
 
 import "testing"
 

@@ -1,7 +1,7 @@
-package code
+package stack_and_queue
 
 func isValid(s string) bool {
-	dic := map[rune]rune {
+	dic := map[rune]rune{
 		'(': ')',
 		'{': '}',
 		'[': ']',
