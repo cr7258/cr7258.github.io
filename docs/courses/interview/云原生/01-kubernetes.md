@@ -11,6 +11,22 @@ tags:
 
 ### Scheduling Queue （调度队列）的工作原理是怎么样的？
 
+调度器的 [SchedulingQueue](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L81-L110) 接口的实现是一个 [PriorityQueue](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L125-L173) 结构体，其中有 3 个子队列：
+
+- ActiveQ（heap）：存放就绪的 Pod，调度流程会从中取出 pod 进行调度。
+- BackOffQ（heap）：存放调度失败的 Pod，这里的 Pod 各自被设置了退避时间，等待足够的时间后才可以离开。
+- unschedulablePods（map）：存放调度失败且被判定为“无法调度成功”的 Pod，除非集群中发生了特定的事件或者 Pod 已达在子队列中阻塞时间的上限，否则 Pod 不会出队。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410092032285.png)
+
+- [AddUnschedulableIfNotPresent](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L385-L425) 默认会将调度或异步绑定失败的 Pod 添加到 `unschedulablePods` 中，除非在 Pod 调度/绑定的过程中集群状态已经发生了变化。调度器通过 `schedulingCycle` 和 `moveRequestCycle` 两个变量来判断在 Pod 调度/绑定期间集群的状态是否发生了变化。（[p.moveRequestCycle >= podSchedulingCycle](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L412)）
+  - `schedulingCycle`，即 `PriorityQueue` 当前的调度轮次，当 `PriorityQueue` pop 一个 Pod 时，该记录会加一。
+  - `moveRequestCycle`，即收到最近一次 moveRequest（[movePodsToActiveOrBackoffQueue](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L626-L659) ）时 PriorityQueue 所处的调度轮次，moveRequest 指的是从 UnschedulableQ 中移出特定的 Pod，可以理解为发起 moveRequest 就意味着“集群状态发生了变化”。
+  - 结合起来，可以理解一下这里错误处理的细节。在 Pod 调度失败时，正常情况下，会被放进 `unschedulablePods` 队列，但是在某些情况下，Pod 刚刚调度失败，在错误处理之前，忽然发生了资源变更，紧接着再调用错误处理回调，这个时候，由于在这个错误处理的间隙，集群的状态已经发生了变化，所以可以认为这个 Pod 应该有了被调度成功的可能性，所以就被放进了 `backoffQ` 重试队列中，等待快速重试。
+- [flushUnschedulablePodsLeftover](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L457-L475) 每隔 [30s](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L291) 运行一次， 将停留在 `unschedulablePods` 中时间超过 [DefaultPodMaxInUnschedulablePodsDuration](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L57) （5 分钟）的 Pod 重新移动到 `backoffQ` 或者 `activeQ` 中。 
+- [flushBackoffQCompleted](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L427-L455) 每隔 [1s](https://github.com/kubernetes/kubernetes/blob/release-1.25/pkg/scheduler/internal/queue/scheduling_queue.go#L290) 运行一次，将在 `backoffQ` 中已经完成退避时间的 Pod 重新移动到 `activeQ` 中。在默认情况下，当 Pod 第一次调度失败后，会等待 1s，然后重试，而在后续每次失败后，重试时间将会翻倍，即第二次失败等待 2s，第三次失败等待 4s，以此类推。此外，调度器设置了最长的 backoff 等待时间，在默认情况下，如果 Pod 连续调度失败，则其 backoff 等待时间最长为 10s。
+
+我们可以举一个一般性的例子让 Pod 在 3 个子队列中完整地流转一遍。对于一个带有 NodeAffinity 强限制的 Pod，假设它从 `ActiveQ` 中出队尝试调度且因 NodeAffinity plugin 阻拦而调度失败。此时除非集群中已有节点发生状态（label）变化，否则对该 Pod 再次尝试调度是没有意义的，所以它应当先进入 `unschedulablePods`，直到产生了节点状态变化的事件才适时地将其放进 `BackOffQ`，随后等待达到 backOff 时间并进入 `ActiveQ` 中准备被再次调度。
 
 参考资料：
 - [Kube-scheduler 源码分析之调度队列](http://rookie0080.info/archives/1706425339572)
