@@ -169,7 +169,7 @@ git rebase --continue
 git rebase --abort
 ```
 
-### 参考资料
+**参考资料**
 
 - [git rebase 用法详解与工作原理](https://waynerv.com/posts/git-rebase-intro/)
 - [Git merge & rebase 区别和用法](https://www.youtube.com/watch?v=rYQ8uwwOb3M&ab_channel=%E7%9F%A5%E8%A1%8C%E5%B0%8F%E8%AF%BE)
@@ -293,7 +293,7 @@ git reset --hard HEAD^
 git push origin <branch-name> --force
 ```
 
-### 参考资料
+**参考资料**
 
 - [Git入门图文教程(1.5W字40图)](https://www.cnblogs.com/mq0036/p/17082938.html)
 
@@ -403,6 +403,11 @@ git worktree remove <worktree>
 git worktree remove hotfix-1
 ```
 
+**参考资料**
+
+- [Git Worktree 的使用](https://www.cnblogs.com/wellcherish/p/17220100.html)
+
+
 ## Git 配置
 
 ### 设置缓冲区
@@ -413,6 +418,94 @@ git worktree remove hotfix-1
 git config http.postBuffer 524288000
 ```
 
-### 参考资料
+## Git LFS
 
-- [Git Worktree 的使用](https://www.cnblogs.com/wellcherish/p/17220100.html)
+Git LFS（Large File Storage）是一个 Git 扩展，专门用于管理大文件或二进制文件。它允许你将大文件托管在远程服务器，而不占用 Git 仓库的空间。使用 Git LFS 可以有效避免 Git 仓库膨胀问题。
+
+以下是 Git LFS 的使用步骤：
+
+**1. 安装 Git LFS**
+
+在使用 Git LFS 之前，你需要先安装它。
+
+**macOS：**
+```bash
+brew install git-lfs
+```
+
+**Ubuntu/Debian：**
+```bash
+sudo apt-get install git-lfs
+```
+
+**Windows：**
+通过 Git for Windows 安装程序安装 Git LFS，或从官网 [Git LFS Releases](https://git-lfs.github.com/) 下载并安装。
+
+**2. 初始化 Git LFS**
+
+安装完成后，在你的项目中运行以下命令来初始化 Git LFS：
+```bash
+git lfs install
+```
+
+这会将 Git LFS 设置为你的 Git 仓库的一部分。
+
+**3. 跟踪大文件**
+
+Git LFS 可以通过文件扩展名或者特定的文件路径来跟踪大文件。比如要跟踪所有的 `.psd` 文件，可以使用以下命令：
+```bash
+git lfs track "*.psd"
+```
+
+这会在仓库中创建一个 `.gitattributes` 文件，记录了哪些文件是用 Git LFS 跟踪的。
+
+**4. 提交大文件**
+
+当你添加和提交文件时，Git LFS 会自动处理大文件。可以像平常一样使用 Git 命令提交大文件：
+```bash
+git add path/to/largefile.psd
+git commit -m "Add large PSD file"
+git push origin main
+```
+
+Git LFS 会将大文件推送到远程 Git LFS 服务器，而 Git 仓库只存储指向这些文件的指针文件。
+
+**5. 获取大文件**
+
+如果克隆了一个使用 Git LFS 的仓库，你需要运行以下命令来下载 LFS 文件：
+```bash
+git lfs pull
+```
+
+可以通过 `git config lfs.fetchinclude` 或者 `git config lfs.fetchexclude` 设置在 `git lfs pull` 时处理的文件，例如：
+
+```bash
+# 配置 LFS 下载对象时仅包含 images 文件夹
+git config lfs.fetchinclude 'images/**'
+
+# 也可以选择仅排除指定的文件夹
+git config lfs.fetchexclude 'videos/**'
+```
+
+如果你想在克隆时自动获取大文件，可以在克隆时加上 `--recursive` 选项：
+```bash
+git clone --recursive <repository-url>
+```
+
+**6. 检查 LFS 状态**
+
+要检查哪些文件被 LFS 跟踪，可以使用以下命令：
+```bash
+git lfs ls-files
+```
+
+**7. 移除文件跟踪**
+
+如果想要停止 LFS 跟踪某个文件类型或文件路径，你可以手动编辑 `.gitattributes` 文件，移除相关条目，然后执行以下命令：
+```bash
+git lfs untrack "*.psd"
+```
+
+**参考资料**
+
+- [Git LFS 操作指南](https://zzz.buzz/zh/2016/04/19/the-guide-to-git-lfs/)
