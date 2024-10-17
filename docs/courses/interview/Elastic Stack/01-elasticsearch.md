@@ -320,3 +320,4 @@ norms 是索引评分因子，如果不用按评分对文档进行排序，设�
 ### 参考资料
 
 - [一口气看完43个关于 ElasticSearch 的使用建议｜得物技术](https://mp.weixin.qq.com/s/Gsa1rPVISjOdVteol78EoA)
+- [Tune for search speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-search-speed.html#_search_rounded_dates)
