@@ -989,6 +989,18 @@ limiter := workqueue.NewMaxOfRateLimiter(
 
 参考资料：[在掌握 K8s 路上，应该理解下面这些 QA](https://github.com/k8s-club/k8s-club/blob/c742e2234a7898f6524046cd7c40ffc95e2b0f71/articles/QA%20to%20Understand%20K8s.md)
 
+
+#### Resync 机制的作用是什么？
+
+resync 的目的是为了让 listener 能够定期 reconcile Indexer 内的所有事件，来保证对应事件关心的对象（可能是系统内，也可能是系统外）状态都是预期状态。如果此时 reconcile 过程中发现对象状态不是预期状态，就会驱动其向预期状态发展。
+
+一个易理解的例子：我们实现了一个 listener，其会通过对象描述的磁盘规格（大小，类型等等）来向云服务商购买对应的磁盘。对于对象 A 而言，listener 在第一次 reconcile 对象 A 时，通过调用云服务商的接口，购买了其对应规格的磁盘，并在购买完成之后，在对象 A 的 status 中添加上了购买完成的信息，之后本轮 reconcile 就结束了。之后，用户通过云服务商控制台将磁盘误删除了，但是此时 listener 是感知不到这个操作的，并且对象 A 的 status 中一直维持着购买成功的信息，这可能会导致依赖这个 status 的程序出现意外的错误。在这种场景下，通过 resync 功能，在 listener 的同步时间到达之后，就会重新处理对象 A，此时 listener 发现控制台上并没有该磁盘，就会重新调用接口再创建一次，这样就将用户在控制台误删除的动作给修正了）
+
+参考资料：
+
+- [articles/Informer机制 - Resync.md](https://github.com/k8s-club/k8s-club/blob/main/articles/Informer%E6%9C%BA%E5%88%B6%20-%20Resync.md)
+
+
 ### 使用 Informer，Controller runtime 和 Kubebuilder 来编写 Controller 的区别
 
 - 直接使用 Informer：直接使用 Informer 编写 Controller 需要编写更多的代码，因为我们需要在代码处理更多的底层细节，例如如何在集群中监视资源，以及如何处理资源变化的通知。但是，使用 Informer 也可以更加自定义和灵活，因为我们可以更细粒度地控制 Controller 的行为。
@@ -998,3 +1010,22 @@ limiter := workqueue.NewMaxOfRateLimiter(
 - Kubebuilder：和 Informer 及 Controller runtime 不同，Kubebuilder 并不是一个代码库，而是一个开发框架。Kubebuilder 底层使用了 controller-runtime。Kubebuilder 提供了 CRD 生成器和代码生成器等工具，可以帮助开发者自动生成一些重复性的代码和资源定义，提高开发效率。同时，Kubebuilder 还可以生成 Webhooks，以用于验证自定义资源。
 
 参考资料：[Kubernetes Controller 机制详解（一）：Kubernetes API List/Watch 机制 与 Informer 客户端库](https://www.zhaohuabing.com/post/2023-03-09-how-to-create-a-k8s-controller/)
+
+## 其他
+
+### Pod 的终止流程
+
+- Pod 被删除，状态变为 Terminating。从 API 层面看就是 Pod metadata 中的 deletionTimestamp 字段会被标记上删除时间。
+- Endpoint Controller 会将 Pod 从 Service 的 endpoint 列表中摘除掉，kube-proxy 根据 endpoint 更新转发规则，新的流量不再转发到该 Pod。
+- kubelet watch 到了就开始销毁 Pod。
+  - 如果 Pod 中有 container 配置了 preStop Hook ，将会执行。
+  - 发送 SIGTERM 信号给容器内主进程以通知容器进程开始优雅停止。
+  - 等待 container 中的主进程完全停止，如果在 `terminationGracePeriodSeconds` 内 (默认 30s) 还未完全停止，就发送 SIGKILL 信号将其强制杀死。
+  - 所有容器进程终止，清理 Pod 资源。
+  - 通知 API Server Pod 销毁完成，完成 Pod 删除。
+
+参考资料：
+
+- [Pod 终止流程](https://imroc.cc/kubernetes/best-practices/graceful-shutdown/pod-termination-proccess)
+- [Kubernetes Pod 删除操作源码解析](https://cloud.tencent.com/developer/article/2008313)
+

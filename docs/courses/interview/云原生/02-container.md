@@ -84,6 +84,7 @@ cgroupDriver: systemd
 - **Container** 级别：在 pod cgroup 内部，限制单个 container 的资源使用量。
 
 参考资料：
+
 - [k8s 基于 cgroup 的资源限额（capacity enforcement）：模型设计与代码实现（2023）](https://arthurchiao.art/blog/k8s-cgroup-zh/)
 
 ## Pod 中有多个容器时，Pod 的 requests/limits 等于各个容器 requests/limits 之和吗？
@@ -96,6 +97,7 @@ cgroupDriver: systemd
 因此，为了防止一个 pod 的多个容器使用资源超标，k8s 引入了 pod-level cgroup，每个 pod 都有自己的 cgroup。
 
 参考资料：
+
 - [k8s 基于 cgroup 的资源限额（capacity enforcement）：模型设计与代码实现（2023）](https://arthurchiao.art/blog/k8s-cgroup-zh/)
 
 ## Kubernetes Pod 的 Qos 类型有哪几种？
@@ -103,3 +105,140 @@ cgroupDriver: systemd
 - **Guaranteed**: requests == limits, requests != 0， 即 正常需求 == 最大需求，换言之 spec 要求的资源量必须得到保证，少一点都不行；
 - **Burstable**: requests < limits, requests != 0， 即 正常需求 < 最大需求，资源使用量可以有一定弹性空间；
 - **BestEffort**: request == limits == 0， 创建 pod 时不指定 requests/limits 就等同于设置为 0，kubelet 对这种 pod 将尽力而为；
+
+## container_memory_usage_bytes 和 container_memory_working_set_bytes 指标的区别是什么？
+
+- **container_memory_usage_bytes**：表示当前容器使用的总内存量，包括所有类型的内存（例如，活跃内存、缓存和文件系统缓存等）。
+- **container_memory_working_set_bytes**：通常指的是实际在使用中的内存量，不包含可以被系统回收的页面缓存。OOM Killer 会根据这个指标来决定是否终止容器以释放资源。
+
+参考资料：
+
+- [How much is too much? The Linux OOMKiller and “used” memory](https://faun.pub/how-much-is-too-much-the-linux-oomkiller-and-used-memory-d32186f29c9d)
+
+## 节点上怎么实现 CPU 和 内存监控的，分别监控了哪些具体的指标？
+
+CPU 使用率：
+
+```
+100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+```
+
+内存使用率：
+
+```
+(node_memory_MemTotal - node_memory_MemFree - node_memory_Buffers - node_memory_Cached) / node_memory_MemTotal * 100
+```
+
+## OOM 了以后，Pod 一定会被杀死吗？
+
+不一定。当 cgroup 超过其极限时，首先尝试从 cgroup 中回收内存，以便为 cgroup 所管理的新页面腾出空间。如果回收不成功，将调用 OOM 程序来选择并终止 cgroup 内最庞大的任务。
+
+另外只有当 Container 中 pid 为 1 的程序被 OOM-killer 杀死时，Container 才会被标记为 OOM killed，有些应用程序可以容忍非 init 进程的 OOM kills，因此 Kubernetes 选择不跟踪非 init 进程 OOM kill 事件，这是预期的方式。
+
+参考资料：
+
+- [Kubernetes学习(kubernetes中的OOM-killer和应用程序运行时含义)](https://izsk.me/2023/02/09/Kubernetes-Out-Of-Memory-1/)
+- [Out-of-memory (OOM) in Kubernetes – Part 2: The OOM killer and application runtime implications](https://mihai-albert.com/2022/02/13/out-of-memory-oom-in-kubernetes-part-2-the-oom-killer-and-application-runtime-implications/#cgroups-and-the-oom-killer)
+- [Memory Resource Controller: 2.5 Reclaim](https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt)
+
+## 为什么程序收不到 SIGTERM 信号？
+
+我们的业务代码通常会捕捉 SIGTERM 信号，然后执行停止逻辑以实现优雅终止。例如以下代码：
+
+```go
+package main
+
+import (
+  "fmt"
+  "os"
+  "os/signal"
+  "syscall"
+)
+
+func main() {
+  sigs := make(chan os.Signal, 1)
+  done := make(chan bool, 1)
+  // registers the channel
+  signal.Notify(sigs, syscall.SIGTERM)
+
+  go func() {
+    sig := <-sigs
+    fmt.Println("Caught SIGTERM, shutting down")
+    // Finish any outstanding requests, then...
+    done <- true
+  }()
+
+  fmt.Println("Starting application")
+  // Main logic goes here
+  <-done
+  fmt.Println("exiting")
+}
+```
+
+然而业务在 Kubernetes 环境中实际运行时，有时候可能会发现在滚动更新时，我们业务的优雅终止逻辑并没有被执行，现象是在等了较长时间后，业务进程直接被 SIGKILL 强制杀死了。
+
+通常都是因为容器启动入口使用了 shell，比如使用了类似 /bin/sh -c my-app 这样的启动入口。 或者使用 /entrypoint.sh 这样的脚本文件作为入口，在脚本中再启动业务进程。
+
+这就可能就会导致容器内的业务进程收不到 SIGTERM 信号，原因是:
+
+- 容器主进程是 shell，业务进程是在 shell 中启动的，成为了 shell 进程的子进程。
+- shell 进程默认不会处理 SIGTERM 信号，自己不会退出，也不会将信号传递给子进程，导致业务进程不会触发停止逻辑。
+
+如何解决?
+- **如果可以的话，尽量不使用 shell 启动业务进程。**
+- 如果一定要通过 shell 启动，比如在启动前需要用 shell 进程一些判断和处理，或者需要启动多个进程，**那么就需要在 shell 中传递下 SIGTERM 信号了**，有 3 种方式可以实现：
+
+**1.使用 exec 命令，替换 shell 进程，这样 shell 进程就变成了主进程，直接接收到 SIGTERM 信号。**
+```bash
+#! /bin/bash
+...
+
+exec /bin/yourapp # 脚本中执行二进制
+```
+**2.使用 trap 命令，捕捉 SIGTERM 信号，然后转发给子进程。**
+```bash
+#! /bin/bash
+
+/bin/app1 & pid1="$!" # 启动第一个业务进程并记录 pid
+echo "app1 started with pid $pid1"
+
+/bin/app2 & pid2="$!" # 启动第二个业务进程并记录 pid
+echo "app2 started with pid $pid2"
+
+handle_sigterm() {
+  echo "[INFO] Received SIGTERM"
+  kill -SIGTERM $pid1 $pid2 # 传递 SIGTERM 给业务进程
+  wait $pid1 $pid2 # 等待所有业务进程完全终止
+}
+trap handle_sigterm SIGTERM # 捕获 SIGTERM 信号并回调 handle_sigterm 函数
+
+wait # 等待回调执行完，主进程再退出 
+```
+**3.使用 tini 这样的工具，tini 是一个轻量级的 init 系统，专门用来解决容器环境下的信号处理问题。**
+```bash
+FROM ubuntu:22.04
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /tini /entrypoint.sh
+ENTRYPOINT ["/tini", "--"]
+CMD [ "/start.sh" ] 
+```
+
+参考资料：
+
+- [正确处理 SIGTERM 信号](https://imroc.cc/kubernetes/best-practices/graceful-shutdown/sigterm#%E5%9C%A8-shell-%E4%B8%AD%E4%BC%A0%E9%80%92%E4%BF%A1%E5%8F%B7)
+
+## docker attach 和 docker exec 命令有什么区别？
+
+docker attach 命令通过 shim 进程连接到容器的 stdio 流，允许用户访问容器的日志并与之交互。在 attach 的 stdin 执行 exit 命令时，容器会被停止。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410192058816.png)
+
+docker exec 创建一个新的辅助容器，共享目标容器的 net, pid, mount 等命名空间、相同的 cgroups 层次结构等。从外部来看，感觉就像在现有容器内运行命令。在 exec 的 stdin 执行 exit 命令时，容器不会被停止，因为 exit 的是新创建的辅助容器。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410192058174.png)
+
+参考资料：
+
+- [Containers 101: attach vs. exec - what's the difference?](https://iximiuz.com/en/posts/containers-101-attach-vs-exec/)
