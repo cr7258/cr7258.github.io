@@ -234,3 +234,353 @@ func main() {
 参考资料：
 
 - [GOMAXPROCS-POT](https://pandaychen.github.io/2020/02/28/GOMAXPROCS-POT/)
+
+## 两个 goroutine 交替打印字母和数字
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func main() {
+	num := make(chan struct{})
+	letter := make(chan struct{})
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		i := 1
+		for {
+			select {
+			case <-num:
+				fmt.Print(i)
+				i++
+				time.Sleep(time.Millisecond * 200)
+				letter <- struct{}{}
+			}
+		}
+	}()
+
+	go func() {
+		j := 'a'
+		for {
+			select {
+			case <-letter:
+				fmt.Print(string(j))
+				if j == 'z' {
+					wg.Done()
+					return
+				}
+				j++
+				time.Sleep(time.Millisecond * 200)
+				num <- struct{}{}
+			}
+		}
+	}()
+	// 先打印数字
+	num <- struct{}{}
+	wg.Wait()
+}
+
+// 打印结果
+1a2b3c4d5e6f7g8h9i10j11k12l13m14n15o16p17q18r19s20t21u22v23w24x25y26z%
+```
+
+## 两个 goroutine 并发更新数字
+
+要实现两个 goroutine 并发更新同一个数字，并且保证数据的正确性，我们需要使用同步原语来避免竞争条件（Race Condition）。Go 语言提供了 `sync.Mutex` 或者 `sync/atomic` 包来实现并发安全的数据访问。
+
+**方式 1: 使用 `sync.Mutex`**
+
+`sync.Mutex` 是互斥锁，用于在多 goroutine 中同步访问共享资源，确保同一时间只有一个 goroutine 可以对共享资源进行修改。
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var num int
+	var mu sync.Mutex // 用来保护共享变量 num
+	wg := sync.WaitGroup{}
+
+	// 启动两个 goroutine
+	wg.Add(2)
+
+	// 第一个 goroutine
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			mu.Lock()
+			num++
+			mu.Unlock()
+		}
+	}()
+
+	// 第二个 goroutine
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			mu.Lock()
+			num++
+			mu.Unlock()
+		}
+	}()
+
+	// 等待两个 goroutine 完成
+	wg.Wait()
+	fmt.Println("最终的 num 值:", num)
+}
+```
+
+解释：
+- **互斥锁 (`sync.Mutex`)**：确保在任意时刻，只有一个 goroutine 可以修改 `num`。
+- 每个 goroutine 循环 1000 次，每次递增 `num`。
+- `wg.Wait()` 等待两个 goroutine 完成。
+
+**方式 2: 使用 `sync/atomic`**
+
+`sync/atomic` 提供了一些低级的原子操作，适合并发环境下对单个变量的安全访问和修改。
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+func main() {
+	var num int64 // 使用 int64，因为 atomic 需要操作 64 位的整数
+	wg := sync.WaitGroup{}
+
+	// 启动两个 goroutine
+	wg.Add(2)
+
+	// 第一个 goroutine
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			atomic.AddInt64(&num, 1) // 原子操作
+		}
+	}()
+
+	// 第二个 goroutine
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			atomic.AddInt64(&num, 1) // 原子操作
+		}
+	}()
+
+	// 等待两个 goroutine 完成
+	wg.Wait()
+	fmt.Println("最终的 num 值:", num)
+}
+```
+
+解释：
+- **`atomic.AddInt64`**：这是一个原子操作，确保多个 goroutine 并发访问时的安全性。
+- 和使用互斥锁相比，`atomic` 操作的性能更好，但只适用于简单的原子操作。
+
+**总结：**
+- 使用 `sync.Mutex`：适合较复杂的操作，确保代码块内的操作在多 goroutine 环境下安全执行。
+- 使用 `sync/atomic`：适合简单的变量更新操作，性能较好。
+
+## sync.Cond 的使用场景
+
+sync.Cond 经常用在多个 goroutine 等待，一个 goroutine 通知（事件发生）的场景。如果是一个通知，一个等待，使用互斥锁或 channel 就能搞定了。
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func read(name string, c *sync.Cond) {
+	// 每个 Cond 实例都会关联一个锁 L（互斥锁 *Mutex，或读写锁 *RWMutex），当修改条件或者调用 Wait 方法时，必须加锁。
+	c.L.Lock()
+	c.Wait()
+
+	fmt.Println(name, "start reading")
+	c.L.Unlock()
+}
+
+func write(name string, c *sync.Cond) {
+	fmt.Println(name, "start writing")
+	time.Sleep(time.Second * 1)
+	fmt.Println("wakes all")
+	c.Broadcast()
+}
+
+func main() {
+	cond := sync.NewCond(&sync.Mutex{})
+
+	go read("reader1", cond)
+	go read("reader2", cond)
+	go read("reader3", cond)
+	write("writer", cond)
+
+	time.Sleep(time.Second * 3)
+}
+
+// 打印结果
+writer start writing
+wakes all
+reader3 start reading
+reader1 start reading
+reader2 start reading
+```
+
+
+## sync.Once 使用场景
+
+sync.Once 是 Go 标准库提供的使函数只执行一次的实现，常应用于单例模式，例如初始化配置、保持数据库连接等。作用与 init 函数类似，但有区别。
+- init 函数是当所在的 package 首次被加载时执行，若迟迟未被使用，则既浪费了内存，又延长了程序加载时间。
+- sync.Once 可以在代码的任意位置初始化和调用，因此可以延迟到使用时再执行，并发场景下是线程安全的。
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+// Config 是一个模拟的配置结构体
+type Config struct {
+	Value string
+}
+
+// 定义一个全局的 Config 实例和 sync.Once 实例
+var (
+	config Config
+	once   sync.Once
+)
+
+// 初始化配置的函数
+func initConfig() {
+	config = Config{Value: "Initialized Value"}
+	fmt.Println("Config initialized.")
+}
+
+// 获取配置的函数，确保配置只初始化一次
+func getConfig() Config {
+	once.Do(initConfig) // 确保 initConfig 只被调用一次
+	return config
+}
+
+func main() {
+	var wg sync.WaitGroup
+
+	// 启动多个 goroutine，尝试获取配置
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			cfg := getConfig()
+			fmt.Printf("Goroutine %d: %s\n", id, cfg.Value)
+		}(i)
+	}
+
+	wg.Wait() // 等待所有 goroutine 完成
+}
+
+// 打印结果
+Config initialized.
+Goroutine 1: Initialized Value
+Goroutine 2: Initialized Value
+Goroutine 3: Initialized Value
+Goroutine 0: Initialized Value
+Goroutine 4: Initialized Value
+```
+
+## Context 使用场景
+
+在 Go 语言中，context 包提供了一种在多个 goroutine 之间传递请求范围和截止日期的信息的方式。它常用于取消操作、超时控制和传递请求级别的值。以下是一些使用 context 的基本示例和最佳实践。
+
+- `context.Background()`：通常在程序的入口点或最顶层的函数中使用，表示根上下文。
+- `context.WithCancel`：用于创建可以被取消的上下文。
+- `context.WithTimeout`：创建一个在指定时间后自动取消的上下文。
+- `context.WithDeadline`：与超时上下文类似，但使用具体的截止时间。
+
+以下是一个使用 context 的示例，演示如何在多个 goroutine 中传递取消信号和超时控制。
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+func worker(ctx context.Context, id int) {
+	select {
+	case <-time.After(2 * time.Second): // 模拟工作
+		fmt.Printf("Worker %d finished work\n", id)
+	case <-ctx.Done(): // 监听取消信号
+		fmt.Printf("Worker %d stopped\n", id)
+	}
+}
+
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	for i := 0; i < 5; i++ {
+		go worker(ctx, i)
+	}
+
+	// 如果小于 2s，worker 会来不及完成工作
+	time.Sleep(time.Second * 1)
+	// 取消上下文，所有监听 ctx.Done() 的 goroutine 将收到通知
+	cancel()
+	// 等待一段时间以查看结果
+	time.Sleep(3 * time.Second)
+}
+```
+
+下面是一个使用超时上下文的示例：
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+func worker(ctx context.Context, id int) {
+	select {
+	case <-time.After(2 * time.Second): // 模拟工作
+		fmt.Printf("Worker %d finished work\n", id)
+	case <-ctx.Done(): // 监听取消信号
+		fmt.Printf("Worker %d stopped\n", id)
+	}
+}
+
+func main() {
+	// 设置超时时间
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel() // 确保在 main 退出时调用 cancel
+
+	for i := 0; i < 5; i++ {
+		go worker(ctx, i)
+	}
+
+	// 等待一段时间以查看结果
+	time.Sleep(3 * time.Second)
+}
+```
