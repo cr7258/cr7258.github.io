@@ -213,3 +213,24 @@ func main() {
 ## `var data []int` 和 `var data = make([]int, 0)` 有什么区别？
 
 `var data []int` 声明一个切片，初始值为 nil。 `var data = make([]int, 0)` 切片的值不为 nil，而是一个长度和容量都为 0 的空切片。在大多数情况下，推荐使用 var data = make([]int, 0) 来初始化切片。
+
+
+## 在容器和 Kubernetes 集群中，存在 GOMAXPROCS 会错误识别容器 CPU 核心数的问题
+
+默认情况下，Golang 会将 GOMAXPROCS 设置为 CPU 核心数，这允许 Golang 程序充分使用机器的每一个 CPU，最大程度的提高我们程序的并发性能。
+但是在容器中，`runtime.GOMAXPROCS()` 获取的是 宿主机的 CPU 核数 。P 值设置过大，导致生成线程过多，会增加上线文切换的负担，导致严重的上下文切换，浪费 CPU。
+
+解决方案是可以使用 [automaxprocs](https://github.com/uber-go/automaxprocs)，大致原理是读取 CGroup 值识别容器的 CPU quota，计算得到实际核心数，并自动设置 GOMAXPROCS 线程数量。
+
+```go
+import _ "go.uber.org/automaxprocs"
+
+func main() {
+  // Your application logic here
+}
+
+```
+
+参考资料：
+
+- [GOMAXPROCS-POT](https://pandaychen.github.io/2020/02/28/GOMAXPROCS-POT/)

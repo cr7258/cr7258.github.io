@@ -242,3 +242,82 @@ docker exec 创建一个新的辅助容器，共享目标容器的 net, pid, mou
 参考资料：
 
 - [Containers 101: attach vs. exec - what's the difference?](https://iximiuz.com/en/posts/containers-101-attach-vs-exec/)
+
+
+## 如何正确地获取容器中的 CPU 利用率？
+
+在容器中如果我们使用 top 命令查看容器的 CPU 利用率，会发现其实看到是宿主机的 CPU 利用率。
+这是因为在默认情况下，容器中的 `/proc/stat` 并没有单独挂载，而是使用的宿主机的。而 top 命令中对 CPU 核数的判断，以及对 CPU 利用率的显示都是根据 `/proc/stat` 文件的输出来计算的。
+
+在容器中启动两个进程，这两个进程会尝试占满所有的 CPU 资源，从而使 CPU 使用率达到 200%。
+
+```bash
+yes > /dev/null &
+yes > /dev/null &
+```
+
+在容器中使用 top 命令可以看到 CPU 的使用率是 0.6% + 0.6% + 21.6% + 78.1% + 21.7% + 78.3% + 29.7% + 70.3% = 300.9%，而容器的 CPU使用率其实应该是 200% 左右。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410222133237.png)
+
+要想正确地获取容器中的 CPU 利用率，有 3 种方法：
+
+- **1.使用 docker stats 命令：**
+
+```bash
+docker stats
+
+CONTAINER ID   NAME          CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O       PIDS
+3a26224e8de9   funny_cohen   195.48%   2.223MiB / 512MiB   0.43%     3.36kB / 2.52kB   4.1kB / 4.1kB   5
+```
+
+- **2.找到容器所属的 cgroup，根据 `/sys/fs/cgroup/cpu.stat` (cgroup v2) 中的 `usage_usec` 来计算 CPU 利用率。** 在 cgroup v1 中，根据 `cpuacct.usage` 来计算 CPU 利用率。 
+kubelet 中集成的 cadvisor 就是采用上述方案来获取容器的 CPU 利用率。
+以 cgroup v2 为例，CPU 的使用率为 (2501959062 - 2499873874) / 1000000 * 100 = 208%，其中 1000000（微妙） 是 sleep 1 秒的时间，乘 100 是为了得到百分比。
+
+```bash
+cat /sys/fs/cgroup/cpu.stat | grep usage_usec; sleep 1; cat /sys/fs/cgroup/cpu.stat | grep usage_usec
+usage_usec 2499873874
+usage_usec 2501959062
+```
+
+- **3.使用 lxcfx 文件系统实现容器的资源视图隔离。** lxcfs 是通过文件挂载的方式，把 cgroup 中关于系统的相关信息读取出来，通过 docker 的 volume 挂载给容器内部的 proc 系统。 然后让 docker 内的应用读取 proc 中信息的时候以为就是读取的宿主机的真实的 proc。下面是 lxcfs 的工作原理架构图：
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410222154271.png)
+
+当我们把宿主机的 `/var/lib/lxcfs/proc/memoinfo` 文件挂载到 Docker 容器的 /proc/meminfo 位置后，容器中进程读取相应文件内容时，lxcfs 的 /dev/fuse 实现会从容器对应的 cgroup 中读取正确的内存限制。从而使得应用获得正确的资源约束。 CPU 的限制原理也是一样的。
+
+lxcfx 的使用方式如下：
+
+```bash
+# 安装 lxcfs
+apt-get install -y lxcfs
+
+# 启动容器的时候将宿主机的 lxcfx 目录挂载到容器的 /proc 目录
+# 在容器看到 CPU 个数是--cpuset 指定的 CPU 的个数
+docker run -it --cpus 2 --cpuset-cpus "0,1" --memory 512m --rm \
+      -v /var/lib/lxcfs/proc/cpuinfo:/proc/cpuinfo:rw \
+      -v /var/lib/lxcfs/proc/diskstats:/proc/diskstats:rw \
+      -v /var/lib/lxcfs/proc/meminfo:/proc/meminfo:rw \
+      -v /var/lib/lxcfs/proc/stat:/proc/stat:rw \
+      -v /var/lib/lxcfs/proc/swaps:/proc/swaps:rw \
+      -v /var/lib/lxcfs/proc/uptime:/proc/uptime:rw \
+      ubuntu:18.04 /bin/bash
+```
+
+现在在容器中运行 top 命令，就可以看到容器正确的 CPU 利用率了。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410222155327.png)
+
+参考资料：
+
+- [06 | 容器CPU（2）：如何正确地拿到容器CPU的开销？](https://time.geekbang.org/column/article/313255)
+- [如何正确获取容器的CPU利用率？](https://blog.csdn.net/zhangyanfei01/article/details/129965165)
+- [lxcfs 是什么？ 怎样通过 lxcfs 在容器内显示容器的 CPU、内存状态](https://www.cnblogs.com/-wenli/p/14036026.html)
+- [lxcfs 是什么？ lxcfs 实现对容器资源视图隔离的最佳实践](https://juejin.cn/post/6847902216511356936)
+- [Current Fulfiller of Metrics Endpoints & Future Proposal](https://github.com/kubernetes/enhancements/blob/d7e509453347228074f9b36ce70bcd875562c3ac/keps/sig-node/2371-cri-pod-container-stats/README.md#current-fulfiller-of-metrics-endpoints--future-proposal)
+
+## 为什么要做容器的资源视图隔离？
+
+- 对于很多基于 JVM 的 JAVA 程序，应用启动时会根据系统的资源上限来分配 JVM 的堆和栈的大小。而在容器里面运行运行 JAVA 应用由于 JVM 获取的内存数据还是物理机的数据，而容器分配的资源配额又小于 JVM 启动时需要的资源大小，就会导致程序启动不成功。
+- 对于需要获取 CPU 信息的程序，比如在开发 Golang 服务端需要获取 Golang 中 `runtime.GOMAXPROCS(runtime.NumCPU())` 或者运维在设置服务启动进程数量的时候（比如 Nginx 配置中的 `worker_processes auto`），都喜欢通过程序自动判断所在运行环境 CPU 的数量。但是在容器内的进程总会从 `/proc/cpuinfo` 中获取到 CPU 的核数，而容器里面的 `/proc` 文件系统还是物理机的，从而会影响到运行在容器里面服务的运行状态。

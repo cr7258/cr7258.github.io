@@ -297,8 +297,6 @@ git push origin <branch-name> --force
 
 - [Git入门图文教程(1.5W字40图)](https://www.cnblogs.com/mq0036/p/17082938.html)
 
-
-
 ## 保持本地 Fork 仓库与上游仓库同步
 
 ### 设置上游仓库（只需要首次设置）
@@ -407,6 +405,29 @@ git worktree remove hotfix-1
 
 - [Git Worktree 的使用](https://www.cnblogs.com/wellcherish/p/17220100.html)
 
+## Git Clone
+
+### 使用 Git SSH 协议 Clone 仓库
+
+当 Git 仓库太大时，或者网络环境不好时，使用 SSH 协议 clone 仓库可能会更稳定。请确保你已设置 SSH 密钥对并将公钥添加到你的 GitHub 帐户。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202410201551903.png)
+
+如果默认的 Github 的 22 端口不可用，可以使用 443 端口。配置 `~/.ssh/config` 文件：
+
+```yaml
+Host github.com
+  Hostname ssh.github.com
+  Port 443
+```
+
+然后就可以使用 SSH 协议 clone 仓库了：
+
+```bash
+git clone git@github.com:<username>/<repo>.git
+# 例如
+git clone git@github.com:cr7258/pytorch-deep-learning.git
+```
 
 ## Git 配置
 
@@ -509,3 +530,46 @@ git lfs untrack "*.psd"
 **参考资料**
 
 - [Git LFS 操作指南](https://zzz.buzz/zh/2016/04/19/the-guide-to-git-lfs/)
+
+
+## 问题
+
+### Git 仓库太大或者网络问题 Clone 失败
+
+有时候由于网络问题或者 Git 仓库太大，可能导致 clone 失败。
+
+```bash
+git clone https://github.com/cr7258/pytorch-deep-learning.git
+Cloning into 'pytorch-deep-learning'...
+remote: Enumerating objects: 4252, done.
+remote: Counting objects: 100% (274/274), done.
+remote: Compressing objects: 100% (107/107), done.
+error: RPC failed; curl 18 Transferred a partial file46 MiB/s
+error: 8172 bytes of body are still expected
+fetch-pack: unexpected disconnect while reading sideband packet
+fatal: early EOF
+fatal: fetch-pack: invalid index-pack output
+```
+
+可以尝试以下方法：
+
+- **增加缓冲区大小**：可以尝试增加 Git 的缓冲区大小以允许更大的传输。
+
+```bash
+git config --global http.postBuffer 524288000  # Set a larger buffer size
+git config --global core.compression 0         # Disable compression
+```
+
+- **[使用 SSH clone](#使用-git-ssh-协议-clone-仓库)**。 
+- **尝试 shallow clone，只克隆最近的提交**，例如：
+
+```bash
+git clone --depth=1 https://github.com/cr7258/pytorch-deep-learning.git
+```
+
+**参考资料**
+
+- [How can I fix this serious git clone error?](https://github.com/orgs/community/discussions/48568)
+
+
+
