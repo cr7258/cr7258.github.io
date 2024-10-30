@@ -584,3 +584,94 @@ func main() {
 	time.Sleep(3 * time.Second)
 }
 ```
+
+## 如果函数 []int 类型切片参数在函数内部发生了扩容，对原切片有影响吗？
+
+在 Go 中，切片是引用类型，传递给函数的是切片的引用。在函数内部对切片的修改会影响原切片，但是如果切片发生了扩容，函数内部的切片参数会引用新的数组，对切片的修改不会影响原切片。
+
+- 不发生扩容：
+   - 当函数中的操作不导致切片扩容，切片参数和原切片会共享同一个底层数组。
+   - 在函数内部修改切片内容（例如 slice[i] = value），会直接影响传入的原始切片，因为它们指向同一个底层数组。
+
+- 发生扩容：
+   - 当函数中的操作（如 append）导致切片容量超出当前容量限制时，Go 会创建一个新的更大容量的底层数组。
+   - 此时，函数内部的切片参数会引用新数组，对切片的修改不会影响原切片。
+
+
+```go
+package main
+
+import "fmt"
+
+func modifySlice(slice []int) {
+	fmt.Printf("Before append: len=%d cap=%d address=%p\n", len(slice), cap(slice), slice)
+
+	// 追加元素使切片扩容
+	// slice 在函数内部指向新的数组，而 original 仍然指向原数组
+	// slice 在函数内部的修改就不会体现在 original 指向的原数组上了
+	// 如果 slice 切片没有扩容，那么在函数内部的修改也会体现在 original 上
+	slice = append(slice, 100)
+
+	fmt.Printf("After append: len=%d cap=%d address=%p\n", len(slice), cap(slice), slice)
+
+	// 修改切片内容
+	slice[0] = 999
+}
+
+func main() {
+	// 定义一个长度和容量较小的切片
+	original := []int{1, 2, 3}
+	fmt.Printf("Original slice: len=%d cap=%d address=%p\n", len(original), cap(original), original)
+
+	modifySlice(original)
+
+	fmt.Printf("After function call: len=%d cap=%d address=%p\n", len(original), cap(original), original)
+	fmt.Println("Original slice content:", original)
+}
+
+// 打印结果
+Original slice: len=3 cap=3 address=0xc0000ae000
+Before append: len=3 cap=3 address=0xc0000ae000
+After append: len=4 cap=6 address=0xc0000b4030
+After function call: len=3 cap=3 address=0xc0000ae000
+Original slice content: [1 2 3]
+```
+
+如果想要在切片扩容的情况下，在函数内部的修改也能体现在原切片上，可以使用指针传递切片。
+
+```go
+package main
+
+import "fmt"
+
+func modifySlice(slice *[]int) {
+	fmt.Printf("Before append: len=%d cap=%d address=%p\n", len(*slice), cap(*slice), *slice)
+
+	// 追加元素，导致切片扩容
+	*slice = append(*slice, 100)
+	
+	fmt.Printf("After append: len=%d cap=%d address=%p\n", len(*slice), cap(*slice), *slice)
+
+	// 修改切片内容
+	(*slice)[0] = 999
+}
+
+func main() {
+	original := []int{1, 2, 3}
+	fmt.Printf("Original slice: len=%d cap=%d address=%p\n", len(original), cap(original), original)
+	
+	// 传入指针
+	modifySlice(&original)
+	
+	fmt.Printf("After function call: len=%d cap=%d address=%p\n", len(original), cap(original), original)
+	fmt.Println("Original slice content:", original)
+}
+
+
+// 打印结果
+Original slice: len=3 cap=3 address=0xc00001a018
+Before append: len=3 cap=3 address=0xc00001a018
+After append: len=4 cap=6 address=0xc00010a030
+After function call: len=4 cap=6 address=0xc00010a030
+Original slice content: [999 2 3 100]
+```
