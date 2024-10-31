@@ -675,3 +675,37 @@ After append: len=4 cap=6 address=0xc00010a030
 After function call: len=4 cap=6 address=0xc00010a030
 Original slice content: [999 2 3 100]
 ```
+
+## 函数参数 struct 类型传值和传指针的区别
+
+传值方式函数内部对结构体字段的修改不会影响原始结构体；而传指针可以直接修改原始结构体的数据，因为传递的是结构体的地址。
+
+```go
+package main
+
+import "fmt"
+
+type Person struct {
+    name string
+    age  int
+}
+
+func changeNameByValue(p Person) {
+    p.name = "Alice"
+}
+
+func changeNameByPointer(p *Person) {
+    p.name = "Alice"
+}
+
+func main() {
+    person1 := Person{name: "Bob", age: 25}
+    person2 := Person{name: "Bob", age: 25}
+
+    changeNameByValue(person1)
+    fmt.Println("After changeNameByValue:", person1.name) // 输出 "Bob"
+
+    changeNameByPointer(&person2)
+    fmt.Println("After changeNameByPointer:", person2.name) // 输出 "Alice"
+}
+```
