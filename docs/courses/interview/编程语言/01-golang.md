@@ -273,7 +273,6 @@ func main() {
 				fmt.Print(string(j))
 				if j == 'z' {
 					wg.Done()
-					return
 				}
 				j++
 				time.Sleep(time.Millisecond * 200)
