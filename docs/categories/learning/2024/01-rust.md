@@ -1,5 +1,5 @@
 ---
-title: Rust 学习笔记
+title: Rust
 author: Se7en
 date: 2024/04/03 19:50
 categories:
