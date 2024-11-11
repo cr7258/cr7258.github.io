@@ -490,7 +490,7 @@ root@gpu-demo:~# kubectl get node gpu-cluster-control-plane -oyaml | grep capaci
     pods: "110"
 ```
 
-使用以下 YAML 创建来 Pod 使用 GPU。
+使用以下 YAML 创建来 Pod 使用 GPU。注意：虽然 vGPU 被虚拟为 10 个，但是 1 个 Pod 申请的 vGPU 数量不能超过物理的 GPU 数，不过可以为多个 Pod 分别申请 1 个 vGPU。
 
 ```bash
 apiVersion: v1
