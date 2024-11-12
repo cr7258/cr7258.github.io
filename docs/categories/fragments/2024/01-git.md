@@ -51,6 +51,13 @@ git branch -m <new-branch-name>
 git branch -m <old-branch-name> <new-branch-name>
 ```
 
+### 删除分支
+
+```bash
+# 在删除某个分支之前，确保你不在该分支上
+git branch -d <branch-name>
+```
+
 ## Git Rebase
 
 git rebase 是 Git 中一个用于合并变更的命令，可以将一个分支的提交“重新应用”到另一个分支上，同时保持提交历史的清晰。通常在下面的场景中使用：
