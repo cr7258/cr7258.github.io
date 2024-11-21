@@ -95,39 +95,36 @@
    * 初始化时间轴
    */
   function initTimeline() {
-    $articleData = [];
+    // 初始化只包含有日期的文章
+    $articleData = articleData.filter(article => article.date);
     archiveData = {};
 
     // 如果URL路径有category或tag或year参数, 默认筛选出指定category或tag或year的文章数据
     // 例如: /archives?category=Bug万象集
     // 例如: /archives?tag=JVM
-    // 例如: /archives?year=2020
-    $category = getQueryParam('category');
-    $tag = getQueryParam('tag');
-    $year = getQueryParam('year');
-    if ($category && $category.trim() != '') {
-      for (let i = 0; i < articleData.length; i++) {
-        let article = articleData[i];
-        if (article.categories && article.categories.includes($category)) {
-          $articleData.push(article);
-        }
-      }
-    } else if ($tag && $tag.trim() != '') {
-      for (let i = 0; i < articleData.length; i++) {
-        let article = articleData[i];
-        if (article.tags && article.tags.includes($tag)) {
-          $articleData.push(article);
-        }
-      }
-    } else if ($year && $year.trim() != '') {
-      for (let i = 0; i < articleData.length; i++) {
-        let article = articleData[i];
-        if (article.date && new Date(article.date).getFullYear() == $year) {
-          $articleData.push(article);
-        }
-      }
-    } else {
-      $articleData.push(...articleData);
+    const category = getQueryParam('category');
+    const tag = getQueryParam('tag');
+    const year = getQueryParam('year');
+
+    // 根据分类筛选文章
+    if (category) {
+      $articleData = $articleData.filter(article => 
+        article.categories && article.categories.includes(category)
+      );
+    }
+
+    // 根据标签筛选文章
+    if (tag) {
+      $articleData = $articleData.filter(article => 
+        article.tags && article.tags.includes(tag)
+      );
+    }
+
+    // 根据年份筛选文章
+    if (year) {
+      $articleData = $articleData.filter(article => 
+        new Date(article.date).getFullYear() + '年' === year
+      );
     }
 
     // 文章数据归档处理

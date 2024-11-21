@@ -1,7 +1,6 @@
 ---
 title: GPU
 author: Se7en
-date: 2024/11/10 09:00
 categories:
  - GPU
 tags:

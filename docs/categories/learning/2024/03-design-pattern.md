@@ -1,7 +1,6 @@
 ---
 title: 设计模式
 author: Se7en
-date: 2024/09/21 09:00
 categories:
  - Programming
  - Design Pattern

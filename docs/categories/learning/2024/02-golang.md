@@ -1,7 +1,6 @@
 ---
 title: Go 并发编程
 author: Se7en
-date: 2024/09/21 09:00
 categories:
  - Programming
 tags:
