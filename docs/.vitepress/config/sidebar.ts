@@ -5,10 +5,10 @@ import { getChineseZodiac, getChineseZodiacAlias } from '../theme/utils.ts';
 const sync = fg.sync;
 
 export const sidebar: DefaultTheme.Config['sidebar'] = {
-  '/categories/issues/': getItemsByDate("categories/issues"),
-  '/categories/fragments/': getItemsByDate("categories/fragments"),
-  '/categories/tools/': getItemsByDate("categories/tools"),
-  '/categories/learning/': getItemsByDate("categories/learning"),
+  '/categories/issues/': getItems("categories/issues"),
+  '/categories/fragments/': getItems("categories/fragments"),
+  '/categories/tools/': getItems("categories/tools"),
+  '/categories/learning/': getItems("categories/learning"),
   '/blogs/original/': getItemsByDate("blogs/original/"),
   '/blogs/translate/': getItemsByDate("blogs/translate/"),
   '/courses/elastic-stack/': getItems("courses/elastic-stack"),
