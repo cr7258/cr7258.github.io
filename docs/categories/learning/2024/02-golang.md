@@ -8,8 +8,6 @@ tags:
  - Concurrency
 ---
 
-
-
 ## Go 的并发机制
 
 ### Channel 通道

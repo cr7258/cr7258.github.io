@@ -96,12 +96,12 @@
     authorLink: props.article?.authorLink ?? theme.value.articleMetadataConfig.authorLink,
     showViewCount: theme.value.articleMetadataConfig?.showViewCount ?? false,
     viewCount: 0,
-    date: new Date(props.article.date),
+    date: props.article?.date ? new Date(props.article.date) : new Date(),
     categories: props.article?.categories ?? [],
     tags: props.article?.tags ?? [],
     showCategory: props.showCategory
   });
-  const { isOriginal, author, authorLink, showViewCount, viewCount, date, toDate, categories, tags, showCategory } = toRefs(data);
+  const { isOriginal, author, authorLink, showViewCount, viewCount, date, categories, tags, showCategory } = toRefs(data);
 
   if (data.showViewCount) {
     // 记录并获取文章阅读数（使用文章标题 + 发布时间生成 MD5 值，作为文章的唯一标识）

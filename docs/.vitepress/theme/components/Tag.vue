@@ -58,34 +58,37 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import md5 from 'blueimp-md5';
   import { getQueryParam } from '../utils.ts';
   import { data as articleData } from '../../../../article.data.js';
 
-  const tags = computed(() => initTags(articleData));
+  const tags = ref({});
   /**
    * 初始化标签数据
    * {tagTitle1: [article1, article2, ...}
    */
-  function initTags(articleData) {
-    const tags: any = {};
-    for (let i = 0; i < articleData.length; i++) {
-      const article = articleData[i];
-      const articleTags = article.tags;
-      if (Array.isArray(articleTags)) {
-        articleTags.forEach((articleTag) => {
-          if (!tags[articleTag]) {
-            tags[articleTag] = [];
-          }
-          tags[articleTag].push(article);
-          // 文章按发布时间降序排序
-          tags[articleTag].sort((a, b) => b.date.localeCompare(a.date));
-        });
-      }
+  function initTags() {
+    // 只处理有日期的文章
+    const validArticles = articleData.filter(article => article.date);
+    
+    for (let i = 0; i < validArticles.length; i++) {
+      const article = validArticles[i];
+      if (!article.tags) continue;
+
+      article.tags.forEach(articleTag => {
+        if (!tags.value[articleTag]) {
+          tags.value[articleTag] = [];
+        }
+        tags.value[articleTag].push(article);
+        // 文章按发布时间降序排序
+        tags.value[articleTag].sort((a, b) => b.date.localeCompare(a.date));
+      });
     }
-    return tags;
   }
+
+  // 初始化标签数据
+  initTags();
 
   // 点击指定Tag后进行选中
   let selectTag = ref('');
@@ -103,18 +106,26 @@
     toggleTag(tag);
   }
 
-  const dataList = computed(() => initWordCloud(tags));
+  // 词云数据
+  const dataList = ref([]);
   /**
    * 初始化词云数据
    * [{"name": xx, "value": xx}]
    */
-  function initWordCloud(tags) {
-    const dataList = [];
-    for (let tag in tags.value) {
-      dataList.push({"name": tag, "value": tags.value[tag].length});
-    }
-    return dataList;
+  function initWordCloud() {
+    dataList.value = Object.keys(tags.value).map(tag => ({
+      name: tag,
+      value: tags.value[tag].length
+    }));
   }
+
+  // 监听标签数据变化，更新词云
+  watch(tags, () => {
+    initWordCloud();
+  }, { deep: true });
+
+  // 初始化词云数据
+  initWordCloud();
 </script>
 
 <style scoped>
