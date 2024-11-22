@@ -61,6 +61,6 @@ export const themeConfig: DefaultTheme.Config = {
   // 自定义扩展: 页脚配置
   footerConfig: {
     showFooter: true, // 是否显示页脚
-    copyright: `Copyright  2024-${new Date().getFullYear()} Se7en` // 版权信息
+    copyright: `Copyright  2023-${new Date().getFullYear()} Se7en` // 版权信息
   }
 }

@@ -17,6 +17,7 @@ declare module 'vue' {
     ATag: typeof import('@arco-design/web-vue')['Tag']
     Comment: typeof import('./.vitepress/theme/components/layout/Comment.vue')['default']
     Copyright: typeof import('./.vitepress/theme/components/layout/Copyright.vue')['default']
+    DirectoryList: typeof import('./.vitepress/theme/components/DirectoryList.vue')['default']
     Footer: typeof import('./.vitepress/theme/components/layout/Footer.vue')['default']
     IconShareAlt: typeof import('@arco-design/web-vue/es/icon')['IconShareAlt']
     IconTrophy: typeof import('@arco-design/web-vue/es/icon')['IconTrophy']

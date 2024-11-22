@@ -4,6 +4,7 @@ import './styles/vars.css';
 import './styles/custom.css';
 import axios from 'axios';
 import api from './api/index';
+import DirectoryList from './components/DirectoryList.vue';
 
 export default {
   ...DefaultTheme,
@@ -19,6 +20,6 @@ export default {
     }
 
     // register your custom global components
-    // ctx.app.component('MyGlobalComponent' /* ... */)
+    ctx.app.component('DirectoryList', DirectoryList)
   }
 }
