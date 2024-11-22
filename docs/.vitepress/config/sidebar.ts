@@ -99,9 +99,6 @@ function getItems (path: string) {
   // 侧边栏分组下标题数组
   let items: DefaultTheme.SidebarItem[] = [];
   let total = 0;
-  // 当分组内文章数量少于 2 篇或文章总数显示超过 20 篇时，自动折叠分组
-  const groupCollapsedSize = 2;
-  const titleCollapsedSize = 20;
 
   // 1.获取所有分组目录
   sync(`docs/${path}/*`, {
@@ -125,11 +122,10 @@ function getItems (path: string) {
     })
 
     // 3.向前追加到分组
-    // 当分组内文章数量少于 A 篇或文章总数显示超过 B 篇时，自动折叠分组
     groups.push({
       text: `${groupName.substring(groupName.indexOf('-') + 1)} (${items.length}篇)`,
       items: items,
-      collapsed: items.length < groupCollapsedSize || total > titleCollapsedSize,
+      collapsed: false,  // 设置为 false，使所有目录默认展开
     })
 
     // 4.清空侧边栏分组下标题数组
