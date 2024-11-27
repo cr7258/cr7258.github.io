@@ -22,3 +22,5 @@ tags:
 - [Leveraging OpenTelemetry and Grafana for observing, visualizing, and monitoring Kubernetes applications](https://grafana.com/blog/2024/11/22/leveraging-opentelemetry-and-grafana-for-observing-visualizing-and-monitoring-kubernetes-applications/?utm_source=grafana_news&utm_medium=rss)
 - [使用 OpenTelemetry 和 Loki 实现高效的应用日志采集和分析](https://atbug.com/efficient-app-log-collection-analysis-opentelemetry-loki/)
 - [Observability with OpenTelemetry Part 5 - Propagation and Baggage](https://trstringer.com/otel-part5-propagation/)
+- [Observability Coordinated: Prometheus Exemplars (Metrics) — Grafana Tempo (Traces) — Loki (Logs)](https://www.youtube.com/watch?v=4YjaR-c0Cjc&ab_channel=LinhVu)
+- [opentelemetry-collector-contrib/exporter/prometheusexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter)
