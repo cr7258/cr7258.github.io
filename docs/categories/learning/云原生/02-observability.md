@@ -24,3 +24,5 @@ tags:
 - [Observability with OpenTelemetry Part 5 - Propagation and Baggage](https://trstringer.com/otel-part5-propagation/)
 - [Observability Coordinated: Prometheus Exemplars (Metrics) — Grafana Tempo (Traces) — Loki (Logs)](https://www.youtube.com/watch?v=4YjaR-c0Cjc&ab_channel=LinhVu)
 - [opentelemetry-collector-contrib/exporter/prometheusexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter)
+- [Span profiles with Traces to profiles for Go](https://grafana.com/docs/pyroscope/latest/configure-client/trace-span-profiles/go-span-profiles/)
+- [Span Profiles with Grafana Tempo and Pyroscope](https://github.com/grafana/pyroscope/blob/main/examples/tracing/tempo/README.md)
