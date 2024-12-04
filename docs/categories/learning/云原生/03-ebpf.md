@@ -22,3 +22,8 @@ https://www.ebpf.top/post/intro_vmlinux_h/
 - [Building BPF applications with libbpf-bootstrap](https://nakryiko.com/posts/libbpf-bootstrap/)
 - [BPF CO-RE reference guide](https://nakryiko.com/posts/bpf-core-reference-guide/)
 - [BPF CO-RE (Compile Once – Run Everywhere)](https://nakryiko.com/posts/bpf-portability-and-co-re/)
+
+- [Eunomia: 让 ebpf 程序的分发和使用像网页和 web 服务一样自然](https://zhuanlan.zhihu.com/p/555362934)
+- [eunomia-bpf: 一个开源的 ebpf 动态加载运行时和开发工具链](https://www.bilibili.com/video/BV1DG4y1N76m)
+
+- [[译] BPF ring buffer：使用场景、核心设计及程序示例（2020）](https://arthurchiao.art/blog/bpf-ringbuf-zh/)
