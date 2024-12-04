@@ -174,6 +174,11 @@ kubelet 的主调谐程序 `syncLoop` 同时监听来自不同组件的事件，
 
 - [The Almighty Pause Container](https://www.ianlewis.org/en/almighty-pause-container)
 
+### Kubernetes 对象版本控制 ResourceVersion 和 Generation 区别
+
+- ResourceVersion 基于底层 etcd 的 revision 机制，资源对象每次更新时都会改变，且集群范围内唯一，用于乐观并发控制。
+- Generation 初始值为 1，随对象 Spec 内容的改变而自增。
+
 ## 故障案例
 
 ### 解决 kube-apiserver 流量不均衡问题
