@@ -7,6 +7,19 @@ tags:
  - eBPF
 ---
 
+## eBPF 学习资料
+
+
+|  资料   | 描述  |
+|  ----  | ----  |
+| [BPF and XDP Reference Guide](https://docs.cilium.io/en/stable/reference-guides/bpf/)  | Cilium 官方编写的 eBPF 参考指南 |
+| [eBPF Docs](https://docs.ebpf.io/)  | eBPF 社区的公共知识库，包含各种 eBPF 映射、 eBPF 程序类型以及 eBPF 帮助函数的详细说明 |
+| [eBPF 开发实践教程](https://eunomia.dev/zh/tutorials/)  | 包含 40+ eBPF 教程以及配套代码 |
+| [eBPF核心技术与实战](https://time.geekbang.org/dashboard/course)  | 极客时间 eBPF 教程 |
+| [BuildingJohannes Bechberger 的博客](https://mostlynerdless.de/blog/tag/hello-ebpf/)  | 主要介绍使用 Java 来编写 eBPF 程序 | 
+| [BPF 进阶笔记](https://arthurchiao.art/blog/bpf-advanced-notes-1-zh/) | 包含 eBPF 类型讲解、eBPF 映射类型、调试 eBPF 程序等内容 |
+
+
 ## CORE（Compile Once – Run Everywhere）
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202412022206044.png)
