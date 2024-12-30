@@ -366,6 +366,13 @@ git rebase --continue
 git push -f origin main
 ```
 
+### 完全同步上游（丢弃本地改动）
+
+```bash
+git fetch origin
+git reset --hard origin/<branch-name>
+```
+
 ## 使用 Git Worktree 管理多分支
 
 git worktree 允许你在同一仓库中同时检出多个分支，从而方便并行开发和减少频繁的分支切换，提高开发效率。
