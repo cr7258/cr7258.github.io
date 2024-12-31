@@ -20,6 +20,10 @@ tags:
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202412151931201.png)
 
+更新：除了 Kubernetes 的核心资源之外，Kubernetes Spec Explorer 现在也支持了 Istio, Cilium 等其他的 CRD 资源。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202412311028477.png)
+
 ## Kaniuse
 
 [Kaniuse](https://kaniuse.vercel.app/kinds) 是一个检查不同版本的 Kubernetes API 资源可用性的工具。
