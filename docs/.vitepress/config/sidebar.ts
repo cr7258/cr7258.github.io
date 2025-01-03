@@ -9,6 +9,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   '/categories/fragments/': getItems("categories/fragments"),
   '/categories/tools/': getItems("categories/tools"),
   '/categories/learning/': getItems("categories/learning"),
+  '/categories/open-source/': getItems("categories/open-source"),
   '/blogs/original/': getItemsByDate("blogs/original/"),
   '/blogs/translate/': getItemsByDate("blogs/translate/"),
   '/courses/elastic-stack/': getItems("courses/elastic-stack"),
