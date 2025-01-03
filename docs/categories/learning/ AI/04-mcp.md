@@ -38,7 +38,7 @@ MCP client 的工作流程如下：
 - LLM 基于所有信息生成自然语言响应。
 - 最后将响应展示给用户。
 
-以下代码使用的是 [OpenAI](https://github.com/cr7258/hands-on-lab/tree/main/ai/claude/mcp/client/mcp-client) 作为 LLM。[官方示例使用的是 Claude](https://modelcontextprotocol.io/quickstart/client)。
+[以下代码]((https://github.com/cr7258/hands-on-lab/tree/main/ai/claude/mcp/client/mcp-client))使用的是 OpenAI 作为 LLM。[官方示例使用的是 Claude](https://modelcontextprotocol.io/quickstart/client)。
 
 ```bash
 export OPENAI_API_KEY=sk-xxx
