@@ -26,7 +26,26 @@ MCP 遵循客户端-服务器架构（client-server），其中：
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202501021941097.png)
 
+## MCP Client
 
+MCP client 的工作流程如下：
+
+- MCP client 首先从 MCP server 获取可用的工具列表。
+- 将用户的查询连同工具描述通过 [function calling](https://platform.openai.com/docs/guides/function-calling) 一起发送给 LLM。
+- LLM 决定是否需要使用工具以及使用哪些工具。
+- 如果需要使用工具，Mcp client 会通过 MCP server 执行相应的工具调用。
+- 工具调用的结果会被发送回 LLM。
+- LLM 基于所有信息生成自然语言响应。
+- 最后将响应展示给用户。
+
+以下代码使用的是 [OpenAI](https://github.com/cr7258/hands-on-lab/tree/main/ai/claude/mcp/client/mcp-client) 作为 LLM。[官方示例使用的是 Claude](https://modelcontextprotocol.io/quickstart/client)。
+
+```bash
+export OPENAI_API_KEY=sk-xxx
+uv run client-openai.py ../../server/weather/src/weather/server.py
+```
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202501031826596.png)
 
 ## MCP 学习资料
 
