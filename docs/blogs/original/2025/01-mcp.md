@@ -142,7 +142,7 @@ INSERT INTO orders (order_date, total_amount, user_id) VALUES
 
 接下来我们可以增加一点难度：查询**金额最高的订单信息**。在数据库中有两张表 `users` 和 `orders`，要想得到完整的订单信息，需要先去查询 `orders` 表中金额最高的一条记录，然后根据 `user_id` 这个外键再去查询 `users` 表中对应的用户信息。 
 
-从下面的数据可以发现 Claude 一开始是不知道数据库中的表结构的，因此先发送请求分别确定 `orders` 表和 `users` 表中相应的字段，然后再对两张表进行 join 查询。
+从下面的输出可以发现 Claude 一开始是不知道数据库中的表结构的，因此先发送请求分别确定 `orders` 表和 `users` 表中相应的字段，然后再对两张表进行 join 查询。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202501071635588.png)
 
