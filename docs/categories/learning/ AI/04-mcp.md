@@ -33,7 +33,7 @@ MCP client 的工作流程如下：
 - MCP client 首先从 MCP server 获取可用的工具列表。
 - 将用户的查询连同工具描述通过 [function calling](https://platform.openai.com/docs/guides/function-calling) 一起发送给 LLM。
 - LLM 决定是否需要使用工具以及使用哪些工具。
-- 如果需要使用工具，Mcp client 会通过 MCP server 执行相应的工具调用。
+- 如果需要使用工具，MCP client 会通过 MCP server 执行相应的工具调用。
 - 工具调用的结果会被发送回 LLM。
 - LLM 基于所有信息生成自然语言响应。
 - 最后将响应展示给用户。
@@ -64,3 +64,4 @@ uv run client-openai.py ../../server/weather/src/weather/server.py
 - [Announcing Spring AI MCP: A Java SDK for the Model Context Protocol](https://spring.io/blog/2024/12/11/spring-ai-mcp-announcement)
 - [Spring AI 智能体通过 MCP 集成本地文件数据](https://mp.weixin.qq.com/s/Fg59pSdVIGTjDyEC3pAWXQ)
 - [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)
+- Claude高级玩法：MCP多工具组合，自动化工作流搭建指南 | GitHub、SQLite、Fetch、Filesystem等: https://www.youtube.com/watch?v=EMfBscUM2v8
