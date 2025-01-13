@@ -11,7 +11,7 @@ tags:
 
 # MCP Server 开发实战：无缝对接 LLM 和 Elasticsearch
 
-在[一文带你入门 MCP（模型上下文协议）](https://mp.weixin.qq.com/s/rcOi7e8F5qGVVF2noCk46Q) 文章中，我们快速介绍了 MCP 的基本概念，并且通过一个示例让读者初步感受到了 MCP 的强大能力。本文将进一步深入，带领读者一步步学习如何开发一个完整的 MCP Server。本文的完整代码可以在这里找到：https://github.com/cr7258/hands-on-lab/tree/main/ai/claude/mcp/server/elasticsearch-mcp-server-example
+在[一文带你入门 MCP（模型上下文协议）](https://mp.weixin.qq.com/s/rcOi7e8F5qGVVF2noCk46Q)文章中，我们快速介绍了 MCP 的基本概念，并且通过一个示例让读者初步感受到了 MCP 的强大能力。本文将进一步深入，带领读者一步步学习如何开发一个完整的 MCP Server。本文的完整代码可以在这里找到：https://github.com/cr7258/hands-on-lab/tree/main/ai/claude/mcp/server/elasticsearch-mcp-server-example
 
 ## MCP Server 核心原语
 
@@ -253,7 +253,7 @@ def get_file() -> str:
         return f.read()
 ```
 
-使用 @mcp.resource() 装饰器将这些函数标记为 MCP 的 Resource，装饰器参数指定了 Resource 的 URI。
+使用 `@mcp.resource()` 装饰器将这些函数标记为 MCP 的 Resource，装饰器参数指定了 Resource 的 URI。
 
 Resource 建议遵循以下格式的 URI 标识：
 
