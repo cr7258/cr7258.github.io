@@ -748,3 +748,55 @@ func foo() (result int) {
 ```
 
 在这个例子中，函数 foo 会返回 1，而不是 0。因为 return 0 是先赋值 result 为 0，然后 defer 函数把 result 增加了 1，最后返回 result，所以返回值是 1。
+
+## Golang 如何实现多态的效果
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+// 定义一个接口
+type Shape interface {
+	Area() float64
+}
+
+// 定义一个矩形结构体
+type Rectangle struct {
+	Width  float64
+	Height float64
+}
+
+// 实现 Shape 接口的 Area 方法
+func (r Rectangle) Area() float64 {
+	return r.Width * r.Height
+}
+
+// 定义一个圆形结构体
+type Circle struct {
+	Radius float64
+}
+
+// 实现 Shape 接口的 Area 方法
+func (c Circle) Area() float64 {
+	return 3.14 * c.Radius * c.Radius
+}
+
+// 打印形状的面积
+func printArea(s Shape) {
+	fmt.Printf("Area: %f\n", s.Area())
+}
+
+func main() {
+	// 创建一个矩形
+	rectangle := Rectangle{Width: 10, Height: 5}
+	// 创建一个圆形
+	circle := Circle{Radius: 7}
+
+	// 使用多态调用 printArea 函数
+	printArea(rectangle) // 输出: Area: 50.000000
+	printArea(circle)    // 输出: Area: 153.860000
+}
+```
