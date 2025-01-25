@@ -164,7 +164,7 @@ mcp install server.py --env-file .env --with-editable ./
 
 接下来我们开始编写 Elasticsearch MCP Server 的相关代码。
 
-#### Elasticsearch 客户端配置
+### Elasticsearch 客户端配置
 
 首先创建 Elasticsearch 客户端，用于和 Elasticsearch 服务器进行交互。
 
@@ -185,7 +185,7 @@ def create_elasticsearch_client() -> Elasticsearch:
     return Elasticsearch(url)
 ```
 
-## 初始化 FastMCP Server
+### 初始化 FastMCP Server
 
 MCP Python SDK 现在提供了全新的 FastMCP 类，它通过利用 Python 的类型注解（Type Hints）和文档字符串（Docstrings）特性，能够自动生成工具定义。这种方式让开发者可以更加便捷地创建和管理 MCP 的 Tool、Resource 以及 Prompt 等功能组件。
 
