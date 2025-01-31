@@ -53,6 +53,7 @@ uv run client-openai.py ../../server/weather/src/weather/server.py
 |  资料   | 描述  |
 |  ----  | ----  |
 | [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)<br>[Model Context Protocol Servers](https://github.com/modelcontextprotocol/servers)  | MCP Server 汇总 |
+| [awesome-mcp-clients](https://github.com/punkpeye/awesome-mcp-clients)  | MCP Client 汇总 |
 
 ## 参考资料
 
