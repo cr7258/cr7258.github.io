@@ -55,7 +55,7 @@ jobs:
           cache: pnpm
       # 5、安装依赖
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: pnpm install
       # 6、打包
       - name: Build
         run: pnpm build
