@@ -47,13 +47,14 @@ uv run client-openai.py ../../server/weather/src/weather/server.py
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202501031826596.png)
 
-## MCP 学习资料
+## MCP 项目
 
 
-|  资料   | 描述  |
+|  项目   | 描述  |
 |  ----  | ----  |
 | [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)<br>[Model Context Protocol Servers](https://github.com/modelcontextprotocol/servers)  | MCP Server 汇总 |
 | [awesome-mcp-clients](https://github.com/punkpeye/awesome-mcp-clients)  | MCP Client 汇总 |
+| [mcp-agent](https://github.com/lastmile-ai/mcp-agent) | mcp-agent 是一个简单且可组合的框架，旨在使用 MCP 构建高效的智能体。它实现了多种工作流模式，允许开发者通过组合不同的模式，轻松创建复杂的 AI 应用程序。 |
 
 ## 参考资料
 
