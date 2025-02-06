@@ -1,13 +1,13 @@
 import type { DefaultTheme } from 'vitepress';
 
 export const nav: DefaultTheme.Config['nav'] = [
-  {
-    text: 'Meetup',
-    items: [
-      { text: '网络', link: '/meetup/network/index', activeMatch: '/meetup/network/' },
-    ],
-    activeMatch: '/meetup/'
-  },
+  // {
+  //   text: 'Meetup',
+  //   items: [
+  //     { text: '网络', link: '/meetup/network/index', activeMatch: '/meetup/network/' },
+  //   ],
+  //   activeMatch: '/meetup/'
+  // },
   {
     text: '博客',
     items: [

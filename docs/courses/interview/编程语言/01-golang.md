@@ -800,3 +800,41 @@ func main() {
 	printArea(circle)    // 输出: Area: 153.860000
 }
 ```
+
+## P 和 M 数量是可以无限扩增的吗？
+
+- G 的数量：理论上没有数量上限限制的。查看当前G的数量可以使用 `runtime.NumGoroutine()`。
+- P 的数量：由启动时环境变量 `$GOMAXPROCS` 或者是由 `runtime.GOMAXPROCS()` 决定。这意味着在程序执行的任意时刻都只有 `$GOMAXPROCS` 个 goroutine 在同时运行。
+- M 的数量：go 程序启动时，会设置 M 的最大数量，默认 10000。但是内核很难支持这么多的线程数，所以这个限制可以忽略。`runtime/debug` 中的 SetMaxThreads 函数可以设置 M 的最大数量。一个 M 阻塞了，会创建新的 M。M 与 P 的数量没有绝对关系，一个 M 阻塞，P 就会去创建或者切换另一个 M，所以，即使 P 的默认数量是 1，也有可能会创建很多个 M 出来。
+
+## G 在 GMP模型中流动过程
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502061409190.png)
+
+- 1. 调用 `go func()` 创建一个goroutine；
+- 2. 新创建的 G 优先保存在 P 的本地队列中，如果 P 的本地队列已经满了就会保存在全局的队列中；
+- 3. M 需要在 P 的本地队列弹出一个可执行的 G，如果 P 的本地队列为空，则先会去全局队列中获取 G，如果全局队列也为空则去其他 P 中偷取 G 放到自己的 P 中；
+- 4. G 将相关参数传输给 M，为 M 执行 G 做准备；
+- 5. 当 M 执行某一个 G 时候如果发生了系统调用产生导致 M 会阻塞，如果当前 P 队列中有一些 G，runtime 会将线程 M 和 P 分离，然后再获取空闲的线程或创建一个新的内核级的线程来服务于这个 P，阻塞调用完成后 G 被销毁将值返回；
+- 6. 销毁 G，将执行结果返回；
+- 7. 当M系统调用结束时候，这个 M 会尝试获取一个空闲的 P 执行，如果获取不到 P，那么这个线程M变成休眠状态， 加入到空闲线程中。
+
+## GM 与 GMP 区别
+
+在 12 年的 go1.1 版本之前用的都是 GM 模型，但是由于 GM 模型性能不好，饱受用户诟病。之后官方对调度器进行了改进，变成了我们现在用的GMP模型。
+
+优化点有三个，一是每个 P 有自己的本地队列，而不是所有的 G 操作都要经过全局的 G 队列，这样锁的竞争会少的多的多。而 GM 模型的性能开销大头就是锁竞争。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502061413910.png)
+
+二是 P 的本地队列平衡上，在 GMP 模型中也实现了 Work Stealing 算法，如果 P 的本地队列为空，则会从全局队列或其他 P 的本地队列中窃取可运行的 G 来运行（通常是偷一半），减少空转，提高了资源利用率。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502061414932.png)
+
+三是 hand off 机制，当 M0 线程因为 G1 进行系统调用阻塞时，线程释放绑定的 P，把 P 转移给其他空闲的线程 M1 执行，同样也是提高了资源利用率。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502061414672.png)
+
+参考资料：
+
+- [GM 到 GMP，Golang 经历了什么？](https://mp.weixin.qq.com/s/Y6o9-pKVKe1voyEA1YkEpg)
