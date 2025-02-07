@@ -321,3 +321,35 @@ norms 是索引评分因子，如果不用按评分对文档进行排序，设�
 
 - [一口气看完43个关于 ElasticSearch 的使用建议｜得物技术](https://mp.weixin.qq.com/s/Gsa1rPVISjOdVteol78EoA)
 - [Tune for search speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-search-speed.html#_search_rounded_dates)
+
+## 如何实现不停机 Reindex
+
+在使用 Elasticsearch 时，若需要修改索引的映射（mapping），特别是更改已有字段的属性，由于 Elasticsearch 不支持直接修改原有映射，通常需要重建索引。直接从数据源重新导入数据可能耗时耗力，因此，Elasticsearch 提供了 Reindex API，可以从现有索引直接重建新的索引。然而，在重建索引的过程中，如果仍有数据在更新，需要处理这些增量数据。为实现不停机重建索引，建议为索引设置别名。
+
+具体步骤如下：
+
+1. **创建新索引**：设置所需的映射和配置。
+
+2. **使用 Reindex API 复制数据**：执行以下命令，将数据从旧索引复制到新索引：
+
+```bash
+POST _reindex
+{
+  "conflicts": "proceed",
+  "source": {
+    "index": "<source-index>"
+  },
+  "dest": {
+    "index": "<dest-index>",
+    "version_type": "external"
+  }
+}
+```
+
+其中，`conflicts` 设置为 `proceed` 表示在发生数据冲突时忽略并继续，`version_type` 设置为 `external` 表示在复制过程中保留源索引的版本号，以确保数据一致性。
+
+3. **更新别名**：将别名从旧索引切换到新索引，使应用程序指向新索引。
+
+4. **处理增量数据**：在重建索引期间，旧索引可能有新的数据写入。为同步这些增量数据，再次执行 Reindex 操作。由于设置了 `version_type=external`，仅更新版本号较新的文档，确保新索引包含所有最新数据。
+
+通过上述步骤，可实现不停机重建 Elasticsearch 索引，确保数据的一致性。
