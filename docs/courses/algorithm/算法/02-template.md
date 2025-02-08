@@ -1625,3 +1625,368 @@ func generateMatrix(n int) [][]int {
     return matrix
 }
 ```
+
+### 前缀和
+
+#### [区域和检索 - 数组不可变](https://leetcode.cn/problems/range-sum-query-immutable/description/)
+
+给定一个整数数组 nums，处理以下类型的多个查询：
+
+计算索引 left 和 right （包含 left 和 right）之间的 nums 元素的和 ，其中 left <= right，实现 NumArray 类：
+
+- `NumArray(int[] nums)` 使用数组 nums 初始化对象
+- `int sumRange(int i, int j)` 返回数组 nums 中索引 left 和 right 之间的元素的 总和 ，包含 left 和 right 两点（也就是 `nums[left] + nums[left + 1] + ... + nums[right]`)
+ 
+示例 1：
+
+```go
+输入：
+["NumArray", "sumRange", "sumRange", "sumRange"]
+[[[-2, 0, 3, -5, 2, -1]], [0, 2], [2, 5], [0, 5]]
+输出：
+[null, 1, -1, -3]
+
+解释：
+NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);
+numArray.sumRange(0, 2); // return 1 ((-2) + 0 + 3)
+numArray.sumRange(2, 5); // return -1 (3 + (-5) + 2 + (-1)) 
+numArray.sumRange(0, 5); // return -3 ((-2) + 0 + 3 + (-5) + 2 + (-1))
+```
+
+`sumRange` 函数需要计算并返回一个索引区间之内的元素和，没学过前缀和的人可能写出如下代码：
+
+```go
+type NumArray struct {
+    nums []int
+}
+
+func Constructor(nums []int) NumArray {
+    return NumArray {
+        nums: nums,
+    }
+}
+
+func (this *NumArray) SumRange(left int, right int) int {
+    sum := 0
+    for i := left; i <= right; i++ {
+        sum += this.nums[i]
+    }
+    return sum
+}
+```
+
+这个解法每次调用 sumRange 函数时，都要进行一次 for 循环遍历，时间复杂度为 O(N)，而 sumRange 的调用频率可能非常高，所以这个算法的效率很低。
+
+正确的解法是使用前缀和技巧进行优化，使得 sumRange 函数的时间复杂度为 O(1)：
+
+```go
+type NumArray struct {
+    // 前缀和数组
+    PreSum []int
+}
+
+// 输入一个数组，构造前缀和
+func Constructor(nums []int) NumArray {
+    // PreSum[0] = 0，便于计算累加和
+    preSum := make([]int, len(nums)+1)
+    // 计算 nums 的累加和
+    for i := 1; i < len(preSum); i++ {
+        preSum[i] = preSum[i-1] + nums[i-1]
+    }
+    return NumArray{PreSum: preSum}
+}
+
+// 查询闭区间 [left, right] 的累加和
+func (this *NumArray) SumRange(left int, right int) int {   
+    return this.PreSum[right+1] - this.PreSum[left]
+}
+```
+
+看这个 preSum 数组，如果我想求索引区间 [0, 2] 内的所有元素之和，就可以通过 preSum[3] - preSum[0] 得出（结果是 1）。如果想求 [2, 5] 内的元素和，则用 preSum[6] - preSum[2] 得出（结果是 3）。因为为了便于计算累加和，将 preSum[0] 设置为 0，所以在计算累加和时 preSum 的下标要加 1。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502081139215.png)
+
+#### [304. 二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/description/)
+
+给定一个二维矩阵 matrix，以下类型的多个请求：
+
+- 计算其子矩形范围内元素的总和，该子矩阵的左上角为 (row1, col1)，右下角 为 (row2, col2)。
+
+实现 NumMatrix 类：
+
+- `NumMatrix(int[][] matrix)` 给定整数矩阵 matrix 进行初始化
+- `int sumRegion(int row1, int col1, int row2, int col2)` 返回左上角 (row1, col1)、右下角 (row2, col2) 所描述的子矩阵的元素总和。
+
+示例 1：
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502081153958.png)
+
+```go
+输入: 
+["NumMatrix","sumRegion","sumRegion","sumRegion"]
+[[[[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]],[2,1,4,3],[1,1,2,2],[1,2,2,4]]
+输出: 
+[null, 8, 11, 12]
+
+解释:
+NumMatrix numMatrix = new NumMatrix([[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]);
+numMatrix.sumRegion(2, 1, 4, 3); // return 8 (红色矩形框的元素总和)
+numMatrix.sumRegion(1, 1, 2, 2); // return 11 (绿色矩形框的元素总和)
+numMatrix.sumRegion(1, 2, 2, 4); // return 12 (蓝色矩形框的元素总和)
+```
+
+任意子矩阵的元素和可以转化成它周边几个大矩阵的元素和的运算：
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502081154238.png)
+
+而这四个大矩阵有一个共同的特点，就是左上角都是 (0, 0) 原点。
+
+那么做这道题更好的思路和一维数组中的前缀和是非常类似的，我们可以维护一个二维 preSum 数组，专门记录以原点为顶点的矩阵的元素之和，就可以用几次加减运算算出任何一个子矩阵的元素和：
+
+```go
+type NumMatrix struct {
+    // preSum[i][j] 记录矩阵 [0, 0, i-1, j-1] 的元素和
+    preSum [][]int
+}
+
+func Constructor(matrix [][]int) NumMatrix {
+    // 初始化二维数组
+    preSum := make([][]int, len(matrix) + 1)
+    for i := 0; i < len(preSum); i++ {
+        preSum[i] = make([]int, len(matrix[0]) + 1)
+    }
+
+    // 构建前缀和数组
+    // preSum[i][j] 记录矩阵 [0, 0, i-1, j-1] 的元素和
+    for i := 1; i < len(preSum); i ++ {
+        for j := 1; j < len(preSum[0]); j++ {
+            preSum[i][j] = preSum[i-1][j] + preSum[i][j-1] + matrix[i-1][j-1] - preSum[i-1][j-1];
+        }
+    }
+    return NumMatrix{preSum}
+}
+
+func (this *NumMatrix) SumRegion(row1 int, col1 int, row2 int, col2 int) int {
+    return this.preSum[row2+1][col2+1] - this.preSum[row1][col2+1] - this.preSum[row2+1][col1] + this.preSum[row1][col1] 
+}
+```
+
+#### [和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/description/)
+
+给你一个整数数组 nums 和一个整数 k，请你统计并返回该数组中和为 k 的子数组的个数。
+
+子数组是数组中元素的连续非空序列。
+
+示例 1：
+
+```go
+输入：nums = [1,1,1], k = 2
+输出：2
+```
+
+示例 2：
+
+```go
+输入：nums = [1,2,3], k = 3
+输出：2
+```
+
+- 用 prefixSum 表示当前的前缀和。
+- 维护一个哈希表 countMap，其中键为前缀和，值为该前缀和出现的次数。
+- 遍历数组时，通过 prefixSum - k 判断是否存在之前的前缀和满足条件。
+
+```go
+func subarraySum(nums []int, k int) int {
+    countMap := make(map[int]int)
+    countMap[0] = 1 // 初始前缀和为 0 的情况
+    prefixSum := 0
+    count := 0
+
+    for _, num := range nums {
+        prefixSum += num
+        // 检查是否存在前缀和使得当前子数组和为 k
+        if val, exists := countMap[prefixSum-k]; exists {
+            count += val
+        }
+        // 更新当前前缀和的出现次数
+        countMap[prefixSum]++
+    }
+
+    return count
+}
+```
+
+核心思想：对于当前的前缀和 prefixSum，如果存在之前的某个前缀和为 prefixSum - k，那么从该位置到当前位置的子数组和即为 k。该前缀和出现的次数决定了能组成多少个满足条件的子数组。
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502081311832.png)
+
+### 差分数组
+
+差分数组的主要适用场景是频繁对原始数组的某个区间的元素进行增减。
+
+比如说，我给你输入一个数组 nums，然后又要求给区间 nums[2..6] 全部加 1，再给 nums[3..9] 全部减 3，再给 nums[0..4] 全部加 2...
+
+#### [370.区间加法](https://leetcode.cn/problems/range-addition/description/)
+
+假设你有一个长度为 n 的数组，初始情况下所有的数字均为 0，你将会被给出 k​​​​​​​ 个更新的操作。
+
+其中，每个操作会被表示为一个三元组：[startIndex, endIndex, inc]，你需要将子数组 A[startIndex ... endIndex]（包括 startIndex 和 endIndex）增加 inc。
+
+请你返回 k 次操作后的数组。
+
+示例：
+
+```go
+输入: length = 5, updates = [[1,3,2],[2,4,3],[0,2,-2]]
+输出: [-2,0,3,5,3]
+
+解释:
+初始状态:
+[0,0,0,0,0]
+
+进行了操作 [1,3,2] 后的状态:
+[0,2,2,2,0]
+
+进行了操作 [2,4,3] 后的状态:
+[0,2,5,5,3]
+
+进行了操作 [0,2,-2] 后的状态:
+[-2,0,3,5,3]
+```
+
+解法如下：
+
+```go
+func getModifiedArray(length int, updates [][]int) []int {
+    // nums 初始化为全 0
+    nums := make([]int, length)
+    // 构造差分解法
+    df := NewDifference(nums)
+    for _, update := range updates {
+        i, j, val := update[0], update[1], update[2]
+        df.Increment(i, j, val)
+    }
+    return df.Result()
+}
+
+// 差分数组
+type Difference struct {
+    diff []int
+}
+
+func NewDifference(nums []int) *Difference {
+    assert(len(nums) > 0)
+    diff := make([]int, len(nums))
+    // 构造差分数组
+    diff[0] = nums[0]
+    for i := 1; i < len(nums); i++ {
+        diff[i] = nums[i] - nums[i-1]
+    }
+    return &Difference{diff: diff}
+}
+
+// 给闭区间 [i, j] 增加 val（可以是负数）
+func (d *Difference) Increment(i, j, val int) {
+    d.diff[i] += val
+    if j+1 < len(d.diff) {
+        d.diff[j+1] -= val
+    }
+}
+
+// 根据差分数组构造结果数组
+func (d *Difference) Result() []int {
+    res := make([]int, len(d.diff))
+    // 根据差分数组构造结果数组
+    res[0] = d.diff[0]
+    for i := 1; i < len(d.diff); i++ {
+        res[i] = res[i-1] + d.diff[i]
+    }
+    return res
+}
+
+func assert(condition bool) {
+    if !condition {
+        panic("condition failed")
+    }
+}
+```
+
+## 栈
+
+### [71.简化路径](https://leetcode.cn/problems/simplify-path/description/)
+
+给你一个字符串 path，表示指向某一文件或目录的 Unix 风格绝对路径 （以 '/' 开头），请你将其转化为更加简洁的规范路径。
+
+在 Unix 风格的文件系统中规则如下：
+
+- 一个点 '.' 表示当前目录本身。
+- 此外，两个点 '..' 表示将目录切换到上一级（指向父目录）。
+- 任意多个连续的斜杠（即，'//' 或 '///'）都被视为单个斜杠 '/'。
+- 任何其他格式的点（例如，'...' 或 '....'）均被视为有效的文件/目录名称。
+
+返回的 简化路径 必须遵循下述格式：
+
+- 始终以斜杠 '/' 开头。
+- 两个目录名之间必须只有一个斜杠 '/'。
+- 最后一个目录名（如果存在）不能 以 '/' 结尾。
+- 此外，路径仅包含从根目录到目标文件或目录的路径上的目录（即，不含 '.' 或 '..'）。
+
+返回简化后得到的规范路径。
+
+示例 1：
+
+```go
+输入：path = "/home/"
+输出："/home"
+解释：
+应删除尾随斜杠。
+```
+
+示例 2：
+
+```go
+输入：path = "/home//foo/"
+输出："/home/foo"
+解释：
+多个连续的斜杠被单个斜杠替换。
+```
+
+示例 3：
+
+```go
+输入：path = "/home/user/Documents/../Pictures"
+输出："/home/user/Pictures"
+解释：
+两个点 ".." 表示上一级目录（父目录）。
+```
+
+这题比较简单，利用栈先进后出的特性处理上级目录 `..`，最后组装化简后的路径即可。
+
+```go
+func simplifyPath(path string) string {
+    parts := strings.Split(path, "/")
+    stk := []string{}
+    // 借助栈计算最终的文件夹路径
+    for _, part := range parts {
+        if part == "" || part == "." {
+            continue
+        }
+        if part == ".." {
+            if len(stk) > 0 {
+                stk = stk[:len(stk)-1]
+            }
+            continue
+        }
+        stk = append(stk, part)
+    }
+    // 栈中存储的文件夹组成路径
+    res := ""
+    for _, dir := range stk {
+        res += "/" + dir
+    }
+    if res == "" {
+        return "/"
+    }
+    return res
+}
+```

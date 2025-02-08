@@ -1,5 +1,5 @@
 ---
-title: 实际问题
+title: 经典设计问题
 author: Se7en
 categories:
   - Algorithm
@@ -161,7 +161,7 @@ func (this *LRUCache) removeTail() *DLinkedNode {
 
 ## [LFU 缓存](https://leetcode.cn/problems/lfu-cache/description/)
 
-请你为 最不经常使用（LFU）缓存算法设计并实现数据结构。
+请你为最不经常使用（LFU）缓存算法设计并实现数据结构。
 
 实现 LFUCache 类：
 
@@ -810,4 +810,141 @@ func main() {
 // Request 8 allowed after wait
 // Request 9 allowed after wait
 // Request 10 allowed after wait
+```
+
+## [355.设计推特](https://leetcode.cn/problems/design-twitter/description/)
+
+设计一个简化版的推特(Twitter)，可以让用户实现发送推文，关注/取消关注其他用户，能够看见关注人（包括自己）的最近 10 条推文。
+
+实现 Twitter 类：
+
+- `Twitter()` 初始化简易版推特对象
+- `void postTweet(int userId, int tweetId)` 根据给定的 tweetId 和 userId 创建一条新推文。每次调用此函数都会使用一个不同的 tweetId。
+- `List<Integer> getNewsFeed(int userId)` 检索当前用户新闻推送中最近 10 条推文的 ID 。新闻推送中的每一项都必须是由用户关注的人或者是用户自己发布的推文。推文必须按照时间顺序由最近到最远排序。
+- `void follow(int followerId, int followeeId)` ID 为 followerId 的用户开始关注 ID 为 followeeId 的用户。
+- `void unfollow(int followerId, int followeeId)` ID 为 followerId 的用户不再关注 ID 为 followeeId 的用户。
+
+```go
+package main
+
+import (
+	"container/heap"
+	"fmt"
+)
+
+// Twitter 结构体，模拟 Twitter 系统
+type Twitter struct {
+	timeStamp int                      // 全局时间戳，确保推文按时间顺序排列
+	tweets    map[int][]Tweet          // 用户推文记录，key: 用户ID, value: 推文列表
+	followees map[int]map[int]struct{} // 关注关系表，key: 用户ID, value: 关注的用户集合，followees 记录的是某个用户关注了哪些用户。
+}
+
+// Tweet 结构体，表示一条推文
+type Tweet struct {
+	id        int // 推文 ID
+	timeStamp int // 发送时间戳
+}
+
+// TweetHeap 结构体，实现最小堆（按时间戳倒序）
+type TweetHeap []Tweet
+
+// 堆相关操作：实现 `heap.Interface`
+func (h TweetHeap) Len() int           { return len(h) }
+func (h TweetHeap) Less(i, j int) bool { return h[i].timeStamp > h[j].timeStamp } // 时间戳大的排前面
+func (h TweetHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+
+// Push 操作，将新推文加入堆
+func (h *TweetHeap) Push(x interface{}) {
+	*h = append(*h, x.(Tweet))
+}
+
+// Pop 操作，从堆中弹出最旧的推文
+func (h *TweetHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	tweet := old[n-1] // 取最后一个元素（时间最早的）
+	*h = old[:n-1]
+	return tweet
+}
+
+// 构造函数，初始化 Twitter
+func Constructor() Twitter {
+	return Twitter{
+		tweets:    make(map[int][]Tweet),
+		followees: make(map[int]map[int]struct{}),
+	}
+}
+
+// PostTweet 让用户 `userId` 发送一条推文 `tweetId`
+func (this *Twitter) PostTweet(userId int, tweetId int) {
+	this.timeStamp++ // 递增时间戳，确保推文顺序
+	this.tweets[userId] = append(this.tweets[userId], Tweet{id: tweetId, timeStamp: this.timeStamp})
+}
+
+// GetNewsFeed 获取用户 `userId` 的最新推文（包含自己和关注的用户）
+func (this *Twitter) GetNewsFeed(userId int) []int {
+	h := &TweetHeap{}
+	heap.Init(h)
+
+	// 获取用户 `userId` 关注的所有用户（包括自己）
+	users := this.followees[userId]
+	if users == nil {
+		users = make(map[int]struct{}) // 防止 `nil map` 赋值 panic
+	}
+	users[userId] = struct{}{} // 自己的推文也要加入
+
+	// 遍历所有关注的用户，获取他们最近的推文
+	for user := range users {
+		tweets := this.tweets[user] // 获取用户的推文
+		if len(tweets) > 0 {
+			// 获取关注的用户的所有的推文
+			for i := len(tweets) - 1; i >= 0; i-- {
+				heap.Push(h, tweets[i])
+			}
+		}
+	}
+
+	// 取出最新的 10 条推文
+	var res []int
+	for len(*h) > 0 && len(res) < 10 {
+		res = append(res, heap.Pop(h).(Tweet).id)
+	}
+	return res
+}
+
+// Follow 让 `followerId` 关注 `followeeId`
+func (this *Twitter) Follow(followerId int, followeeId int) {
+	// 如果 `followerId` 还没有关注别人，初始化 map
+	if _, exists := this.followees[followerId]; !exists {
+		this.followees[followerId] = make(map[int]struct{})
+	}
+	this.followees[followerId][followeeId] = struct{}{} // 关注 `followeeId`
+}
+
+// Unfollow 让 `followerId` 取消关注 `followeeId`
+func (this *Twitter) Unfollow(followerId int, followeeId int) {
+	if _, exists := this.followees[followerId]; exists {
+		delete(this.followees[followerId], followeeId) // 取消关注
+	}
+}
+
+// 测试代码
+func main() {
+	twitter := Constructor()
+
+	// 用户 1 发送推文 5
+	twitter.PostTweet(1, 5)
+	fmt.Println(twitter.GetNewsFeed(1)) // 输出: [5]
+
+	// 用户 1 关注用户 2
+	twitter.Follow(1, 2)
+
+	// 用户 2 发送推文 6
+	twitter.PostTweet(2, 6)
+	fmt.Println(twitter.GetNewsFeed(1)) // 输出: [6, 5]
+
+	// 用户 1 取消关注用户 2
+	twitter.Unfollow(1, 2)
+	fmt.Println(twitter.GetNewsFeed(1)) // 输出: [5]
+}
 ```
