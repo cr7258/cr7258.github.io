@@ -1991,6 +1991,118 @@ func simplifyPath(path string) string {
 }
 ```
 
+### 单调栈
+
+#### [下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/description/)
+
+nums1 中数字 x 的 下一个更大元素 是指 x 在 nums2 中对应位置 右侧 的 第一个 比 x 大的元素。
+
+给你两个没有重复元素的数组 nums1 和 nums2，下标从 0 开始计数，其中nums1 是 nums2 的子集。
+
+对于每个 0 <= i < nums1.length，找出满足 nums1[i] == nums2[j] 的下标 j，并且在 nums2 确定 nums2[j] 的下一个更大元素。如果不存在下一个更大元素，那么本次查询的答案是 -1。
+
+返回一个长度为 nums1.length 的数组 ans 作为答案，满足 ans[i] 是如上所述的 下一个更大元素。
+
+示例 1：
+
+```go
+输入：nums1 = [4,1,2], nums2 = [1,3,4,2].
+输出：[-1,3,-1]
+解释：nums1 中每个值的下一个更大元素如下所述：
+- 4 ，用加粗斜体标识，nums2 = [1,3,4,2]。不存在下一个更大元素，所以答案是 -1 。
+- 1 ，用加粗斜体标识，nums2 = [1,3,4,2]。下一个更大元素是 3 。
+- 2 ，用加粗斜体标识，nums2 = [1,3,4,2]。不存在下一个更大元素，所以答案是 -1 。
+```
+
+因为题目说 nums1 是 nums2 的子集，那么我们先把 nums2 中每个元素的下一个更大元素算出来存到一个映射里，然后再让 nums1 中的元素去查表即可。
+
+```go
+func nextGreaterElement(nums1 []int, nums2 []int) []int {
+    // 记录 nums2 中每个元素的下一个更大元素
+    greater := calculateGreaterElement(nums2)
+    // 转化成映射：元素 x -> x 的下一个最大元素
+    greaterMap := make(map[int]int)
+    for i := 0; i < len(nums2); i++ {
+        greaterMap[nums2[i]] = greater[i]
+    }
+    // nums1 是 nums2 的子集，所以根据 greaterMap 可以得到结果
+    res := make([]int, len(nums1))
+    for i := 0; i < len(nums1); i++ {
+        res[i] = greaterMap[nums1[i]]
+    }
+    return res
+}
+
+func calculateGreaterElement(nums []int) []int {
+    n := len(nums)
+    res := make([]int, n) // 结果数组
+    s := make([]int, 0)   // 单调递减栈
+
+    // 倒序遍历 nums
+    for i := n - 1; i >= 0; i-- {
+        // 弹出栈内小于等于 nums[i] 的元素
+        for len(s) != 0 && s[len(s)-1] <= nums[i] {
+            s = s[:len(s)-1] // 移除栈顶
+        }
+        // 记录右侧第一个更大的元素
+        if len(s) == 0 {
+            res[i] = -1
+        } else {
+            res[i] = s[len(s)-1]
+        }
+        // 当前元素入栈
+        s = append(s, nums[i])
+    }
+    return res
+}
+```
+
+### [每日温度](https://leetcode.cn/problems/daily-temperatures/description/)
+
+给定一个整数数组 temperatures，表示每天的温度，返回一个数组 answer，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。
+
+示例 1:
+
+```go
+输入: temperatures = [73,74,75,71,69,72,76,73]
+输出: [1,1,4,2,1,1,0,0]
+```
+
+核心思路：
+
+- 使用单调递减栈维护「尚未找到更高温度的索引 i」。
+- 从右向左遍历 temperatures，保证栈内存储的索引 s[len(s)-1] 对应的温度始终大于当前温度。
+- 如果栈顶温度比当前温度高，则栈顶索引 s[len(s)-1] 就是 i 之后的第一个更高温度的索引，计算 res[i]。
+- 如果当前温度更高，弹出栈顶元素，继续查找更大的温度。
+
+```go
+func dailyTemperatures(temperatures []int) []int {
+    n := len(temperatures)
+    res := make([]int, n) // 结果数组，默认值为 0
+    s := make([]int, 0)   // 单调递减栈，存储索引（不是温度）
+
+    // 从右向左遍历温度数组
+    for i := n - 1; i >= 0; i-- {
+        // 维护单调递减栈
+        // 弹出栈中所有比当前温度小或相等的索引
+        for len(s) > 0 && temperatures[s[len(s)-1]] <= temperatures[i] {
+            s = s[:len(s)-1] // 出栈
+        }
+        
+        // 计算索引间距
+        if len(s) == 0 {
+            res[i] = 0 // 栈为空，说明 i 之后没有更高温度
+        } else {
+            res[i] = s[len(s)-1] - i // 计算天数间隔
+        }
+        
+        // 当前索引入栈
+        s = append(s, i) // 栈存储索引，而不是温度值
+    }
+    return res
+}
+```
+
 ## BFS
 
 ### [773.滑动谜题](https://leetcode.cn/problems/sliding-puzzle/description/)

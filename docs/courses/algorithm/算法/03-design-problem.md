@@ -812,7 +812,7 @@ func main() {
 // Request 10 allowed after wait
 ```
 
-## [355.设计推特](https://leetcode.cn/problems/design-twitter/description/)
+## [设计推特](https://leetcode.cn/problems/design-twitter/description/)
 
 设计一个简化版的推特(Twitter)，可以让用户实现发送推文，关注/取消关注其他用户，能够看见关注人（包括自己）的最近 10 条推文。
 
@@ -949,7 +949,7 @@ func main() {
 }
 ```
 
-## [729. 我的日程安排表 I](https://leetcode.cn/problems/my-calendar-i/description/)
+## [我的日程安排表 I](https://leetcode.cn/problems/my-calendar-i/description/)
 
 实现一个 MyCalendar 类来存放你的日程安排。如果要添加的日程安排不会造成重复预订，则可以存储这个新的日程安排。
 
@@ -1021,7 +1021,7 @@ func (c *MyCalendar) Book(start, end int) bool {
 }
 ```
 
-## [155.最小栈](https://leetcode.cn/problems/min-stack/description/)
+## [最小栈](https://leetcode.cn/problems/min-stack/description/)
 
 设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
 
@@ -1097,7 +1097,7 @@ func (q *MinStack) GetMin() int {
 }
 ```
 
-## [895.最大频率栈](https://leetcode.cn/problems/maximum-frequency-stack/description/)
+## [最大频率栈](https://leetcode.cn/problems/maximum-frequency-stack/description/)
 
 设计一个类似堆栈的数据结构，将元素推入堆栈，并从堆栈中弹出出现频率最高的元素。
 
@@ -1188,7 +1188,7 @@ func (this *FreqStack) Pop() int {
 }
 ```
 
-## [284.窥视迭代器](https://leetcode.cn/problems/peeking-iterator/description/)
+## [窥视迭代器](https://leetcode.cn/problems/peeking-iterator/description/)
 
 请你在设计一个迭代器，在集成现有迭代器拥有的 hasNext 和 next 操作的基础上，还额外支持 peek 操作。
 
@@ -1300,7 +1300,7 @@ func main() {
 }
 ```
 
-## [1670.设计前中后队列](https://labuladong.online/algo/problem-set/ds-design/#slug_design-front-middle-back-queue)
+## [设计前中后队列](https://labuladong.online/algo/problem-set/ds-design/#slug_design-front-middle-back-queue)
 
 请你设计一个队列，支持在前，中，后三个位置的 push 和 pop 操作。
 
@@ -1493,7 +1493,7 @@ func main() {
 }
 ```
 
-## [1700.无法吃午餐的学生数量](https://leetcode.cn/problems/number-of-students-unable-to-eat-lunch/description/)
+## [无法吃午餐的学生数量](https://leetcode.cn/problems/number-of-students-unable-to-eat-lunch/description/)
 
 学校的自助午餐提供圆形和方形的三明治，分别用数字 0 和 1 表示。所有学生站在一个队列里，每个学生要么喜欢圆形的要么喜欢方形的。
 餐厅里三明治的数量与学生的数量相同。所有三明治都放在一个栈里，每一轮：
@@ -1553,7 +1553,7 @@ func countStudents(students []int, sandwiches []int) int {
 }
 ```
 
-## [950.按递增顺序显示卡牌](https://leetcode.cn/problems/reveal-cards-in-increasing-order/description/)
+## [按递增顺序显示卡牌](https://leetcode.cn/problems/reveal-cards-in-increasing-order/description/)
 
 牌组中的每张卡牌都对应有一个唯一的整数。你可以按你想要的顺序对这套卡片进行排序。
 
@@ -1625,7 +1625,7 @@ func deckRevealedIncreasing(deck []int) []int {
 }
 ```
 
-## [855.考场就座](https://leetcode.cn/problems/exam-room/description/)
+## [考场就座](https://leetcode.cn/problems/exam-room/description/)
 
 在考场里，有 n 个座位排成一行，编号为 0 到 n - 1。
 
@@ -1732,4 +1732,132 @@ func (this *ExamRoom) Leave(p int) {
 	// 在 students 切片中删除元素 p
 	this.students = append(this.students[:idx], this.students[idx+1:]...)
 }
+```
+
+## [设计哈希映射](https://leetcode.cn/problems/design-hashmap/description/)
+
+不使用任何内建的哈希表库设计一个哈希映射（HashMap）。
+
+实现 MyHashMap 类：
+
+- `MyHashMap()` 用空映射初始化对象
+- `void put(int key, int value)` 向 HashMap 插入一个键值对 (key, value) 。如果 key 已经存在于映射中，则更新其对应的值 value。
+- `int get(int key)` 返回特定的 key 所映射的 value；如果映射中不包含 key 的映射，返回 -1。
+- `void remove(key)` 如果映射中存在 key 的映射，则移除 key 和它所对应的 value。
+ 
+示例：
+
+```go
+输入：
+["MyHashMap", "put", "put", "get", "get", "put", "get", "remove", "get"]
+[[], [1, 1], [2, 2], [1], [3], [2, 1], [2], [2], [2]]
+输出：
+[null, null, null, 1, -1, null, 1, null, -1]
+
+解释：
+MyHashMap myHashMap = new MyHashMap();
+myHashMap.put(1, 1); // myHashMap 现在为 [[1,1]]
+myHashMap.put(2, 2); // myHashMap 现在为 [[1,1], [2,2]]
+myHashMap.get(1);    // 返回 1 ，myHashMap 现在为 [[1,1], [2,2]]
+myHashMap.get(3);    // 返回 -1（未找到），myHashMap 现在为 [[1,1], [2,2]]
+myHashMap.put(2, 1); // myHashMap 现在为 [[1,1], [2,1]]（更新已有的值）
+myHashMap.get(2);    // 返回 1 ，myHashMap 现在为 [[1,1], [2,1]]
+myHashMap.remove(2); // 删除键为 2 的数据，myHashMap 现在为 [[1,1]]
+myHashMap.get(2);    // 返回 -1（未找到），myHashMap 现在为 [[1,1]]
+```
+
+**核心思路：**
+
+1. **使用数组（`[]list.List`）作为哈希桶**：
+   - 通过 `hash(key) = key % base` 计算哈希值，确定 key 存在哪个桶里。
+   - `base = 769`（一个质数），可以减少哈希冲突，使 key 均匀分布。
+
+2. **使用 Go 的 `container/list` 作为桶**：
+   - 每个桶是一个 `list.List`（双向链表），可以存储多个键值对（entry）。
+   - 采用 **链地址法（Chaining）** 处理哈希冲突，即当多个 key 映射到相同桶时，把它们存入链表。
+
+3. **插入 (`Put`)：**
+   - 计算哈希值找到对应桶。
+   - 遍历桶（链表）查找 key：
+     - **如果 key 已存在**，更新其 `value`。
+     - **如果 key 不存在**，在链表尾部插入 `entry{key, value}`。
+
+4. **查询 (`Get`)：**
+   - 计算哈希值找到对应桶。
+   - 遍历桶（链表）查找 key：
+     - **如果找到 key**，返回对应 `value`。
+     - **如果找不到**，返回 `-1`。
+
+5. **删除 (`Remove`)：**
+   - 计算哈希值找到对应桶。
+   - 遍历桶（链表）查找 key：
+     - **如果找到 key**，删除该节点。
+
+```go
+package main
+
+import (
+    "container/list"
+)
+
+const base = 769 // 质数 769 作为哈希表的桶数量，减少哈希冲突
+
+// entry 结构体用于存储键值对
+type entry struct {
+    key, value int
+}
+
+// MyHashMap 结构体实现哈希映射
+type MyHashMap struct {
+    data []list.List // 使用 list.List 作为桶，每个桶是一个链表
+}
+
+// Constructor 初始化哈希表
+func Constructor() MyHashMap {
+    return MyHashMap{make([]list.List, base)} // 创建 base 个桶，每个桶是一个 list.List
+}
+
+// hash 计算哈希值，确定 key 应该存储在哪个桶
+func (m *MyHashMap) hash(key int) int {
+    return key % base
+}
+
+// Put 插入 (key, value) 到哈希表，如果 key 已存在，则更新值
+func (m *MyHashMap) Put(key, value int) {
+    h := m.hash(key) // 计算 key 的哈希值，找到对应桶
+    // 遍历桶（链表）查看 key 是否已存在
+    for e := m.data[h].Front(); e != nil; e = e.Next() {
+        if et := e.Value.(entry); et.key == key { // 如果 key 已存在，则更新 value
+            e.Value = entry{key, value}
+            return
+        }
+    }
+    // 如果 key 不存在，则添加新的键值对到链表尾部
+    m.data[h].PushBack(entry{key, value})
+}
+
+// Get 获取 key 对应的 value，若 key 不存在返回 -1
+func (m *MyHashMap) Get(key int) int {
+    h := m.hash(key) // 计算 key 的哈希值
+    // 遍历链表查找 key
+    for e := m.data[h].Front(); e != nil; e = e.Next() {
+        if et := e.Value.(entry); et.key == key {
+            return et.value // 找到 key，返回对应的 value
+        }
+    }
+    return -1 // key 不存在，返回 -1
+}
+
+// Remove 删除 key 对应的键值对
+func (m *MyHashMap) Remove(key int) {
+    h := m.hash(key) // 计算 key 的哈希值
+    // 遍历链表查找 key
+    for e := m.data[h].Front(); e != nil; e = e.Next() {
+        if e.Value.(entry).key == key { // 找到 key，删除该节点
+            m.data[h].Remove(e)
+            return
+        }
+    }
+}
+
 ```
