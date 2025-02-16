@@ -72,6 +72,8 @@ curl -sS https://higress.cn/ai-gateway/install.sh | bash
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202502132048913.png)
 
+配置后，就可以直接使用了，例如使用 OpenAI 的 SDK：
+
 ```python
 import json
 from openai import OpenAI
