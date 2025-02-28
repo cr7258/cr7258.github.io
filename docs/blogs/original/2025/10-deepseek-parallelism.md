@@ -1,7 +1,7 @@
 ---
 title: DeepSeek 开源周第四弹：DualPipe 和 EPLB —— 优化并行策略
 author: Se7en
-date: 2025/02/26 21:30
+date: 2025/02/27 21:30
 categories:
  - AI
 tags:
