@@ -19,6 +19,7 @@ tags:
 | [eBPF核心技术与实战](https://time.geekbang.org/dashboard/course)  | 极客时间 eBPF 教程 |
 | [BuildingJohannes Bechberger 的博客](https://mostlynerdless.de/blog/tag/hello-ebpf/)  | 主要介绍使用 Java 来编写 eBPF 程序 | 
 | [BPF 进阶笔记](https://arthurchiao.art/blog/bpf-advanced-notes-1-zh/) | 包含 eBPF 类型讲解、eBPF 映射类型、调试 eBPF 程序等内容 |
+| [bpf-inside](https://github.com/mannkafai/bpf-inside) | 通过一些小工具探索 eBPF 在 Linux 内核的实现 |
 
 
 ## CORE（Compile Once – Run Everywhere）
