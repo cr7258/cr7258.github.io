@@ -421,7 +421,7 @@ Test PASSED
 Done
 ```
 
-完整的脚本可以在这里找到：https://github.com/cr7258/hands-on-lab/blob/main/ai/gpu/script/ubuntu-kind-gpu-cluster.sh
+完整的脚本可以在这里找到：https://github.com/cr7258/hands-on-lab/blob/main/ai/gpu/setup/create-gpu-cluster.sh
 
 ### 参考资料
 
