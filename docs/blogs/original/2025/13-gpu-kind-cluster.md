@@ -437,5 +437,3 @@ bash cleanup.sh
 ## 总结
 
 本文介绍了如何通过一键脚本在本地快速搭建支持 GPU 的 Kind 集群，适用于大模型的开发与测试场景。利用 nvkind 工具，可以轻松实现多节点 GPU 资源分配，并结合 vLLM 成功部署了 `deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B` 模型。
-
-
