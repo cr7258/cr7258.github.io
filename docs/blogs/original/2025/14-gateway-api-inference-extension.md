@@ -16,18 +16,18 @@ tags:
 
 传统的负载均衡器多基于 HTTP 路径或轮询调度，缺乏处理此类工作负载所需的专业能力。这些方案无法识别模型标识或请求的重要性（例如交互式对话请求与批处理作业之间的区别）。企业往往采用临时拼凑的方式应对，但缺乏统一标准的解决方案。
 
-为了解决这一问题，[Gateway API Inference Extension](https://gateway-api-inference-extension.sigs.k8s.io/) 在现有 [Gateway API](https://gateway-api.sigs.k8s.io/) 的基础上，添加了针对推理任务的专属路由能力，同时保留了 Gateways 和 HTTPRoutes 的熟悉模型。通过为现有网关添加这一扩展，可以将其转变为“推理网关”（Inference Gateway），帮助用户以“模型即服务”的方式自托管生成式 AI 模型或 LLM。
+为了解决这一问题，[Gateway API Inference Extension](https://gateway-api-inference-extension.sigs.k8s.io/) 在现有 [Gateway API](https://gateway-api.sigs.k8s.io/) 的基础上，添加了针对推理任务的专属路由能力，同时保留了 Gateways 和 HTTPRoutes 等人们熟悉的模型。通过为现有网关添加这一扩展，可以将其转变为“推理网关”（Inference Gateway），帮助用户以“模型即服务”的方式自托管生成式 AI 模型或 LLM。
 
-该扩展可将支持 [ext-proc](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_proc_filter) 的代理或网关（如 Envoy Gateway、kGateway 或 GKE Gateway）升级为推理网关，支持推理平台团队在 Kubernetes 上自建大语言模型服务。
+Gateway API Inference Extension 可将支持 [ext-proc](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_proc_filter) 的代理或网关（如 Envoy Gateway、kGateway 或 GKE Gateway）升级为推理网关，支持推理平台团队在 Kubernetes 上自建大语言模型服务。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202504101028179.png)
 
 ## 主要特性
 
-Gateway API Inference Extension 及其在 Envoy Proxy 中的参考实现提供了以下关键特性：
+Gateway API Inference Extension 提供了以下关键特性：
 
 - **模型感知路由**：与传统仅基于请求路径进行路由的方式不同，Gateway API Inference Extension 支持根据模型名称进行路由。这一能力得益于网关实现（如 Envoy Proxy）对生成式 AI 推理 API 规范（如 OpenAI API）的支持。该模型感知路由能力同样适用于基于 LoRA（Low-Rank Adaptation）微调的模型。
-- **服务优先级**：Gateway API Inference Extension 支持为模型指定服务优先级。例如，可为在线对话类任务（对延迟较为敏感）的模型设定更高的 Criticality，而对延迟容忍度更高的任务（如摘要生成）的模型则设定较低的优先级。
+- **服务优先级**：Gateway API Inference Extension 支持为模型指定服务优先级。例如，可为在线对话类任务（对延迟较为敏感）的模型设定更高的 criticality，而对延迟容忍度更高的任务（如摘要生成）的模型则设定较低的优先级。
 - **模型版本发布**：Gateway API Inference Extension 支持基于模型名称进行流量拆分，从而实现模型版本的渐进式发布与灰度上线。
 - **推理服务的可扩展性**：Gateway API Inference Extension 定义了一种可扩展模式，允许用户根据自身需求扩展推理服务，实现定制化的路由能力，以应对默认方案无法满足的场景。
 - **面向推理的可定制负载均衡**：Gateway API Inference Extension 提供了一种专为推理优化的可定制负载均衡与请求路由模式，并在实现中提供了基于模型服务器实时指标的模型端点选择（model endpoint picking）机制。该机制可替代传统负载均衡方式，被称为“模型服务器感知”的智能负载均衡。实践表明，它能够有效降低推理延迟并提升集群中 GPU 的利用率。
@@ -81,7 +81,7 @@ spec:
 
 ### EndPoint Picker (EPP)
 
-[EndPoint Picker (EPP)](https://github.com/kubernetes-sigs/gateway-api-inference-extension/tree/main/pkg/epp) 是专为 AI 推理场景设计的智能流量调度组件，每个 InferencePool 需独立部署一个 EPP 实例。EPP 实现了 Envoy 的 [ext-proc](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_proc_filter)，在 Envoy 转发流量之前，它会先通过 gRPC 请求 EPP，EPP 会指示 Envoy 将请求路由到哪个具体的 Pod。
+[EndPoint Picker (EPP)](https://github.com/kubernetes-sigs/gateway-api-inference-extension/tree/main/pkg/epp) 是专为 AI 推理场景设计的智能流量调度组件。EPP 实现了 Envoy 的 [ext-proc](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/ext_proc_filter)，在 Envoy 转发流量之前，它会先通过 gRPC 请求 EPP，EPP 会指示 Envoy 将请求路由到哪个具体的 Pod。
 
 EPP 主要实现以下核心功能：
 
@@ -112,7 +112,9 @@ EPP 还负责生成与推理流量相关的监控指标：
 
 [Dynamic LORA Adapter Sidecar](https://github.com/kubernetes-sigs/gateway-api-inference-extension/tree/main/tools/dynamic-lora-sidecar) 是一个基于 sidecar 的工具，用于将新的 LoRA 适配器部署到一组正在运行的 vLLM 模型服务器。用户将 sidecar 与 vLLM 服务器一起部署，并通过 ConfigMap 指定希望配置的 LoRA 适配器。sidecar 监视 ConfigMap，并向 vLLM 容器发送加载或卸载请求，以执行用户的配置意图。
 
-LoRA（Low-Rank Adaptation，低秩自适应）适配器是一种高效微调大模型的技术，它通过在预训练模型的特定层旁添加小型可训练的低秩矩阵，仅更新少量参数即可适配新任务，显著降低计算和存储成本。其核心作用包括：动态加载不同任务适配器实现多任务切换，以及保持原模型权重不变的同时提升微调效率，适用于个性化模型定制和资源受限场景
+这里顺便再解释一下什么是 LoRA：
+
+LoRA（Low-Rank Adaptation，低秩自适应）适配器是一种高效微调大模型的技术，它通过在预训练模型的特定层旁添加小型可训练的低秩矩阵，仅更新少量参数即可适配新任务，显著降低计算和存储成本。其核心作用包括：动态加载不同任务适配器实现多任务切换，以及保持原模型权重不变的同时提升微调效率，适用于个性化模型定制和资源受限场景。
 
 ## 请求流程
 
@@ -120,7 +122,7 @@ LoRA（Low-Rank Adaptation，低秩自适应）适配器是一种高效微调大
 
 1. 客户端向推理网关发送请求。
 2. 请求到达推理网关后，网关根据 HTTPRoute 的匹配规则将请求路由到相应的 InferencePool。对于 Envoy 支持的 L7 路由器（如 kgateway 或 Istio），通常会通过路由策略和负载均衡来选择请求的目标端点。
-3. 对于 InferencePool，请求会首先发送到一个专门的扩展组件——EndPoint Picker (EPP)。EPP 会根据来自 LLM 本身的指标来选择合适的后端 LLM 端点。
+3. 但是对于 InferencePool，请求会首先发送到一个专门的扩展组件——EndPoint Picker (EPP)。EPP 会根据来自 LLM 本身的指标来选择合适的后端 LLM 端点。
 4. 当请求到达 EPP 后，EPP 会从请求正文中提取 modelName。识别出 modelName 后，EPP 会与可用的 InferenceModel 对象的 modelName 字段进行对比，确定相应的后端模型或 LoRA 适配器。例如，若 EPP 检测到的模型名称为 `food-review`，它会找到匹配的 InferenceModel，并将请求路由到适当的端点，如 `food-review-1` 或 `food-review-2`。
 5. EPP 定义了一系列过滤器，用于选择特定模型对应的端点。它会定期查询各个 LLM Pod 的相关指标（如队列长度、KV 缓存使用情况等），从而选择最适合处理当前请求的 Pod。
 6. EPP 选定最佳 Pod 后，会将其返回给推理网关。
@@ -563,7 +565,22 @@ helm upgrade -i --create-namespace --namespace kgateway-system --version $KGTW_V
 
 ```bash
 helm upgrade -i --namespace kgateway-system --version $KGTW_VERSION kgateway oci://cr.kgateway.dev/kgateway-dev/charts/kgateway --set inferenceExtension.enabled=true
-kubectl apply -f https://github.com/kubernetes-sigs/gateway-api-inference-extension/raw/main/config/manifests/gateway/kgateway/gateway.yaml
+```
+
+接着创建 Gateway，`gatewayClassName` 关联到 Kgateway。
+
+```yaml
+# 04-gateway.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: inference-gateway
+spec:
+  gatewayClassName: kgateway
+  listeners:
+  - name: http
+    port: 80
+    protocol: HTTP
 ```
 
 确认网关已分配 IP 地址并报告 `Programmed=True` 状态。
@@ -578,6 +595,7 @@ inference-gateway   kgateway   172.18.0.4   True         16s
 部署 HTTPRoute，将流量路由到 InferencePool。
 
 ```yaml
+# 05-httproute.yaml
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -748,7 +766,7 @@ spec:
     weight: 10
 ```
 
-使用相同的 curl 命令进行测试，可以观察到 90% 的请求被路由到 `food-review-1`，10% 的请求被路由到 `food-review-2`。
+使用相同的 curl 命令请求多次进行测试，可以观察到 90% 的请求被路由到 `food-review-1`，10% 的请求被路由到 `food-review-2`。
 
 ```bash
 curl -i ${IP}:${PORT}/v1/completions -H 'Content-Type: application/json' -d '{
