@@ -135,6 +135,8 @@ LoRA（Low-Rank Adaptation，低秩自适应）适配器是一种高效微调大
 
 准备一个 GPU Kubernetes 集群，可以参考我之前写的这篇文章快速搭建：[一键部署 GPU Kind 集群，体验 vLLM 极速推理](https://mp.weixin.qq.com/s/TNXrDr59wxcAZF9MhUJGjw)。本实验运行的模型是 `meta-llama/Llama-3.1-8B-Instruct`，对 GPU 的性能有一定要求，我是用 A100 的 GPU 进行实验的。
 
+本实验使用的资源文件可以在 Github 上找到：https://github.com/cr7258/hands-on-lab/tree/main/gateway/gateway-api-inference-extension/get-started
+
 ### 创建 Hugging Face Token
 
 需要先在 [Hugging Face](https://huggingface.co/settings/token) 创建一个 Token，并且申请 [meta-llama/Llama-3.1-8B](https://huggingface.co/meta-llama/Llama-3.1-8B) 模型的使用许可，注意填写信息的时候国家不要选中国，否则会被秒拒。
