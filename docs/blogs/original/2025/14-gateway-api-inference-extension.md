@@ -899,7 +899,7 @@ data:
 2025-04-05 13:27:53 - INFO - sidecar.py:62 -  model server reconcile to Config '/config/configmap.yaml' !
 2025-04-05 13:27:56 - INFO - sidecar.py:314 -  Periodic reconciliation triggered
 2025-04-05 13:27:56 - INFO - sidecar.py:255 -  reconciling model server localhost:8000 with config stored at /config/configmap.yaml
-````
+```
 
 此时，所有请求都应该由新的适配器版本提供服务。
 
