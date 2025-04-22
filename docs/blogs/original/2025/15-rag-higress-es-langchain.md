@@ -25,7 +25,7 @@ Higress 是一款云原生 API 网关，内核基于 Istio 和 Envoy，可以用
 
 ## 什么是 Elasticsearch？
 
-Elasticsearch 是一个分布式搜索与分析引擎，广泛用于全文检索、日志分析和实时数据处理。它在 8.x 版本中原生引入了向量检索功能，支持基于稠密向量和稀疏向量的相似度搜索。
+Elasticsearch 是一个分布式搜索与分析引擎，广泛用于全文检索、日志分析和实时数据处理。Elasticsearch 在 8.x 版本中原生引入了向量检索功能，支持基于稠密向量和稀疏向量的相似度搜索。
 
 ## 什么是 LangChain？
 
@@ -37,15 +37,15 @@ LangChain 是一个开源框架，旨在构建基于大语言模型（LLM）的�
 
 ### 数据预处理阶段
 
-在进行 RAG 查询之前，我们首先需要将原始文档进行向量化处理，并将其写入 Elasticsearch。在本文中，我们的文档是一份 Markdown 格式的员工手册，我们使用 LangChain 的 `MarkdownHeaderTextSplitter` 对文档进行处理。`MarkdownHeaderTextSplitter` 能够解析 Markdown 文档的结构，并根据标题将文档拆分。Elasticsearch 支持内置的嵌入模型，本文将使用 Elasticsearch 自带的 [ELSER v2 模型](https://www.elastic.co/docs/explore-analyze/machine-learning/nlp/ml-nlp-elser#elser-v2)（Elastic Learned Sparse EncodeR），该模型会将文本转换为稀疏向量。建议将 ELSER v2 模型用于英语文档的查询，如果想对非英语文档执行语义搜索，请使用 [E5 模型](https://www.elastic.co/docs/explore-analyze/machine-learning/nlp/ml-nlp-e5)。
+在进行 RAG 查询之前，我们首先需要将原始文档进行向量化处理，并将其写入 Elasticsearch。在本文中，我们的文档是一份 Markdown 格式的员工手册，我们使用 LangChain 的 `MarkdownHeaderTextSplitter` 对文档进行处理。`MarkdownHeaderTextSplitter` 能够解析 Markdown 文档的结构，并根据标题将文档拆分。Elasticsearch 支持内置的 Embedding模型，本文将使用 Elasticsearch 自带的 [ELSER v2 模型](https://www.elastic.co/docs/explore-analyze/machine-learning/nlp/ml-nlp-elser#elser-v2)（Elastic Learned Sparse EncodeR），该模型会将文本转换为稀疏向量。建议将 ELSER v2 模型用于英语文档的查询，如果想对非英语文档执行语义搜索，请使用 [E5 模型](https://www.elastic.co/docs/explore-analyze/machine-learning/nlp/ml-nlp-e5)。
 
 ### 查询阶段
 
 检索增强生成（RAG）是一个多步骤的过程，首先进行信息检索，然后进入生成阶段。其工作流程如下：
 
 - 1. **输入查询**：首先，从用户的输入查询开始，例如用户提出的问题。
-- 2. **信息检索**：然后，Higress 的 ai-search 插件会从 Elasticsearch 中检索相关信息。ai-search 结合语义搜索和全文搜索，使用 RRF（Reciprocal Rank Fusion）进行混合搜索，从而提高搜索的准确性和相关性。
-- 3. **提示词生成**：Higress 将检索到的文档与用户的问题一起，作为提示词输入给大语言模型（LLM）。
+- 2. **信息检索**：然后，Higress 的 ai-search 插件会从 Elasticsearch 中检索相关信息。ai-search 插件结合语义搜索和全文搜索，使用 RRF（Reciprocal Rank Fusion）进行混合搜索，从而提高搜索的准确性和相关性。
+- 3. **提示词生成**：Higress 将检索到的文档与用户的问题一起，作为提示词输入给 LLM。
 - 4. **文本生成**：LLM 根据检索到的信息生成文本回答，这些回答通常更加准确，因为它们已经通过检索模型提供的补充信息进行了优化。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202504212131601.png)
