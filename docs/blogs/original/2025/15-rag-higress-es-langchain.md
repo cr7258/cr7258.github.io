@@ -1,5 +1,5 @@
 ---
-title: 使用 Langchain + Higress + Elasticsearch 构建 RAG 应用
+title: 使用 LangChain + Higress + Elasticsearch 构建 RAG 应用
 author: Se7en
 date: 2025/04/20 22:30
 categories:
