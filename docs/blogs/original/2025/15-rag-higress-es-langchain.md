@@ -421,3 +421,7 @@ curl 'http://localhost:8080/v1/chat/completions' \
 - Enhancing relevance with sparse vectors: https://www.elastic.co/search-labs/blog/elasticsearch-sparse-vector-boosting-personalization
 - What is RAG (retrieval augmented generation)?: https://www.elastic.co/what-is/retrieval-augmented-generation
 - No ML nodes with sufficient capacity for trained model deployment: https://discuss.elastic.co/t/no-ml-nodes-with-sufficient-capacity-for-trained-model-deployment/357517
+
+## 欢迎关注
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202503222156941.png)
