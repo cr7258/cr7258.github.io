@@ -302,3 +302,7 @@ Done!
 本文的相关代码可以在 Github 上找到：https://github.com/cr7258/hands-on-lab/tree/main/ai/mcp/context7/elasticsearch
 
 你可以使用 `docker-compose up -d` 命令来启动一个单节点的 Elasticsearch 集群。通过 `http://localhost:9200` 进行访问，没有设置用户名和密码。
+
+## 欢迎关注
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202503222156941.png)
