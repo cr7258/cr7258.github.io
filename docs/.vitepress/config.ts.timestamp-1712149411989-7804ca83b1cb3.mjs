@@ -161,7 +161,8 @@ var sidebar = {
   "/categories/tools/": getItemsByDate("categories/tools"),
   "/blogs/original/": getItemsByDate("blogs/original/"),
   "/blogs/translate/": getItemsByDate("blogs/translate/"),
-  "/courses/elastic-stack/": getItems("courses/elastic-stack")
+  "/courses/elastic-stack/": getItems("courses/elastic-stack"),
+  "/courses/ai-infra/": getItems("courses/ai-infra")
 };
 function getItemsByDate(path) {
   let yearGroups = [];
