@@ -1,5 +1,5 @@
 ---
-title: AI 推理 | vLLM 快速部署指南
+title: vLLM 快速部署指南
 author: Se7en
 date: 2025/05/11 23:00
 categories:
@@ -11,7 +11,7 @@ tags:
  - Training
 ---
 
-# AI 推理 | vLLM 快速部署指南
+# vLLM 快速部署指南
 
 本文是 AI 推理系列的第一篇，近期将更新与 vLLM 的相关内容。本篇从 vLLM 的部署开始，介绍 vLLM GPU/CPU 后端的安装方式，后续将陆续讲解 vLLM 的核心特性，如 PD 分离、Speculative Decoding、Prefix Caching 等，敬请关注。
 
