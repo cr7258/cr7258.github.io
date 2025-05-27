@@ -11,7 +11,7 @@ tags:
  - Training
 ---
 
-# vLLM 核心技术 PagedAttention 原理
+# vLLM 核心技术 PagedAttention 原理详解
 
 本文是 vLLM 系列文章的第二篇，介绍 vLLM 核心技术 PagedAttention 的设计理念与实现机制。
 
