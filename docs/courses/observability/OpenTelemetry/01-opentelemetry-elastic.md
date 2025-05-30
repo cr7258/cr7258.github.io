@@ -1,5 +1,5 @@
 ---
-title: OpenTelemetry × Elastic Observability 系列（一）： 整体架构介绍
+title: OpenTelemetry × Elastic Observability 系列（一）：整体架构介绍
 author: Se7en
 date: 2025/05/30 10:00
 categories:
@@ -10,7 +10,7 @@ tags:
  - Elastic
 ---
 
-# OpenTelemetry × Elastic Observability 系列（一）： 整体架构介绍
+# OpenTelemetry × Elastic Observability 系列（一）：整体架构介绍
 
 本文是 **OpenTelemetry × Elastic Observability 系列**的第一篇，将介绍 OpenTelemetry Demo 的整体架构，以及如何集成 Elastic 来采集和可视化可观测性数据。后续文章将分别针对不同编程语言，深入讲解 OpenTelemetry 的集成实践。
 
