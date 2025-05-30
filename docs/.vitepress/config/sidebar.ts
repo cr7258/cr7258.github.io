@@ -14,6 +14,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   '/blogs/translate/': getItemsByDate("blogs/translate/"),
   '/courses/elastic-stack/': getItems("courses/elastic-stack"),
   '/courses/ai-infra/': getItems("courses/ai-infra"),
+  '/courses/observability/': getItems("courses/observability"),
   '/courses/interview/': getItems("courses/interview"),
   '/courses/algorithm/': getItems("courses/algorithm"),
   '/meetup/network/': getItems("meetup/network"),

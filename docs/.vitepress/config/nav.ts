@@ -31,8 +31,9 @@ export const nav: DefaultTheme.Config['nav'] = [
   {
     text: '我的小册',
     items: [
-      { text: 'Elastic Stack 实战教程', link: '/courses/elastic-stack/index', activeMatch: '/courses/elastic-stack/' },
       { text: 'AI Infra 教程', link: '/courses/ai-infra/index', activeMatch: '/courses/ai-infra/' },
+      { text: 'Elastic Stack 实战教程', link: '/courses/elastic-stack/index', activeMatch: '/courses/elastic-stack/' },
+      { text: 'Observability 教程', link: '/courses/observability/index', activeMatch: '/courses/observability/' },
       { text: '面试宝典', link: '/courses/interview/index', activeMatch: '/courses/interview/' },
       { text: '数据结构与算法', link: '/courses/algorithm/index', activeMatch: '/courses/algorithm/' }
     ],
