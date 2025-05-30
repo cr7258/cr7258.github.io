@@ -124,3 +124,7 @@ Service Inventory 列出了所有的服务以及每个服务的关键指标（�
 - Combining Elastic Universal Profiling with Java APM Services and Traces：https://www.elastic.co/observability-labs/blog/universal-profiling-with-java-apm-services-traces
 - Revealing unknowns in your tracing data with inferred spans in OpenTelemetry：https://www.elastic.co/observability-labs/blog/tracing-data-inferred-spans-opentelemetry
 - elastic/observability-examples：https://github.com/elastic/observability-examples/tree/main/Elastiflix
+
+## 欢迎关注
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202503222156941.png)
