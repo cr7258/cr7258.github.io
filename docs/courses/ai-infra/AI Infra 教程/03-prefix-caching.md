@@ -13,6 +13,15 @@ tags:
 
 # Prefix Caching 详解：实现 KV Cache 的跨请求高效复用
 
+Prefix Caching 原理的讲解视频可以在这里观看：https://www.bilibili.com/video/BV1jgTRzSEjS
+
+本文是 vLLM 系列文章的第 3 篇，介绍 vLLM 中 Prefix Caching 的实现原理。
+
+往期文章：
+
+- [vLLM 快速部署指南](https://mp.weixin.qq.com/s/rVW6jjLQabHGMMwnbIzB7Q)
+- [vLLM 核心技术 PagedAttention 原理详解](https://mp.weixin.qq.com/s/94-kEyHui0BLO5S-80eAiw)
+
 ## 1 什么是 Prefix Caching
 
 前缀缓存（Prefix Caching）是一种大语言模型推理优化技术，它的核心思想是缓存历史对话中的 KV Cache，以便后续请求能直接重用这些中间结果。这样可以显著降低**首 token 延迟**，提升整体推理效率。Prefix Caching 尤其适用于多轮对话、长文档问答等高前缀复用场景。

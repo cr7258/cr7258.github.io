@@ -13,7 +13,7 @@ tags:
 
 # vLLM 核心技术 PagedAttention 原理详解
 
-本文是 vLLM 系列文章的第二篇，介绍 vLLM 核心技术 PagedAttention 的设计理念与实现机制。
+本文是 vLLM 系列文章的第 2 篇，介绍 vLLM 核心技术 PagedAttention 的设计理念与实现机制。
 
 vLLM PagedAttention 论文精读视频可以在这里观看：https://www.bilibili.com/video/BV1GWjjzfE1b
 
