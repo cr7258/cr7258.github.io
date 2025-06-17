@@ -141,7 +141,7 @@ func backtrack(nums []int) {
 | [698. 划分为k个相等的子集](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/)         | 🟠   |  |
 
 
-#### 90.子集 II（元素无重不可复选）
+#### 78.子集（元素无重不可复选）
 
 给你一个整数数组 nums ，数组中的元素互不相同 。返回该数组所有可能的子集（幂集）。
 
