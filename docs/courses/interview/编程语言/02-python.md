@@ -447,3 +447,96 @@ print(add5(3))   # 输出 8
 3. 外部函数返回内部函数，使其在外部环境中得以调用。
 4. 被闭包引用的外部变量不会随着外部函数的结束而销毁，直到闭包本身被销毁为止。
 5. Python 中的装饰器（decorator）就是基于闭包实现的典型例子。
+
+## Python 线程锁/互斥锁
+
+在 Python 中，多个线程**同时操作共享变量**时，会出现数据不一致的问题，称为 **竞态条件（Race Condition）**。例如多个线程并发执行 `counter += 1`，这个操作不是原子的，容易产生丢失更新的问题。Python 的 **GIL（全局解释器锁）** 只保证解释器级别的线程安全，并不保证共享变量的并发操作安全。因此，我们需要使用 `threading.Lock` 来显式加锁，保证同一时间只有一个线程能访问关键代码区。
+
+有两种方式可以实现加锁：
+
+**1. 使用 `with lock:` 自动加锁和解锁（推荐）**
+
+```python
+import threading
+import time
+
+counter = 0
+lock = threading.Lock()
+
+def add():
+    global counter
+    for _ in range(100000):
+        with lock:  # 自动 acquire 和 release，推荐用法
+            tmp = counter
+            time.sleep(0)       # 强制触发线程切换，增加竞争
+            counter = tmp + 1
+
+threads = []
+
+# 创建并启动 5 个线程
+for _ in range(5):
+    t = threading.Thread(target=add)
+    t.start()
+    threads.append(t)
+
+# 等待所有线程完成
+for t in threads:
+    t.join()
+
+print("Final counter:", counter)
+
+# 输出结果
+Final counter: 500000
+```
+
+说明 `counter += 1` 在 5 个线程中每人执行 100000 次，总计 500000，**加锁成功避免了数据丢失**。
+
+**2. 使用 `lock.acquire()` 和 `lock.release()` 手动加解锁**
+
+```python
+import threading
+import time
+
+counter = 0
+lock = threading.Lock()
+
+def add():
+    global counter
+    for _ in range(100000):
+        lock.acquire()      # 显式加锁
+        tmp = counter
+        time.sleep(0)       # 强制触发线程切换，增加竞争
+        counter = tmp + 1
+        lock.release()      # 显式解锁
+
+threads = []
+
+# 创建并启动 5 个线程
+for _ in range(5):
+    t = threading.Thread(target=add)
+    t.start()
+    threads.append(t)
+
+# 等待所有线程完成
+for t in threads:
+    t.join()
+
+print("Final counter:", counter)
+
+# 输出结果
+Final counter: 500000
+```
+
+## Python GIL（Global Interpreter Lock）是什么？
+
+GIL（Global Interpreter Lock，全局解释器锁）是 **CPython 解释器中的互斥锁**，它确保任意时刻只有一个线程能执行 Python 字节码，从而保护内存安全。
+
+**GIL 是 CPython 的实现细节**，不是可以导入或调用的工具。它始终在后台自动运行，用户无法直接控制。
+
+GIL 的引入是为了解决 CPython 中对象引用计数的并发访问问题。**它简化了解释器的内存管理实现，但不是为用户编写的多线程程序服务的**。
+
+虽然 GIL 限制了并发执行，但这并不意味着你写的代码是线程安全的。**像 `counter += 1` 这样的读-改-写操作不是原子的**，需要使用 `threading.Lock` 等手段显式加锁，否则仍然会出现竞态条件。
+
+在多核 CPU 上，GIL 会阻止多线程并行执行。**所有线程都必须抢占 GIL，一个个轮流运行字节码，无法同时使用多核计算资源**。因此，对于 CPU 密集型任务，多线程并不能提高性能，反而可能更慢。
+
+**I/O 密集型任务是例外**。当线程执行如 `time.sleep()`、`socket.recv()` 等阻塞操作时，GIL 会被释放，其他线程可以抢占运行。这样可以实现 I/O 并发，提升整体吞吐。

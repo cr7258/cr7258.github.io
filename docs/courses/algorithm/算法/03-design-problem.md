@@ -1861,3 +1861,163 @@ func (m *MyHashMap) Remove(key int) {
 }
 
 ```
+
+## 控制 Goroutine 执行的数量
+
+假设我们需要对 20 个实例进行迁移，为了避免同时迁移过多实例造成资源抢占或影响服务，需要控制并发数量。控制并发数量的核心代码是这两行，使用了一个**带缓冲的 channel**作为信号量（semaphore）：
+
+1. `make(chan struct{}, 5)` 创建一个容量为 5 的 channel，表示最多可并发 5 个任务。
+2. 每个任务开始时向 channel 中写入一个值（`semaphore <- struct{}{}`），如果已经有 5 个任务在执行，写操作将阻塞，直到有任务释放。
+3. 任务结束时 `defer` 从 channel 中读取一个值（`<-semaphore`），释放“令牌”。
+
+```go
+semaphore <- struct{}{}        // 获取一个“令牌”，如果已满则阻塞，限制并发
+defer func() { <-semaphore }() // 任务结束后释放令牌，允许其他任务继续
+```
+
+完整的示例代码如下：
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+// 最大允许同时迁移的实例数量（控制并发）
+const MaxConcurrentMigrations = 5
+
+var (
+	semaphore         = make(chan struct{}, MaxConcurrentMigrations) // 用作信号量限制并发数量
+	wg                sync.WaitGroup                                 // 等待所有迁移任务完成
+	migratingInstance sync.Map                                       // 存储正在迁移中的实例（当前未使用）
+)
+
+func main() {
+	// 模拟要迁移的 20 个实例
+	instances := []string{
+		"instance-0", "instance-1", "instance-2", "instance-3", "instance-4",
+		"instance-5", "instance-6", "instance-7", "instance-8", "instance-9",
+		"instance-10", "instance-11", "instance-12", "instance-13", "instance-14",
+		"instance-15", "instance-16", "instance-17", "instance-18", "instance-19",
+	}
+
+	// 启动 goroutine 进行迁移
+	for _, instance := range instances {
+		instance := instance // 捕获循环变量，避免闭包误用
+		wg.Add(1)            // 增加 WaitGroup 计数
+		go func() {
+			defer wg.Done()              // 任务结束时减少计数
+			migrateWithSemaphore(instance) // 迁移任务执行函数，带并发控制
+		}()
+	}
+
+	wg.Wait() // 等待所有迁移任务完成
+	fmt.Println("✅ All migrations complete.")
+}
+
+// migrateWithSemaphore 控制并发地执行单个实例的迁移
+func migrateWithSemaphore(instanceID string) {
+	// 控制并发数量的核心逻辑
+	semaphore <- struct{}{}        // 占用一个并发“许可证”，如果满了会阻塞
+	defer func() { <-semaphore }() // 任务完成后释放“许可证”
+
+	err := handleInstanceMigration(instanceID) // 执行实际迁移逻辑
+	if err != nil {
+		fmt.Printf("❌ Migration failed for %s: %v\n", instanceID, err)
+	} else {
+		fmt.Printf("✅ Migration succeeded for %s\n", instanceID)
+	}
+}
+
+// handleInstanceMigration 模拟迁移过程，并带有超时控制
+func handleInstanceMigration(instanceID string) error {
+	// 打印迁移开始日志
+	fmt.Printf("[%s] ⏳ Start migrating %s\n", time.Now().Format("15:04:05"), instanceID)
+
+	// 创建上下文，设置超时时间为 10 秒
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// 模拟迁移耗时为 2~5 秒
+	select {
+	case <-time.After(time.Duration(rand.Intn(3000)+2000) * time.Millisecond):
+		// 模拟成功完成
+		fmt.Printf("[%s] ✅ Done migrating %s\n", time.Now().Format("15:04:05"), instanceID)
+		return nil
+	case <-ctx.Done():
+		// 超时处理
+		return fmt.Errorf("timeout")
+	}
+}
+```
+
+输出日志如下，可以看到同一时刻最多只有 5 个迁移任务在执行。
+
+```go
+[23:00:00] ⏳ Start migrating instance-0
+[23:00:00] ⏳ Start migrating instance-2
+[23:00:00] ⏳ Start migrating instance-3
+[23:00:00] ⏳ Start migrating instance-4
+[23:00:00] ⏳ Start migrating instance-19
+[23:00:03] ✅ Done migrating instance-3
+✅ Migration succeeded for instance-3
+[23:00:03] ⏳ Start migrating instance-5
+[23:00:03] ✅ Done migrating instance-2
+✅ Migration succeeded for instance-2
+[23:00:03] ⏳ Start migrating instance-6
+[23:00:04] ✅ Done migrating instance-19
+✅ Migration succeeded for instance-19
+[23:00:04] ⏳ Start migrating instance-7
+[23:00:04] ✅ Done migrating instance-0
+✅ Migration succeeded for instance-0
+[23:00:04] ⏳ Start migrating instance-8
+[23:00:04] ✅ Done migrating instance-4
+✅ Migration succeeded for instance-4
+[23:00:04] ⏳ Start migrating instance-9
+[23:00:07] ✅ Done migrating instance-5
+✅ Migration succeeded for instance-5
+[23:00:07] ⏳ Start migrating instance-10
+[23:00:07] ✅ Done migrating instance-7
+✅ Migration succeeded for instance-7
+[23:00:07] ⏳ Start migrating instance-11
+[23:00:07] ✅ Done migrating instance-8
+✅ Migration succeeded for instance-8
+[23:00:07] ⏳ Start migrating instance-12
+[23:00:08] ✅ Done migrating instance-6
+✅ Migration succeeded for instance-6
+[23:00:08] ⏳ Start migrating instance-13
+[23:00:08] ✅ Done migrating instance-9
+✅ Migration succeeded for instance-9
+[23:00:08] ⏳ Start migrating instance-14
+[23:00:09] ✅ Done migrating instance-11
+✅ Migration succeeded for instance-11
+[23:00:09] ⏳ Start migrating instance-15
+[23:00:11] ✅ Done migrating instance-10
+✅ Migration succeeded for instance-10
+[23:00:11] ⏳ Start migrating instance-16
+[23:00:12] ✅ Done migrating instance-12
+✅ Migration succeeded for instance-12
+[23:00:12] ⏳ Start migrating instance-17
+[23:00:12] ✅ Done migrating instance-13
+✅ Migration succeeded for instance-13
+[23:00:12] ⏳ Start migrating instance-18
+[23:00:13] ✅ Done migrating instance-14
+✅ Migration succeeded for instance-14
+[23:00:13] ⏳ Start migrating instance-1
+[23:00:14] ✅ Done migrating instance-15
+✅ Migration succeeded for instance-15
+[23:00:14] ✅ Done migrating instance-17
+✅ Migration succeeded for instance-17
+[23:00:15] ✅ Done migrating instance-16
+✅ Migration succeeded for instance-16
+[23:00:16] ✅ Done migrating instance-1
+✅ Migration succeeded for instance-1
+[23:00:16] ✅ Done migrating instance-18
+✅ Migration succeeded for instance-18
+✅ All migrations complete.
+```
