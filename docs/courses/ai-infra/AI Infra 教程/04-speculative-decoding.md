@@ -12,9 +12,19 @@ tags:
 
 ## Speculative Decoding 推测解码方案详解
 
-当前，大型语言模型（LLM）在推理阶段普遍采用自回归解码策略，其核心特性是**逐步串行生成 token，每一步都依赖前一步的输出**。这一计算模式导致推理过程在系统层面面临严重的**内存带宽瓶颈**：每一步前向计算都需要将**完整的模型参数从高带宽内存（HBM）加载到加速器缓存**，但仅生成一个 token。由于每次只生成一个 token，导致大量的计算资源被闲置，无法充分发挥加速器的算力潜力，最终造成整体推理效率低下。
+Speculative Decoding 推测解码方案的讲解视频可以在这里观看：https://www.bilibili.com/video/BV1Q5KWzQEhn/
 
-为解决这一问题，一种加速大型语言模型推理的思路是**提高解码过程的算术强度**（即总浮点运算次数 FLOPs 与数据传输量之间的比值），同时**减少解码步骤**。基于这一理念，研究者们提出了**推测解码/投机解码（Speculative Decoding）** 技术。Speculative Decoding 的核心思路如下图所示，首先以低成本的方式（一般来说是用小模型）快速生成多个候选 token，然后通过一次并行验证阶段快速验证多个 token，进而减少大模型的 decode 次数，从而达到加速的目的。
+本文是 LLM 推理系列的第 4 篇，介绍 Speculative Decoding 推测解码方案详解，详细介绍了 EAGLE、Medusa、Lookahead 等主流的 Speculative Decoding 方案。
+
+往期文章：
+
+- [vLLM 快速部署指南](https://mp.weixin.qq.com/s/rVW6jjLQabHGMMwnbIzB7Q)
+- [vLLM 核心技术 PagedAttention 原理详解](https://mp.weixin.qq.com/s/94-kEyHui0BLO5S-80eAiw)
+- [Prefix Caching 详解：实现 KV Cache 的跨请求高效复用](https://mp.weixin.qq.com/s/_FnXC7hiQtwyzU-ISvU0CA)
+
+当前，大语言模型（LLM）在推理阶段普遍采用自回归解码策略，其核心特性是**逐步串行生成 token，每一步都依赖前一步的输出**。这一计算模式导致推理过程在系统层面面临严重的**内存带宽瓶颈**：每一步前向计算都需要将**完整的模型参数从高带宽内存（HBM）加载到加速器缓存**，但仅生成一个 token。由于每次只生成一个 token，导致大量的计算资源被闲置，无法充分发挥加速器的算力潜力，最终造成整体推理效率低下。
+
+为解决这一问题，一种加速大语言模型推理的思路是**提高解码过程的算术强度**（即总浮点运算次数 FLOPs 与数据传输量之间的比值），同时**减少解码步骤**。基于这一理念，研究者们提出了**推测解码/投机解码（Speculative Decoding）** 技术。Speculative Decoding 的核心思路如下图所示，首先以低成本的方式（一般来说是用小模型）快速生成多个候选 token，然后通过一次并行验证阶段快速验证多个 token，进而减少大模型的 decode 次数，从而达到加速的目的。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202506221203921.png)
 
@@ -588,9 +598,13 @@ EAGLE 论文中用下图对比了 Speculative Sampling、Lookahead、Medusa、EA
 
 - **EAGLE**：EAGLE 创新性地将投机解码前移至特征层，使用目标模型自身输出的隐藏特征作为草稿模型输入，进行特征层级的自回归预测（Autoregressive Decoding）。草稿模型与目标模型共享 embedding 层与 LM Head，仅新增一个轻量级的 Auto-regression Head。具体而言，如图所示，EAGLE 将 `(f₁, eₜ₂)` 与 `(f₂, eₜ₃)` 拼接后输入 Auto-regression Head 预测出 `f₃`，再通过 `LM Head(f₃)` 得到 token `t₄`。
 
-## 9 附录
+## 9 总结
 
-### 9.1 什么是 Logits？
+推测解码（Speculative Decoding）是一种通过预生成多个候选 token 并并行验证以加速 LLM 推理的技术，旨在突破传统自回归解码中的内存带宽瓶颈。本文系统介绍了从早期草稿模型方法、Prompt Lookup 到 Jacobi 解码、Lookahead、Medusa，再到当前速度领先的 EAGLE 等多种方案。尽管各方案实现方式不同，它们的共同目标是提升解码效率、降低推理延迟，同时保证生成文本的质量。
+
+## 10 附录
+
+### 10.1 什么是 Logits？
 
 在大语言模型（LLM）中，logits 指的是模型输出层的原始得分向量，这些数值是未经过归一化处理的实数，表示模型对每个 token 作为下一个生成 token 的“置信度”或“倾向性”。具体来说：
 
@@ -653,13 +667,13 @@ $$
 
 总的来说，logits 是 LLM 中预测下一个词的“未归一化概率得分”，是生成过程中的关键中间表示，决定了模型如何选择下一个输出 token。**logits 的长度等于词表（vocabulary）的大小。**
 
-### 9.2 雅可比迭代法（Jacobi method）
+### 10.2 雅可比迭代法（Jacobi method）
 
 雅可比迭代法（Jacobi method）是一种用于求解线性方程组的迭代算法。它通过迭代地更新方程组中每个未知数的近似值，逐步逼近真实的解。这种方法特别适用于大型、稀疏的线性方程组。
 
 雅可比迭代法的核心思想是将复杂的线性方程组分解为简单的对角部分和非对角部分，然后利用当前迭代值计算下一次迭代值，实现并行计算。当矩阵满足对角占优条件时（即对角元素的绝对值大于同行其他元素绝对值之和），不论初始值如何选取，迭代过程都会收敛到唯一解，因为每次迭代都会使误差逐步减小。
 
-#### 9.2.1 公式
+#### 10.2.1 公式
 
 给定一个 $n \times n$ 的线性方程组：
 
@@ -729,7 +743,7 @@ $$
 x_i^{(k+1)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j \neq i} a_{ij} x_j^{(k)} \right), \quad i = 1, 2, \ldots, n
 $$
 
-#### 9.2.2 具体例子
+#### 10.2.2 具体例子
 
 以一个 $3 \times 3$ 线性方程组为例：
 
@@ -1023,7 +1037,7 @@ $$
 
 > Jacobi 迭代法的核心，就是不断应用简单的**局部更新规则**（局部信息），最终达到**全局平衡状态**（方程组解）。
 
-### 9.3 Jacobi 解码详解
+### 10.3 Jacobi 解码详解
 
 假设目标输入：
 
@@ -1083,7 +1097,7 @@ $$
 | y¹ | who | is       | pioneer  | 第一轮，部分修正  |
 | y² | who | was      | a        | 第二轮，完全收敛  |
 
-## 10 参考资料
+## 11 参考资料
 
 - Medusa: Simple Framework for Accelerating LLM Generation with Multiple Decoding Heads：https://sites.google.com/view/medusa-llm
 - Speculative Sampling — Intuitively and Exhaustively Explained：https://medium.com/intuitively-and-exhaustively-explained/speculative-sampling-intuitively-and-exhaustively-explained-2daca347dbb9
