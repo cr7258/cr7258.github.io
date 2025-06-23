@@ -12,7 +12,7 @@ tags:
 
 ## Speculative Decoding 推测解码方案详解
 
-Speculative Decoding 推测解码方案的讲解视频可以在这里观看：https://www.bilibili.com/video/BV1Q5KWzQEhn/
+Speculative Decoding 推测解码方案的讲解视频可以在这里观看：https://www.bilibili.com/video/BV1Q5KWzQEhn
 
 本文是 LLM 推理系列的第 4 篇，介绍 Speculative Decoding 推测解码方案详解，详细介绍了 EAGLE、Medusa、Lookahead 等主流的 Speculative Decoding 方案。
 
@@ -165,8 +165,6 @@ $$
 0.42 < 0.733 \quad \Rightarrow \quad 接受 "is"
 $$
 
----
-
 对第二个草稿 token：`𝑥̃₂ = "very"`：
 
 ```python
@@ -269,17 +267,17 @@ Jacobi 迭代法是一种经典的非线性方程组求解方法。在大语言�
 * 将 $\mathbf{y}$ 更新为新计算得到的 $\mathbf{y}'$；
 * 重复该过程，直到满足某个停止条件（例如 $\mathbf{y} = \mathbf{y}'$）为止。
 
-Jacobi 解码之所以可以让大模型并行预测多个 token，是因为它将原本自回归的串行生成过程转化为了一个非线性系统的“并行迭代求解”问题。每一轮都用大模型，在不同位置上并行预测 token，并使用上一轮的结果作为输入，而不是依赖本轮刚生成的内容。
+Jacobi Decoding 之所以可以让大模型并行预测多个 token，是因为它将原本自回归的串行生成过程转化为了一个非线性系统的“并行迭代求解”问题。每一轮都用大模型，在不同位置上并行预测 token，并使用上一轮的结果作为输入，而不是依赖本轮刚生成的内容。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202506212210549.gif)
 
-上图展示了这一并行解码过程（也称为 Jacobi 解码）。Jacobi 解码能够在最多 $m$ 步内求解所有 $m$ 个变量（即，与自回归解码所需步数相同），因为每一步至少能够保证第一个 token 被正确解码。有时候，多个 token 可能会在一次迭代中同时收敛，从而减少整体解码步数。例如，Jacobi 解码在第 4 步中同时预测并接受了两个 token：“computer” 和 “scientist”。
+上图展示了这一并行解码过程（也称为 Jacobi Decoding）。Jacobi Decoding 能够在最多 $m$ 步内求解所有 $m$ 个变量（即，与自回归解码所需步数相同），因为每一步至少能够保证第一个 token 被正确解码。有时候，多个 token 可能会在一次迭代中同时收敛，从而减少整体解码步数。例如，Jacobi Decoding 在第 4 步中同时预测并接受了两个 token：“computer” 和 “scientist”。
 
-与自回归解码相比，Jacobi 解码的每一步在计算上会稍微更昂贵一些，因为它需要在多个 token 上同时进行语言模型的前向计算。但幸运的是，由于 GPU 的并行处理特性，这种额外计算通常不会带来显著的延迟。
+与自回归解码相比，Jacobi Decoding 的每一步在计算上会稍微更昂贵一些，因为它需要在多个 token 上同时进行语言模型的前向计算。但幸运的是，由于 GPU 的并行处理特性，这种额外计算通常不会带来显著的延迟。
 
-> Jacobi 解码就像：你先把整篇文章草拟出来，然后让老师一段段检查、划掉不对的、保留正确的，然后继续在此基础上写后面的内容。
+> Jacobi Decoding 就像：你先把整篇文章草拟出来，然后让老师一段段检查、划掉不对的、保留正确的，然后继续在此基础上写后面的内容。
 
-在实际应用中，Jacobi 解码在实现显著的实际加速方面面临不少挑战。尽管它在多轮迭代中确实能够一次生成多个 token，但这些 token 通常难以被准确地放置在正确的位置。即便部分 token 被正确预测，它们也常常在后续的迭代中被新的预测所替代。最终，真正能做到多个 token 同时生成且位置正确的情况非常有限，难以体现并行 Jacobi 解码原本追求的效率优势。
+在实际应用中，Jacobi Decoding 在实现显著的实际加速方面面临不少挑战。尽管它在多轮迭代中确实能够一次生成多个 token，但这些 token 通常难以被准确地放置在正确的位置。即便部分 token 被正确预测，它们也常常在后续的迭代中被新的预测所替代。最终，真正能做到多个 token 同时生成且位置正确的情况非常有限，难以体现并行 Jacobi Decoding 原本追求的效率优势。
 
 ## 6 Lookahead Decoding
 
@@ -287,7 +285,7 @@ Jacobi 解码之所以可以让大模型并行预测多个 token，是因为它�
 >
 > Github：https://github.com/hao-ai-lab/LookaheadDecoding
 
-Lookahead Decoding 的灵感来源于 Jacobi 解码，它将自回归解码视为求解非线性系统的问题，并通过固定点迭代（fixed-point iteration）一次性并行生成多个未来 token。虽然 Jacobi 解码中初始化的 token 往往不准确，但其生成轨迹（Jacobi trajectory）中包含的 n-gram 片段可能在后续解码中成为有效的候选。
+Lookahead Decoding 的灵感来源于 Jacobi Decoding，它将自回归解码视为求解非线性系统的问题，并通过固定点迭代（fixed-point iteration）一次性并行生成多个未来 token。虽然 Jacobi Decoding 中初始化的 token 往往不准确，但其生成轨迹（Jacobi trajectory）中包含的 n-gram 片段可能在后续解码中成为有效的候选。
 
 Lookahead Decoding 正是利用了这一特性：**收集 Jacobi 生成路径中的 n-gram，并将其缓存至 n-gram 池中**。随后系统在解码时从中挑选可能命中的 n-gram 并通过主模型验证是否可接受，从而跳跃式推进生成过程，显著降低推理延迟。
 
@@ -600,7 +598,7 @@ EAGLE 论文中用下图对比了 Speculative Sampling、Lookahead、Medusa、EA
 
 ## 9 总结
 
-推测解码（Speculative Decoding）是一种通过预生成多个候选 token 并并行验证以加速 LLM 推理的技术，旨在突破传统自回归解码中的内存带宽瓶颈。本文系统介绍了从早期草稿模型方法、Prompt Lookup 到 Jacobi 解码、Lookahead、Medusa，再到当前速度领先的 EAGLE 等多种方案。尽管各方案实现方式不同，它们的共同目标是提升解码效率、降低推理延迟，同时保证生成文本的质量。
+推测解码（Speculative Decoding）是一种通过预生成多个候选 token 并并行验证以加速 LLM 推理的技术，旨在突破传统自回归解码中的内存带宽瓶颈。本文系统介绍了从早期草稿模型方法、Prompt Lookup 到 Jacobi Decoding、Lookahead、Medusa，再到当前速度领先的 EAGLE 等多种方案。尽管各方案实现方式不同，它们的共同目标是提升解码效率、降低推理延迟，同时保证生成文本的质量。
 
 ## 10 附录
 
@@ -887,7 +885,7 @@ $$
 
 这个例子展示了雅可比迭代法如何通过反复应用单元素更新公式，逐步逼近三维线性方程组的解。
 
-#### 9.2.3 更通俗的例子
+#### 10.2.3 更通俗的例子
 
 假设你、小明、小红三人一起玩一个猜数字游戏，每人猜一个数字，但你们的数字必须满足以下规则：
 
@@ -1037,7 +1035,7 @@ $$
 
 > Jacobi 迭代法的核心，就是不断应用简单的**局部更新规则**（局部信息），最终达到**全局平衡状态**（方程组解）。
 
-### 10.3 Jacobi 解码详解
+### 10.3 Jacobi Decoding 详解
 
 假设目标输入：
 
