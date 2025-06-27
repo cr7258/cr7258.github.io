@@ -1,5 +1,5 @@
 ---
-title: "Dify + OceanBase + MCP：三剑合璧，轻松构建 RAG 应用"
+title: Dify + OceanBase + MCP：三剑合璧，轻松构建 RAG 应用
 author: Se7en
 date: 2025/06/27 11:50
 categories:
