@@ -142,7 +142,7 @@ function getItems (path: string) {
 
 /**
  * 添加序号
- * 
+ *
  * @param groups 分组数据
  */
 function addOrderNumber(groups) {
@@ -150,15 +150,8 @@ function addOrderNumber(groups) {
     for (let j = 0; j < groups[i].items.length; j++) {
       const items = groups[i].items;
       const index = j + 1;
-      let indexStyle = `<div class="text-color-gray mr-[6px]" style="font-weight: 550; display: inline-block;">${index}</div>`;
-      if (index == 1) {
-        indexStyle = `<div class="text-color-red mr-[6px]" style="font-weight: 550; display: inline-block;">${index}</div>`;
-      } else if (index == 2) {
-        indexStyle = `<div class="text-color-orange mr-[6px]" style="font-weight: 550; display: inline-block;">${index}</div>`;
-      } else if (index == 3) {
-        indexStyle = `<div class="text-color-yellow mr-[6px]" style="font-weight: 550; display: inline-block;">${index}</div>`;
-      }
-      items[j].text = `${indexStyle}${items[j].text}`;
+      // 使用纯文本而不是HTML标签，避免在生产构建中出现渲染问题
+      items[j].text = `${index}. ${items[j].text}`;
     }
   }
 }

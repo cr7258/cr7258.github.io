@@ -7,7 +7,6 @@ import { localSearchOptions } from './search/local-search';
 export const themeConfig: DefaultTheme.Config = {
   nav, // 导航栏配置
   sidebar, // 侧边栏配置
-  sidebarCollapsible: false, // 禁用侧边栏的自动折叠
 
   logo: '/logo.png',
   outline: {
