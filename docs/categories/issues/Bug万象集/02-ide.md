@@ -31,3 +31,15 @@ LICENSE         README.md       VERSION         bin             doc             
 ```
 
 参考资料：https://github.com/golang/vscode-go/issues/971/
+
+### Cmd + 点击无法跳转到函数定义
+
+按下 F1 键，输入 "settings json"，然后点击 "Open User Settings (JSON)"，然后修改以下内容：
+
+```json
+{
+    "editor.multiCursorModifier": "alt",
+}
+```
+
+参考资料：https://forum.cursor.com/t/cmd-click-not-working-to-jump-to-function-definition-in-cursor/23438/8

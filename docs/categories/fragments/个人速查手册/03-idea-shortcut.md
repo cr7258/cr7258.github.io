@@ -23,6 +23,10 @@ tags:
 | **Command** + **D**  |  选择下一个相同的文本，可以同时编辑多个相同的文本 |
 | **Command** + **P**  |  搜索文件名 |
 
+### 设置前进和后退 （返回上一个浏览位置/下一个浏览位置）快捷键
+
+点击 `File -> Preferences -> Keyboard Shotcuts`，然后在 `keyboard shortcut` 界面中搜索 `navigateBack`（后退） 和 `navigateForward`（后退），然后设置喜欢的快捷键即可。
+
 ## 参考资料
 
 - [IDEA Windows + Mac 快捷键（全）](https://cloud.tencent.com/developer/article/1767794)
