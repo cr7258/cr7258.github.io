@@ -25,7 +25,7 @@ tags:
 
 ### 设置前进和后退 （返回上一个浏览位置/下一个浏览位置）快捷键
 
-点击 `File -> Preferences -> Keyboard Shotcuts`，然后在 `keyboard shortcut` 界面中搜索 `navigateBack`（后退） 和 `navigateForward`（后退），然后设置喜欢的快捷键即可。
+点击 `Settings -> Keyboard Shotcuts`，然后在 `keyboard shortcut` 界面中搜索 `navigateForward`（前进） 和 `navigateBack`（后退），然后设置喜欢的快捷键即可。
 
 ## 参考资料
 
