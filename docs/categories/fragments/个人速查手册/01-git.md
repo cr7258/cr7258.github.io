@@ -563,6 +563,31 @@ git lfs untrack "*.psd"
 
 - [Git LFS 操作指南](https://zzz.buzz/zh/2016/04/19/the-guide-to-git-lfs/)
 
+## 用户管理
+
+### 为不同 Repo 设置不同的用户信息
+
+假设要为个人 Repo 和工作 Repo 设置不同的用户信息，个人 Repo 是默认的 github.com，工作 Repo 是 `<your-git-url>`。首先创建一个配置文件 `~/.gitconfig-work` 存放工作 Repo 的用户信息：
+
+```bash
+# ~/.gitconfig-work
+[user]
+  name = sevenc
+  email = sevenc@your-domain.com
+```
+
+然后在 `~/.gitconfig` 中包含工作 Repo 的配置文件。
+
+```bash
+# 默认的用户信息
+[user]
+  name = cr7258
+  email = chengzw258@163.com
+
+# 包含工作 Repo 的配置文件
+[includeIf "hasconfig:remote.*.url:https://<other-git-url>/**"]
+  path = /<your-path>/.gitconfig-nvidia
+```
 
 ## 问题
 
