@@ -565,6 +565,14 @@ git lfs untrack "*.psd"
 
 ## 用户管理
 
+### 保存用户凭证
+
+执行以下命令，然后执行 Git 操作（比如 pull 或者 push 仓库），密码就会被自动保存在 `~/.git-credentials` 文件中。
+
+```bash
+git config --global credential.helper store
+```
+
 ### 为不同 Repo 设置不同的用户信息
 
 假设要为个人 Repo 和工作 Repo 设置不同的用户信息，个人 Repo 是默认的 github.com，工作 Repo 是 `<your-git-url>`。首先创建一个配置文件 `~/.gitconfig-work` 存放工作 Repo 的用户信息：
