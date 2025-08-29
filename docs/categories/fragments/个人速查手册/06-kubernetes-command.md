@@ -45,3 +45,9 @@ ip-192-168-1-1|ip-192-168-1-2|ip-192-168-1-3
 6. `kubectl get nodes`：列出所有 Node。
 
 7. `egrep -v <上面拼出来的正则>`：反向匹配，显示那些没有出现在上述 Node 列表中的 Node，也就是没有运行该 DaemonSet Pod 的 Node。
+
+## 命令补全
+
+```bash
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+```
