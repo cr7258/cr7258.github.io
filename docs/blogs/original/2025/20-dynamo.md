@@ -13,14 +13,14 @@ tags:
 
 ## 1 Dynamo 介绍
 
-NVIDIA Dynamo 是一个开源的模块化推理框架，用于在分布式环境上实现生成式 AI 模型的服务化部署。它能够通过动态资源调度、智能请求路由、优化的内存管理和加速的数据传输，无缝扩展大型 GPU 集群之间的推理工作负载。
+NVIDIA Dynamo 是一个开源的模块化推理框架，用于在分布式环境上实现生成式 AI 模型的服务化部署。Dynamo 通过动态资源调度、智能路由、内存优化与高速数据传输，无缝扩展大型 GPU 集群之间的推理工作负载。
 
 Dynamo 采用推理引擎无关的设计（支持 TensorRT-LLM、vLLM、SGLang 等），包括以下 4 个核心组件：
 
-- **NVIDIA Dynamo Planner**：一个智能规划和调度引擎，用于监控分布式推理中的容量与延迟，并在 prefill 与 decode 阶段之间灵活分配 GPU 资源，以最大化吞吐量和效率。Planner 会持续跟踪关键的 GPU 容量指标，并结合应用的 SLO（如 TTFT 和 ITL），智能决策是否采用分离式推理，或是否需要为某一阶段动态增加更多 GPU。
+- **NVIDIA Dynamo Planner**：一个智能规划和调度引擎，用于监控分布式推理中的容量与延迟，并在 prefill 与 decode 阶段之间灵活分配 GPU 资源，以最大化吞吐量和效率。Planner 会持续跟踪关键的 GPU 容量指标，并结合应用的 SLO（如 TTFT 和 ITL），智能决策是否采用分离式推理，或是否需要为 prefill/decode 阶段动态增加更多 GPU。
 - **NVIDIA Dynamo Smart Router**：KV cache 感知的路由引擎，可在分布式推理环境中将请求转发到最佳的节点，从而最大限度减少 KV cache 的重复计算开销。
 - **NVIDIA Dynamo Distributed KV Cache Manager**：通过将较旧或低频访问的 KV cache 卸载到更低成本的存储（如 CPU 内存、本地存储或对象存储等），大幅降低 GPU 内存占用。借助这种分层管理，开发者既能保留大规模 KV cache 重用的优势，又能释放宝贵的 GPU 资源，从而有效降低推理计算成本。
-- **NVIDIA Inference Transfer Library (NIXL)**：高效的推理数据传输库，可加速 GPU 之间以及异构内存与存储之间的 KV cache 传输。通过减少同步开销和智能批处理，NIXL 显著降低了分布式推理中的通信延迟，使得在 prefill / decode 分离部署时，prefill 节点也能在毫秒级将大批量 KV cache 推送至 decode 节点，从而避免跨节点数据交换成为性能瓶颈。
+- **NVIDIA Inference Transfer Library (NIXL)**：高效的推理数据传输库，可加速 GPU 之间以及异构内存与存储之间的 KV cache 传输。通过减少同步开销和智能批处理，NIXL 显著降低了分布式推理中的通信延迟，使得在 prefill/decode 分离部署时，prefill 节点也能在毫秒级将大批量的 KV cache 传输至 decode 节点，从而避免跨节点数据交换成为性能瓶颈。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20250905101610730.png)
 
@@ -172,17 +172,17 @@ LLM 请求的 prefill 阶段和 decode 阶段在计算特性和内存占用上�
 
 一个请求的分离式执行主要包括三个步骤：
 
-- prefill 引擎计算 prefill 阶段并生成 KV cache；
-- prefill 引擎将 KV cache 传输给 decode 引擎；
-- decode 引擎计算 decode 阶段。
+- prefill worker 计算 prefill 阶段并生成 KV cache；
+- prefill worker 将 KV cache 传输给 decode worker；
+- decode worker 计算 decode 阶段。
 
-不过，并非所有请求的 prefill 阶段都需要在远程 prefill 引擎上执行。**如果 prefill 较短，或者 decode 引擎有较高的 prefix cache 命中率，那么直接在 decode 引擎上本地计算 prefill 往往更高效。**Dynamo 的分离式设计考虑了这些不同场景，提供了一个灵活的框架，能够在各种条件下都实现出色的性能表现。
+不过，并非所有请求的 prefill 阶段都需要在远程 prefill worker 上执行。**如果 prefill 较短，或者 decode worker 有较高的 prefix cache 命中率，那么直接在 decode worker 上本地计算 prefill 往往更高效。** Dynamo 的分离式设计考虑了这些不同场景，提供了一个灵活的框架，能够在各种条件下都实现出色的性能表现。
 
 ![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20250905110939639.png)
 
 在 Dynamo 的 PD 分离架构中，有 4 个核心组件：
 
-- **worker**：执行 prefill 和 decode 请求。
+- **(decode) worker**：执行 prefill 和 decode 请求。
 - **prefill worker**：只执行 prefill 请求。
 - **disaggregated router**：决定 prefill 阶段是在本地还是远程执行。
 - **prefill queue**：缓存并负载均衡远程 prefill 请求。
@@ -307,7 +307,7 @@ prefill worker 从接收请求到完成处理的完整日志如下：
 2025-09-07T07:05:29.023733Z DEBUG nixl_connector.get_num_new_matched_tokens: NIXLConnector get_num_new_matched_tokens: num_computed_tokens=0, kv_transfer_params={'do_remote_decode': True} 
 
 # vllm: vllm/distributed/kv_transfer/kv_connector/v1/nixl_connector.py: 295 行
-# 在分配完 block 后调用，当 NIXL 不直接支持该 Accelerator 时（kv_buffer_device == "cpu"），prefill 计算的 block 需要在 KV transfer 之前先存储到 host memory 
+# 在分配完 block 后调用，当 NIXL 不直接支持该 Accelerator 时（kv_buffer_device == "cpu"），prefill 计算的 block 需要在 KV transfer 之前先存储到 host memory。在我们的例子中使用的是 GPU，不需要将 KV cache 先保存到 host memory，可以直接从 GPU 内存进行传输。
 # num_external_tokens=0 表明没有外部 token 需要加载
 2025-09-07T07:05:29.023825Z DEBUG nixl_connector.update_state_after_alloc: NIXLConnector update_state_after_alloc: num_external_tokens=0, kv_transfer_params={'do_remote_decode': True} 
 
@@ -496,7 +496,7 @@ dynamo-platform-nats-0                                            2/2     Runnin
 dynamo-platform-nats-box-5dbf45c748-zk7xd                         1/1     Running   0          34s
 ```
 
-接下来通过 `DynamoGraphDeployment` 定义一个最简单的聚合模式的 vLLM 推理服务，其中包含一个 Frontend 和一个 VllmDecodeWorker。
+接下来通过 `DynamoGraphDeployment` 定义一个最简单的 vLLM 推理服务，其中包含一个 Frontend 和一个 VllmDecodeWorker。
 
 ```yaml
 apiVersion: nvidia.com/v1alpha1
