@@ -1,5 +1,5 @@
 ---
-title: 使用 NVIDIA Dynamo 部署 P/D 分离推理服务
+title: 使用 NVIDIA Dynamo 部署 PD 分离推理服务
 author: Se7en
 date: 2025/08/30 12:00
 categories:
@@ -9,7 +9,7 @@ tags:
  - Inference
 ---
 
-# 使用 NVIDIA Dynamo 部署 P/D 分离推理服务
+# 使用 NVIDIA Dynamo 部署 PD 分离推理服务
 
 ## 1 Dynamo 介绍
 
