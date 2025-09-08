@@ -666,3 +666,7 @@ curl -X POST http://localhost:8000/v1/chat/completions \
 - NVIDIA Dynamo, A Low-Latency Distributed Inference Framework for Scaling Reasoning AI Models：https://developer.nvidia.com/blog/introducing-nvidia-dynamo-a-low-latency-distributed-inference-framework-for-scaling-reasoning-ai-models/
 - NVDIA Dynamo推理框架技术解析：https://zhuanlan.zhihu.com/p/1886300967491830777
 - 代码演示 ｜ 使用 NVIDIA Dynamo 进行 P/D 分离服务：https://www.bilibili.com/video/BV1ow8wz9Ece
+
+## 欢迎关注
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/202503222156941.png)
