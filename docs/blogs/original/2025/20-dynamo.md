@@ -182,10 +182,10 @@ LLM 请求的 prefill 阶段和 decode 阶段在计算特性和内存占用上�
 
 在 Dynamo 的 PD 分离架构中，有 4 个核心组件：
 
-- Worker：执行 prefill 和 decode 请求。
-- Prefill worker：只执行 prefill 请求。
-- Disaggregated router：决定 prefill 阶段是在本地还是远程执行。
-- Prefill queue：缓存并负载均衡远程 prefill 请求。
+- **worker**：执行 prefill 和 decode 请求。
+- **prefill worker**：只执行 prefill 请求。
+- **disaggregated router**：决定 prefill 阶段是在本地还是远程执行。
+- **prefill queue**：缓存并负载均衡远程 prefill 请求。
 
 当 worker 收到请求时，首先会通过 disaggregated router 判断 prefill 应该在本地还是远程完成，并分配相应的 KV block。
 如果选择远程 prefill，请求会被推送到 prefill queue。随后，prefill worker 从队列中取出请求，读取 worker 中 prefix cache 命中的 KV block，执行 prefill 计算，并将生成的 KV block 回写给 worker。最后，worker 会继续完成剩余的 decode 阶段。
