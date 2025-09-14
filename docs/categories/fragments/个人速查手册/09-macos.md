@@ -24,3 +24,11 @@ xxx Is Damaged and Can’t Be Opened. You Should Move It To The Trash.
 # 把 xxx.app 换成你的应用路径
 xattr -cr /Applications/xxx.app
 ```
+
+## 显示隐藏文件
+
+使用以下快捷键就可以显示隐藏文件：
+
+```bash
+Command + Shift + .
+```
