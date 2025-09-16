@@ -157,3 +157,34 @@ docker inspect tektoncd-pipeline-controller:v1.3.0
     }
 ]
 ```
+
+## 构建多平台镜像
+
+**1.创建一个新的 builder**：
+
+```bash
+docker buildx create --use --name <your-builder-name>
+```
+
+**2.启动 builder 容器**：
+
+```bash
+docker buildx inspect <your-builder-name> --bootstrap
+```
+
+**3.确认 builder 支持多平台**：
+
+```bash
+docker buildx ls
+```
+
+你应该能看到 `<your-builder-name>`，并且 `Platforms` 栏里有 `linux/amd64, linux/arm64` 等。
+
+**4.构建并推送 multi-arch 镜像**：
+
+```bash
+docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    -t <your-image-tag> \
+    --push .
+```
