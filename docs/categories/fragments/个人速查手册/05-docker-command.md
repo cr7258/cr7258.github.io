@@ -188,3 +188,25 @@ docker buildx build \
     -t <your-image-tag> \
     --push .
 ```
+
+## Docker 修改数据目录
+
+Docker 默认把所有镜像、容器、volume 等数据放在 `/var/lib/docker`，可以通过编辑 `/etc/docker/daemon.json` 文件，加入：
+
+```bash
+{
+  "data-root": "/your/new/docker-data"
+}
+```
+
+然后重启 Docker 加载新的配置
+
+```bash
+sudo systemctl restart docker
+```
+
+检查是否生效：
+
+```bash
+docker info | grep "Docker Root Dir"
+```
