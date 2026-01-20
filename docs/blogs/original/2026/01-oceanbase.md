@@ -630,3 +630,7 @@ PowerMem 搜索返回的结果中会包含 `profile_content` 字段，将其注�
 - [SeekDB 文档](https://github.com/oceanbase/seekdb)
 - [PowerMem 文档](https://github.com/oceanbase/powermem)
 - [Vercel AI SDK](https://ai-sdk.dev)
+
+## 12 欢迎关注
+
+![](https://chengzw258.oss-cn-beijing.aliyuncs.com/Article/20220104221116.png)
