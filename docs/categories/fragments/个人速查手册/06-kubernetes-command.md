@@ -51,3 +51,27 @@ ip-192-168-1-1|ip-192-168-1-2|ip-192-168-1-3
 ```bash
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 ```
+
+## 删除 Terminating 状态的 Namespace
+
+保存以下脚本：
+
+```bash
+# remove-pending-namespace.sh
+#!/bin/bash
+if [[ $# -ne 1 ]]; then
+  echo "Please input only namespace name"
+  exit 1
+fi
+ns=$1
+kubectl get ns ${ns} -o json >tmp.json
+cat ./tmp.json | jq 'del(.spec.finalizers[])' >./modify.json
+kubectl replace --raw "/api/v1/namespaces/${ns}/finalize" -f ./modify.json
+rm -f tmp.json modify.json
+```
+
+执行命令：
+
+```bash
+remove-pending-namespace.sh <namespace>
+```
